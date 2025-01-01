@@ -1,8 +1,13 @@
+import { Navigation } from "@/components/layout/Navigation";
+import { Footer } from "@/components/layout/Footer";
+
 const Terms = () => {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8">Terms and Conditions</h1>
-      <div className="prose prose-slate max-w-none">
+    <>
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 max-w-4xl mt-16">
+        <h1 className="text-3xl font-bold mb-8">Terms and Conditions</h1>
+        <div className="prose prose-slate max-w-none">
         <p>Please read these terms and conditions carefully before using Our Service.</p>
 
         <h2>Interpretation and Definitions</h2>
@@ -184,8 +189,10 @@ const Terms = () => {
         <h2>Contact Us</h2>
         <p>If you have any questions about these Terms and Conditions, You can contact us:</p>
         <p>By email: support@trywrite.ai</p>
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 

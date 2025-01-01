@@ -1,8 +1,13 @@
+import { Navigation } from "@/components/layout/Navigation";
+import { Footer } from "@/components/layout/Footer";
+
 const Privacy = () => {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>
-      <div className="prose prose-slate max-w-none">
+    <>
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 max-w-4xl mt-16">
+        <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>
+        <div className="prose prose-slate max-w-none">
         <p>Last updated: January 1, 2025</p>
 
         <h2>Who we are</h2>
@@ -47,8 +52,10 @@ const Privacy = () => {
           DE 19709<br />
           US
         </p>
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 
