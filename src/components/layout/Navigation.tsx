@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export function Navigation() {
   return (
-    <header className="fixed top-0 w-full bg-[#848ac8] z-50 border-b">
+    <header className="fixed top-0 w-full bg-[#848ac8] z-50">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center">
