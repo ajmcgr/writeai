@@ -44,7 +44,7 @@ export const FormattingToolbar = ({
 }: FormattingToolbarProps) => {
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex items-center space-x-2">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -52,6 +52,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 size="icon"
                 onClick={() => onFormat("bold")}
+                className="w-full"
               >
                 <Bold className="h-4 w-4" />
               </Button>
@@ -65,6 +66,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 size="icon"
                 onClick={() => onFormat("italic")}
+                className="w-full"
               >
                 <Italic className="h-4 w-4" />
               </Button>
@@ -78,6 +80,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 size="icon"
                 onClick={() => onFormat("underline")}
+                className="w-full"
               >
                 <Underline className="h-4 w-4" />
               </Button>
@@ -91,6 +94,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 size="icon"
                 onClick={() => onFormat("heading")}
+                className="w-full"
               >
                 <Heading1 className="h-4 w-4" />
               </Button>
@@ -104,6 +108,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 size="icon"
                 onClick={() => onFormat("bullet")}
+                className="w-full"
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -117,6 +122,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 size="icon"
                 onClick={() => onFormat("number")}
+                className="w-full"
               >
                 <ListOrdered className="h-4 w-4" />
               </Button>
@@ -126,7 +132,7 @@ export const FormattingToolbar = ({
         </TooltipProvider>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>

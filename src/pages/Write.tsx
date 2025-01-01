@@ -224,21 +224,9 @@ const Write = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
       <SidebarProvider>
-        <div className="container flex-grow py-8 mt-16 flex w-full">
+        <div className="container flex-grow py-8 mt-16 flex w-full relative">
           <DocumentSidebar />
           <div className="flex-1 space-y-6 px-4">
-            <FormattingToolbar
-              onFormat={formatText}
-              onSave={saveDraft}
-              onExport={exportToDocx}
-              onCopy={copyToClipboard}
-              onHistory={() => setShowVersionHistory(true)}
-              onFileUpload={handleFileUpload}
-              isLoading={isLoading}
-              hasContent={!!content}
-              hasContentId={!!currentContentId}
-            />
-
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -259,6 +247,22 @@ const Write = () => {
                 </AlertDescription>
               </Alert>
             )}
+
+            <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
+              <div className="container max-w-screen-xl mx-auto">
+                <FormattingToolbar
+                  onFormat={formatText}
+                  onSave={saveDraft}
+                  onExport={exportToDocx}
+                  onCopy={copyToClipboard}
+                  onHistory={() => setShowVersionHistory(true)}
+                  onFileUpload={handleFileUpload}
+                  isLoading={isLoading}
+                  hasContent={!!content}
+                  hasContentId={!!currentContentId}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </SidebarProvider>
