@@ -4,6 +4,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Auth from "./pages/Auth";
 import About from "./pages/About";
+import Pricing from "./pages/Pricing";
 import Boilerplate from "./pages/tools/Boilerplate";
 import Headline from "./pages/tools/Headline";
 import Quote from "./pages/tools/Quote";
@@ -18,6 +19,7 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/about" element={<About />} />
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="/tools/boilerplate" element={<Boilerplate />} />
         <Route path="/tools/headline" element={<Headline />} />
         <Route path="/tools/quote" element={<Quote />} />
