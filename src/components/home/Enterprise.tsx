@@ -10,8 +10,8 @@ export function Enterprise() {
         <p className="text-xl mb-8 text-primary-foreground/90">
           Custom solutions for high-volume press release needs. Let's discuss how we can help scale your communications.
         </p>
-        <Button size="lg" variant="secondary">
-          Contact Us
+        <Button size="lg" variant="secondary" asChild>
+          <a href="mailto:support@trywrite.ai">Contact Us</a>
         </Button>
       </div>
     </section>
