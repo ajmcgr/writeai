@@ -227,23 +227,19 @@ const Write = () => {
         <div className="container flex-grow py-8 mt-16 flex w-full relative">
           <DocumentSidebar />
           <div className="flex-1 space-y-6 px-4">
-            <div className="flex justify-between items-start">
-              <div className="w-full">
-                <Textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Start writing or generate content..."
-                  className="min-h-[calc(100vh-400px)] w-full p-4 resize-none"
-                />
-              </div>
-              <div className="ml-4 flex-shrink-0">
-                <AIActions
-                  content={content}
-                  onContentGenerated={setContent}
-                  onAnalysis={setAnalysis}
-                />
-              </div>
+            <div className="flex justify-end mb-4">
+              <AIActions
+                content={content}
+                onContentGenerated={setContent}
+                onAnalysis={setAnalysis}
+              />
             </div>
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Start writing or generate content..."
+              className="min-h-[calc(100vh-400px)] w-full p-4 resize-none border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
 
             {analysis && (
               <Alert>
