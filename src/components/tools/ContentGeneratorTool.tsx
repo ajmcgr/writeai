@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 import { ContentDisplay } from "@/components/content/ContentDisplay";
+import { useNavigate } from "react-router-dom";
 
 interface ContentGeneratorToolProps {
   session: Session;
@@ -25,6 +26,7 @@ export const ContentGeneratorTool = ({
   const [context, setContext] = useState("");
   const [generatedContent, setGeneratedContent] = useState("");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const checkUsageAndSubscription = async () => {
     if (!session?.user) {
@@ -53,35 +55,11 @@ export const ContentGeneratorTool = ({
       profile.last_use_date === today &&
       (profile.daily_uses ?? 0) >= 3
     ) {
-      const { data } = await supabase.functions.invoke("create-checkout-session");
-      if (data?.url) {
-        toast({
-          title: "Usage limit reached",
-          description: "You've reached your daily limit. Upgrade to Pro for unlimited access!",
-          action: (
-            <Button
-              onClick={async () => {
-                window.location.href = data.url;
-                // Send upgrade confirmation email
-                try {
-                  await supabase.functions.invoke("send-notification-email", {
-                    body: {
-                      type: "upgrade",
-                      email: session.user.email,
-                      name: session.user.user_metadata?.full_name,
-                    },
-                  });
-                } catch (error) {
-                  console.error("Error sending upgrade email:", error);
-                }
-              }}
-              variant="default"
-            >
-              Upgrade to Pro
-            </Button>
-          ),
-        });
-      }
+      toast({
+        title: "Usage limit reached",
+        description: "You've reached your daily limit. Please upgrade to Pro for unlimited access.",
+      });
+      navigate("/pricing");
       return false;
     }
 

@@ -6,7 +6,7 @@ export const plans = {
       price: "0",
       period: "month",
       features: [
-        "3 free AI press release re-writes every 24 hours",
+        "3 free AI press release generations or re-writes every 24 hours",
         "AI-powered suggestions",
         "Basic templates",
         "Download text",
@@ -36,7 +36,7 @@ export const plans = {
       price: "0",
       period: "year",
       features: [
-        "3 free AI press release re-writes every 24 hours",
+        "3 free AI press release generations or re-writes every 24 hours",
         "AI-powered suggestions",
         "Basic templates",
         "Download text",

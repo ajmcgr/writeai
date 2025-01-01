@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { useNavigate } from "react-router-dom";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -18,6 +19,7 @@ export const ContentGenerator = ({ session, onContentGenerated }: ContentGenerat
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState("");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const checkUsageAndSubscription = async () => {
     if (!session?.user) {
@@ -46,21 +48,11 @@ export const ContentGenerator = ({ session, onContentGenerated }: ContentGenerat
       profile.last_use_date === today &&
       (profile.daily_uses ?? 0) >= 3
     ) {
-      const { data } = await supabase.functions.invoke("create-checkout-session");
-      if (data?.url) {
-        toast({
-          title: "Usage limit reached",
-          description: "You've reached your daily limit. Upgrade to Pro for unlimited access!",
-          action: (
-            <Button
-              onClick={() => window.location.href = data.url}
-              variant="default"
-            >
-              Upgrade to Pro
-            </Button>
-          ),
-        });
-      }
+      toast({
+        title: "Usage limit reached",
+        description: "You've reached your daily limit. Please upgrade to Pro for unlimited access.",
+      });
+      navigate("/pricing");
       return false;
     }
 
