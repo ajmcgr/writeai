@@ -125,7 +125,7 @@ export function Pricing() {
             Simple, transparent pricing
           </h2>
           <p className="text-xl text-muted-foreground">
-            Choose the plan that best fits your needs
+            Choose the plan that best fits your needs.
           </p>
         </div>
 

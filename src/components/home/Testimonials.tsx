@@ -49,7 +49,7 @@ export function Testimonials() {
             Loved by PR professionals
           </h2>
           <p className="text-xl text-muted-foreground">
-            See what people are saying about Write AI
+            See what people are saying about Write AI.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

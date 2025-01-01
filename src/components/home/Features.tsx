@@ -53,7 +53,7 @@ export function Features() {
             Powerful features to help you write better
           </h2>
           <p className="text-xl text-muted-foreground">
-            Everything you need to create professional press releases
+            Everything you need to create professional press releases.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
