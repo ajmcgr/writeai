@@ -3,7 +3,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -13,7 +13,6 @@ const SignUp = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         try {
-          // Create contact in HubSpot
           const { error } = await supabase.functions.invoke('hubspot-contact', {
             body: {
               email: session.user.email,
@@ -26,13 +25,14 @@ const SignUp = () => {
           console.log('Successfully created HubSpot contact');
         } catch (error) {
           console.error('Error creating HubSpot contact:', error);
-          toast({
-            title: "Welcome!",
-            description: "Your account was created successfully.",
-          });
         }
 
-        navigate("/");
+        toast({
+          title: "Welcome!",
+          description: "Your account was created successfully.",
+        });
+
+        navigate("/write");
       }
     });
 

@@ -12,6 +12,7 @@ import Quote from "./pages/tools/Quote";
 import CTA from "./pages/tools/CTA";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Write from "./pages/Write";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/tools/cta" element={<CTA />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/write" element={<Write />} />
       </Routes>
     </Router>
   );
