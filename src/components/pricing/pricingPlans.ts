@@ -6,7 +6,7 @@ export const plans = {
       price: "0",
       period: "month",
       features: [
-        "3 free AI press release generations or re-writes every 24 hours",
+        "1 free AI press release document every 24 hours",
         "AI-powered suggestions",
         "Basic templates",
         "Download text",
@@ -20,7 +20,7 @@ export const plans = {
       price: "30",
       period: "month",
       features: [
-        "Unlimited AI press release rewrites",
+        "Unlimited AI press release documents",
         "AI-powered suggestions",
         "Premium templates",
         "Download text",
@@ -36,7 +36,7 @@ export const plans = {
       price: "0",
       period: "year",
       features: [
-        "3 free AI press release generations or re-writes every 24 hours",
+        "1 free AI press release document every 24 hours",
         "AI-powered suggestions",
         "Basic templates",
         "Download text",
@@ -50,7 +50,7 @@ export const plans = {
       price: "300",
       period: "year",
       features: [
-        "Unlimited AI press release rewrites",
+        "Unlimited AI press release documents",
         "AI-powered suggestions",
         "Premium templates",
         "Download text",

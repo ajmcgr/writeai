@@ -27,6 +27,9 @@ export function DocumentSidebar() {
 
   useEffect(() => {
     const fetchDocuments = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
       const { data, error } = await supabase
         .from("content")
         .select("*")
@@ -42,7 +45,6 @@ export function DocumentSidebar() {
 
     fetchDocuments();
 
-    // Subscribe to changes
     const channel = supabase
       .channel("document_changes")
       .on(
@@ -63,10 +65,85 @@ export function DocumentSidebar() {
     };
   }, []);
 
+  const checkUsageAndSubscription = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to create documents",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select()
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+    if (!profile) return false;
+
+    // Pro users bypass the usage check
+    if (profile.subscription_status === "pro") {
+      return true;
+    }
+
+    // Only check daily limit for free users
+    const today = new Date().toISOString().split("T")[0];
+    if (
+      profile.last_use_date === today &&
+      (profile.daily_uses ?? 0) >= 1
+    ) {
+      toast({
+        title: "Usage limit reached",
+        description: "You've reached your daily limit. Please upgrade to Pro for unlimited access.",
+      });
+      navigate("/pricing");
+      return false;
+    }
+
+    return true;
+  };
+
+  const updateUsageCount = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return;
+
+    const today = new Date().toISOString().split("T")[0];
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select()
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+    if (!profile) return;
+
+    if (profile.last_use_date !== today) {
+      await supabase
+        .from("profiles")
+        .update({
+          daily_uses: 1,
+          last_use_date: today,
+        })
+        .eq("user_id", session.user.id);
+    } else {
+      await supabase
+        .from("profiles")
+        .update({
+          daily_uses: (profile.daily_uses ?? 0) + 1,
+        })
+        .eq("user_id", session.user.id);
+    }
+  };
+
   const createNewDocument = async () => {
     if (isCreating) return;
 
     try {
+      const canProceed = await checkUsageAndSubscription();
+      if (!canProceed) return;
+
       setIsCreating(true);
       const { data, error } = await supabase
         .from("content")
@@ -82,6 +159,7 @@ export function DocumentSidebar() {
       if (error) throw error;
 
       if (data) {
+        await updateUsageCount();
         navigate(`/write/${data.id}`);
         toast({
           title: "Success",
@@ -112,7 +190,7 @@ export function DocumentSidebar() {
           className="w-full"
           size="sm"
         >
-          <FilePlus className="h-4 w-4" />
+          <FilePlus className="h-4 w-4 mr-2" />
           <span>New Document</span>
         </Button>
       </SidebarHeader>
@@ -122,12 +200,9 @@ export function DocumentSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {drafts.map((doc) => (
-                <SidebarMenuItem key={doc.id}>
-                  <SidebarMenuButton
-                    onClick={() => navigate(`/write/${doc.id}`)}
-                    tooltip={doc.title}
-                  >
-                    <FolderOpen className="h-4 w-4" />
+                <SidebarMenuItem key={doc.id} onClick={() => navigate(`/write/${doc.id}`)}>
+                  <SidebarMenuButton>
+                    <File className="h-4 w-4 mr-2" />
                     <span>{doc.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -141,12 +216,9 @@ export function DocumentSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {published.map((doc) => (
-                <SidebarMenuItem key={doc.id}>
-                  <SidebarMenuButton
-                    onClick={() => navigate(`/write/${doc.id}`)}
-                    tooltip={doc.title}
-                  >
-                    <File className="h-4 w-4" />
+                <SidebarMenuItem key={doc.id} onClick={() => navigate(`/write/${doc.id}`)}>
+                  <SidebarMenuButton>
+                    <FolderOpen className="h-4 w-4 mr-2" />
                     <span>{doc.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
