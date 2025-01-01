@@ -104,6 +104,17 @@ const Write = () => {
   const saveDraft = async () => {
     try {
       setIsLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to save drafts",
+          variant: "destructive",
+        });
+        return;
+      }
+
       let contentId = currentContentId;
 
       if (!contentId) {
@@ -113,7 +124,8 @@ const Write = () => {
             content,
             type: 'press_release',
             title: 'Draft Press Release',
-            is_draft: true
+            is_draft: true,
+            user_id: session.user.id
           })
           .select()
           .single();
@@ -124,7 +136,11 @@ const Write = () => {
       } else {
         const { error: updateError } = await supabase
           .from('content')
-          .update({ content, updated_at: new Date().toISOString() })
+          .update({ 
+            content, 
+            updated_at: new Date().toISOString(),
+            user_id: session.user.id
+          })
           .eq('id', contentId);
 
         if (updateError) throw updateError;
@@ -210,7 +226,7 @@ const Write = () => {
       <SidebarProvider>
         <div className="container flex-grow py-8 mt-16 flex w-full">
           <DocumentSidebar />
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 space-y-6 px-4">
             <FormattingToolbar
               onFormat={formatText}
               onSave={saveDraft}
@@ -227,7 +243,7 @@ const Write = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Start writing or generate content..."
-              className="min-h-[600px] p-4"
+              className="min-h-[600px] w-full p-4"
             />
 
             <AIActions

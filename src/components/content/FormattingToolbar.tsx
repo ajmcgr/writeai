@@ -43,8 +43,8 @@ export const FormattingToolbar = ({
   hasContentId,
 }: FormattingToolbarProps) => {
   return (
-    <div className="flex items-center justify-between">
-      <div className="space-x-2">
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center space-x-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -126,11 +126,11 @@ export const FormattingToolbar = ({
         </TooltipProvider>
       </div>
 
-      <div className="space-x-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div>
+              <div className="w-full">
                 <input
                   type="file"
                   id="file-upload"
@@ -138,8 +138,8 @@ export const FormattingToolbar = ({
                   accept=".txt,.doc,.docx"
                   onChange={onFileUpload}
                 />
-                <label htmlFor="file-upload">
-                  <Button variant="outline" className="cursor-pointer">
+                <label htmlFor="file-upload" className="w-full">
+                  <Button variant="outline" className="w-full cursor-pointer">
                     <Upload className="h-4 w-4 mr-2" />
                     Upload
                   </Button>
@@ -155,6 +155,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 onClick={onSave}
                 disabled={isLoading}
+                className="w-full"
               >
                 <Save className="h-4 w-4 mr-2" />
                 Save Draft
@@ -169,6 +170,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 onClick={onExport}
                 disabled={!hasContent}
+                className="w-full"
               >
                 <FileText className="h-4 w-4 mr-2" />
                 Export to DOCX
@@ -183,6 +185,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 onClick={onCopy}
                 disabled={!hasContent}
+                className="w-full"
               >
                 <Copy className="h-4 w-4 mr-2" />
                 Copy
@@ -197,6 +200,7 @@ export const FormattingToolbar = ({
                 variant="outline"
                 onClick={onHistory}
                 disabled={!hasContentId}
+                className="w-full"
               >
                 <History className="h-4 w-4 mr-2" />
                 History
