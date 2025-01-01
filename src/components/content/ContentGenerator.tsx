@@ -39,10 +39,12 @@ export const ContentGenerator = ({ session, onContentGenerated }: ContentGenerat
 
     if (!profile) return false;
 
+    // Pro users bypass the usage check
     if (profile.subscription_status === "pro") {
       return true;
     }
 
+    // Only check daily limit for free users
     const today = new Date().toISOString().split("T")[0];
     if (
       profile.last_use_date === today &&
