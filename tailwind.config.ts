@@ -19,8 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				reckless: ['Reckless', 'serif'],
-				mabry: ['Mabry', 'sans-serif'],
+				merriweather: ['Merriweather', 'serif'],
+				inter: ['Inter', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
