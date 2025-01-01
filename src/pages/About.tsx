@@ -5,7 +5,7 @@ const About = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-grow py-16 px-4 md:px-8 max-w-6xl mx-auto">
+      <main className="flex-grow pt-24 pb-16 px-4 md:px-8 max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-start">
           <div className="space-y-8">
             <div className="space-y-4">
