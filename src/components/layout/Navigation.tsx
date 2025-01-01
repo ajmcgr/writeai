@@ -7,8 +7,12 @@ export function Navigation() {
     <header className="fixed top-0 w-full bg-[#848ac8] z-50 border-b">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link to="/" className="font-semibold text-xl text-white">
-            Write AI
+          <Link to="/" className="flex items-center">
+            <img 
+              src="/lovable-uploads/b8c19210-8dc7-4ed7-858c-f00f6267982e.png" 
+              alt="Write AI Logo" 
+              className="h-8 w-auto"
+            />
           </Link>
           <NavigationMenu>
             <NavigationMenuList>

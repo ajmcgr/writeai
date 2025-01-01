@@ -5,11 +5,6 @@ export function Hero() {
   return (
     <div className="relative pt-20 pb-16 md:pt-32 md:pb-24 bg-[#848ac8]">
       <div className="container flex flex-col items-center text-center gap-8">
-        <img 
-          src="/lovable-uploads/b8c19210-8dc7-4ed7-858c-f00f6267982e.png" 
-          alt="Write AI Logo" 
-          className="h-16 w-auto mb-4"
-        />
         <h1 className="text-4xl font-bold tracking-tight sm:text-6xl text-white">
           Meet your AI press release writing assistant
         </h1>
