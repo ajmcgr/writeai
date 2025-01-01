@@ -60,7 +60,21 @@ export const ContentGeneratorTool = ({
           description: "You've reached your daily limit. Upgrade to Pro for unlimited access!",
           action: (
             <Button
-              onClick={() => window.location.href = data.url}
+              onClick={async () => {
+                window.location.href = data.url;
+                // Send upgrade confirmation email
+                try {
+                  await supabase.functions.invoke("send-notification-email", {
+                    body: {
+                      type: "upgrade",
+                      email: session.user.email,
+                      name: session.user.user_metadata?.full_name,
+                    },
+                  });
+                } catch (error) {
+                  console.error("Error sending upgrade email:", error);
+                }
+              }}
               variant="default"
             >
               Upgrade to Pro
