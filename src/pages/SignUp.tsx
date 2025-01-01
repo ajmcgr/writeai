@@ -3,19 +3,41 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        try {
+          // Create contact in HubSpot
+          const { error } = await supabase.functions.invoke('hubspot-contact', {
+            body: {
+              email: session.user.email,
+              name: session.user.user_metadata?.full_name,
+            },
+          });
+
+          if (error) throw error;
+
+          console.log('Successfully created HubSpot contact');
+        } catch (error) {
+          console.error('Error creating HubSpot contact:', error);
+          toast({
+            title: "Welcome!",
+            description: "Your account was created successfully.",
+          });
+        }
+
         navigate("/");
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   return (
     <div className="flex min-h-screen flex-col">
