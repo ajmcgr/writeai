@@ -11,7 +11,7 @@ export function Hero() {
         <p className="text-xl text-white/80 max-w-2xl font-inter">
           Create high-quality and impactful press releases with Write AI.
         </p>
-        <Link to="/app">
+        <Link to="/write">
           <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
             Start Writing
           </Button>

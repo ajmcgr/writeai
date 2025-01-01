@@ -1,18 +1,54 @@
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ArrowLeft } from "lucide-react";
 
 export function Navigation() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+  }, []);
+
   return (
     <header className="fixed top-0 w-full bg-[#848ac8] z-50">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <img 
-            src="/lovable-uploads/b8c19210-8dc7-4ed7-858c-f00f6267982e.png" 
-            alt="Write AI Logo" 
-            className="h-8 w-auto"
-          />
-        </Link>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to={isAuthenticated ? "/write" : "/"} className="flex items-center group">
+                <img 
+                  src="/lovable-uploads/b8c19210-8dc7-4ed7-858c-f00f6267982e.png" 
+                  alt="Write AI Logo" 
+                  className="h-8 w-auto"
+                />
+                {isAuthenticated && (
+                  <span className="ml-2 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center">
+                    <ArrowLeft className="w-4 h-4 mr-1" />
+                    Back to editor
+                  </span>
+                )}
+              </Link>
+            </TooltipTrigger>
+            {isAuthenticated && (
+              <TooltipContent>
+                <p>Back to editor</p>
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
         
         <NavigationMenu className="flex-1 flex justify-center">
           <NavigationMenuList className="space-x-4">
