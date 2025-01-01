@@ -9,11 +9,14 @@ import { FormattingToolbar } from "@/components/content/FormattingToolbar";
 import { VersionHistory } from "@/components/content/VersionHistory";
 import { DocumentSidebar } from "@/components/content/DocumentSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { AIActions } from "@/components/content/AIActions";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Write = () => {
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const [analysis, setAnalysis] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const [currentContentId, setCurrentContentId] = useState<string | null>(null);
@@ -127,7 +130,6 @@ const Write = () => {
         if (updateError) throw updateError;
       }
 
-      // Get the latest version number
       const { data: versions } = await supabase
         .from('content_versions')
         .select('version')
@@ -137,7 +139,6 @@ const Write = () => {
 
       const nextVersion = versions && versions.length > 0 ? versions[0].version + 1 : 1;
 
-      // Save new version
       await supabase
         .from('content_versions')
         .insert({
@@ -170,7 +171,6 @@ const Write = () => {
 
       if (error) throw error;
 
-      // Create a link to download the file
       const link = document.createElement('a');
       link.href = `data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${data.file}`;
       link.download = 'press_release.docx';
@@ -229,6 +229,20 @@ const Write = () => {
               placeholder="Start writing or generate content..."
               className="min-h-[600px] p-4"
             />
+
+            <AIActions
+              content={content}
+              onContentGenerated={setContent}
+              onAnalysis={setAnalysis}
+            />
+
+            {analysis && (
+              <Alert>
+                <AlertDescription className="whitespace-pre-wrap">
+                  {analysis}
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         </div>
       </SidebarProvider>
