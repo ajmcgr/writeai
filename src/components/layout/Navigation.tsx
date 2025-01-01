@@ -4,16 +4,16 @@ import { Link } from "react-router-dom";
 
 export function Navigation() {
   return (
-    <header className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 border-b">
+    <header className="fixed top-0 w-full bg-[#848ac8] z-50 border-b">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link to="/" className="font-semibold text-xl">
+          <Link to="/" className="font-semibold text-xl text-white">
             Write AI
           </Link>
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/pricing" className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+                <Link to="/pricing" className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-[#848ac8] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#9599d1] focus:bg-[#9599d1] focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#9599d1]/50 data-[state=open]:bg-[#9599d1]/50">
                   Pricing
                 </Link>
               </NavigationMenuItem>
@@ -22,10 +22,10 @@ export function Navigation() {
         </div>
         <div className="flex items-center gap-4">
           <Link to="/signin">
-            <Button variant="ghost">Sign In</Button>
+            <Button variant="ghost" className="text-white hover:bg-[#9599d1]">Sign In</Button>
           </Link>
           <Link to="/signup">
-            <Button>Sign Up</Button>
+            <Button className="bg-white text-[#848ac8] hover:bg-gray-100">Sign Up</Button>
           </Link>
         </div>
       </div>
