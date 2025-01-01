@@ -10,6 +10,8 @@ import Boilerplate from "./pages/tools/Boilerplate";
 import Headline from "./pages/tools/Headline";
 import Quote from "./pages/tools/Quote";
 import CTA from "./pages/tools/CTA";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
         <Route path="/tools/headline" element={<Headline />} />
         <Route path="/tools/quote" element={<Quote />} />
         <Route path="/tools/cta" element={<CTA />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </Router>
   );
