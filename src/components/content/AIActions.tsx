@@ -96,11 +96,11 @@ export const AIActions = ({ content, onContentGenerated, onAnalysis }: AIActions
   };
 
   return (
-    <div className="flex space-x-4 mt-4">
+    <div className="flex flex-col space-y-2">
       <Button
         onClick={generateContent}
         disabled={isLoading}
-        className="flex items-center"
+        className="flex items-center w-40"
       >
         <Wand2 className="mr-2 h-4 w-4" />
         AI Generate
@@ -108,7 +108,7 @@ export const AIActions = ({ content, onContentGenerated, onAnalysis }: AIActions
       <Button
         onClick={rewriteContent}
         disabled={isLoading || !content}
-        className="flex items-center"
+        className="flex items-center w-40"
       >
         <RefreshCw className="mr-2 h-4 w-4" />
         AI Re-write
@@ -116,7 +116,7 @@ export const AIActions = ({ content, onContentGenerated, onAnalysis }: AIActions
       <Button
         onClick={analyzeContent}
         disabled={isLoading || !content}
-        className="flex items-center"
+        className="flex items-center w-40"
       >
         <Search className="mr-2 h-4 w-4" />
         AI Analyze
