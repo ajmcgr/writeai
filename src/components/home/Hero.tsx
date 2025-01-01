@@ -9,7 +9,7 @@ export function Hero() {
           Meet your AI press release writing assistant
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl">
-          Create high-quality and impactful press releases with Write AI.
+          Create high-quality and impactful press releases with Write AI
         </p>
         <Link to="/app">
           <Button size="lg" className="text-lg">
