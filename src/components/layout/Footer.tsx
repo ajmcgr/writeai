@@ -10,7 +10,7 @@ export const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/about" className="text-gray-600 hover:text-gray-900">About</Link></li>
               <li><Link to="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link></li>
-              <li><Link to="/blog" className="text-gray-600 hover:text-gray-900">Blog</Link></li>
+              <li><a href="https://blog.works.xyz/" className="text-gray-600 hover:text-gray-900">Blog</a></li>
             </ul>
           </div>
           <div>
