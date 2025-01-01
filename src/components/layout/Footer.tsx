@@ -1,98 +1,44 @@
 import { Link } from "react-router-dom";
 
-export function Footer() {
-  const links = {
-    company: [
-      { label: "About", href: "/about" },
-      { label: "Pricing", href: "/pricing" },
-      { label: "Community", href: "/community" },
-      { label: "Blog", href: "/blog" },
-    ],
-    tools: [
-      { label: "Boilerplate Generator", href: "/tools/boilerplate" },
-      { label: "Headline Generator", href: "/tools/headline" },
-      { label: "Quote Generator", href: "/tools/quote" },
-      { label: "CTA Generator", href: "/tools/cta" },
-    ],
-    support: [
-      { label: "Help Center", href: "/help" },
-      { label: "Terms", href: "/terms" },
-      { label: "Privacy", href: "/privacy" },
-    ],
-    connect: [
-      { label: "Follow on X", href: "https://twitter.com" },
-      { label: "Email Support", href: "mailto:support@writeai.com" },
-    ],
-  };
-
+export const Footer = () => {
   return (
-    <footer className="bg-background border-t">
-      <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="bg-gray-100">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
-              {links.company.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              <li><Link to="/about" className="text-gray-600 hover:text-gray-900">About</Link></li>
+              <li><Link to="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link></li>
+              <li><Link to="/blog" className="text-gray-600 hover:text-gray-900">Blog</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="font-semibold mb-4">Tools</h3>
             <ul className="space-y-2">
-              {links.tools.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              <li><Link to="/tools/boilerplate" className="text-gray-600 hover:text-gray-900">Boilerplate Generator</Link></li>
+              <li><Link to="/tools/headline" className="text-gray-600 hover:text-gray-900">Headline Generator</Link></li>
+              <li><Link to="/tools/quote" className="text-gray-600 hover:text-gray-900">Quote Generator</Link></li>
+              <li><Link to="/tools/cta" className="text-gray-600 hover:text-gray-900">CTA Generator</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="font-semibold mb-4">Support</h3>
             <ul className="space-y-2">
-              {links.support.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              <li><Link to="/help" className="text-gray-600 hover:text-gray-900">Help Center</Link></li>
+              <li><Link to="/terms" className="text-gray-600 hover:text-gray-900">Terms</Link></li>
+              <li><Link to="/privacy" className="text-gray-600 hover:text-gray-900">Privacy</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="font-semibold mb-4">Connect</h3>
             <ul className="space-y-2">
-              {links.connect.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
+              <li><a href="https://twitter.com/writeai" className="text-gray-600 hover:text-gray-900">Follow on X</a></li>
+              <li><a href="mailto:support@trywrite.ai" className="text-gray-600 hover:text-gray-900">Email Support</a></li>
             </ul>
           </div>
         </div>
       </div>
     </footer>
   );
-}
+};
