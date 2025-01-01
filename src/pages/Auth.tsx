@@ -28,7 +28,7 @@ const AuthPage = () => {
             description: "There was an issue sending your welcome email, but your account is ready to use.",
           });
         }
-        navigate("/");
+        navigate("/write");
       }
     });
 

@@ -130,6 +130,27 @@ export const FormattingToolbar = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
+              <div>
+                <input
+                  type="file"
+                  id="file-upload"
+                  className="hidden"
+                  accept=".txt,.doc,.docx"
+                  onChange={onFileUpload}
+                />
+                <label htmlFor="file-upload">
+                  <Button variant="outline" className="cursor-pointer">
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload
+                  </Button>
+                </label>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Upload Document</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
               <Button
                 variant="outline"
                 onClick={onSave}
@@ -182,27 +203,6 @@ export const FormattingToolbar = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent>Version History</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div>
-                <input
-                  type="file"
-                  id="file-upload"
-                  className="hidden"
-                  accept=".txt,.doc,.docx"
-                  onChange={onFileUpload}
-                />
-                <label htmlFor="file-upload">
-                  <Button variant="outline" className="cursor-pointer">
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload
-                  </Button>
-                </label>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>Upload Document</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
