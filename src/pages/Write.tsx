@@ -7,6 +7,8 @@ import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { FormattingToolbar } from "@/components/content/FormattingToolbar";
 import { VersionHistory } from "@/components/content/VersionHistory";
+import { DocumentSidebar } from "@/components/content/DocumentSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const Write = () => {
   const [content, setContent] = useState("");
@@ -205,28 +207,31 @@ const Write = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
-      <div className="container flex-grow py-8 mt-16">
-        <div className="space-y-6">
-          <FormattingToolbar
-            onFormat={formatText}
-            onSave={saveDraft}
-            onExport={exportToDocx}
-            onCopy={copyToClipboard}
-            onHistory={() => setShowVersionHistory(true)}
-            onFileUpload={handleFileUpload}
-            isLoading={isLoading}
-            hasContent={!!content}
-            hasContentId={!!currentContentId}
-          />
+      <SidebarProvider>
+        <div className="container flex-grow py-8 mt-16 flex w-full">
+          <DocumentSidebar />
+          <div className="flex-1 space-y-6">
+            <FormattingToolbar
+              onFormat={formatText}
+              onSave={saveDraft}
+              onExport={exportToDocx}
+              onCopy={copyToClipboard}
+              onHistory={() => setShowVersionHistory(true)}
+              onFileUpload={handleFileUpload}
+              isLoading={isLoading}
+              hasContent={!!content}
+              hasContentId={!!currentContentId}
+            />
 
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Start writing or generate content..."
-            className="min-h-[600px] p-4"
-          />
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Start writing or generate content..."
+              className="min-h-[600px] p-4"
+            />
+          </div>
         </div>
-      </div>
+      </SidebarProvider>
 
       <VersionHistory
         contentId={currentContentId}
