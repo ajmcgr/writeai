@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/layout/Navigation";
@@ -8,11 +7,13 @@ import { FormattingToolbar } from "@/components/content/FormattingToolbar";
 import { VersionHistory } from "@/components/content/VersionHistory";
 import { DocumentSidebar } from "@/components/content/DocumentSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { EditorArea } from "@/components/content/EditorArea";
+import { AnalysisSidebar } from "@/components/content/AnalysisSidebar";
 
 const Write = () => {
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const { toast } = useToast();
@@ -105,7 +106,6 @@ const Write = () => {
     }
   }, [content, currentContentId, toast]);
 
-  // Auto-save effect
   useEffect(() => {
     if (!content || !currentContentId) return;
 
@@ -246,10 +246,8 @@ const Write = () => {
 
       if (error) throw error;
       
-      // Prepend the generated content to the existing content
-      const timestamp = new Date().toLocaleString();
-      const separator = "\n\n------- AI Rewrite (" + timestamp + ") -------\n\n";
-      setContent(data.generatedText + separator + content);
+      // Replace the existing content with the generated content
+      setContent(data.generatedText);
       
     } catch (error) {
       console.error("Error:", error);
@@ -274,10 +272,7 @@ const Write = () => {
     }
 
     try {
-      // Create a separate loading state for analysis
-      const prevAnalysis = analysis;
-      setAnalysis("Analyzing...");
-      
+      setIsAnalyzing(true);
       const { data, error } = await supabase.functions.invoke("analyze-content", {
         body: { content }
       });
@@ -291,8 +286,8 @@ const Write = () => {
         description: "Failed to analyze content. Please try again.",
         variant: "destructive",
       });
-      // Restore previous analysis if there's an error
-      setAnalysis(prevAnalysis);
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -302,38 +297,30 @@ const Write = () => {
       <SidebarProvider>
         <div className="container flex-grow py-8 mt-16 flex w-full relative">
           <DocumentSidebar />
-          <div className="flex-1 space-y-6 px-4">
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Start writing or generate content..."
-              className="min-h-[calc(100vh-400px)] w-full p-4 resize-none border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+          <div className="flex flex-1">
+            <EditorArea 
+              content={content}
+              setContent={setContent}
+              analysis={analysis}
             />
+            <AnalysisSidebar analysis={analysis} />
+          </div>
+        </div>
 
-            {analysis && (
-              <Alert>
-                <AlertDescription className="whitespace-pre-wrap">
-                  {analysis}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
-              <div className="container max-w-screen-xl mx-auto">
-                <FormattingToolbar
-                  onFormat={formatText}
-                  onExport={exportToDocx}
-                  onCopy={copyToClipboard}
-                  onHistory={() => setShowVersionHistory(true)}
-                  onFileUpload={handleFileUpload}
-                  onRewrite={rewriteContent}
-                  onAnalyze={analyzeContent}
-                  isLoading={isLoading}
-                  hasContent={!!content}
-                  hasContentId={!!currentContentId}
-                />
-              </div>
-            </div>
+        <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
+          <div className="container max-w-screen-xl mx-auto">
+            <FormattingToolbar
+              onFormat={formatText}
+              onExport={exportToDocx}
+              onCopy={copyToClipboard}
+              onHistory={() => setShowVersionHistory(true)}
+              onFileUpload={handleFileUpload}
+              onRewrite={rewriteContent}
+              onAnalyze={analyzeContent}
+              isLoading={isLoading || isAnalyzing}
+              hasContent={!!content}
+              hasContentId={!!currentContentId}
+            />
           </div>
         </div>
       </SidebarProvider>
