@@ -245,7 +245,12 @@ const Write = () => {
       });
 
       if (error) throw error;
-      setContent(data.generatedText);
+      
+      // Prepend the generated content to the existing content
+      const timestamp = new Date().toLocaleString();
+      const separator = "\n\n------- AI Rewrite (" + timestamp + ") -------\n\n";
+      setContent(data.generatedText + separator + content);
+      
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -269,7 +274,10 @@ const Write = () => {
     }
 
     try {
-      setIsLoading(true);
+      // Create a separate loading state for analysis
+      const prevAnalysis = analysis;
+      setAnalysis("Analyzing...");
+      
       const { data, error } = await supabase.functions.invoke("analyze-content", {
         body: { content }
       });
@@ -283,8 +291,8 @@ const Write = () => {
         description: "Failed to analyze content. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
+      // Restore previous analysis if there's an error
+      setAnalysis(prevAnalysis);
     }
   };
 
