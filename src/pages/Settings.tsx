@@ -127,18 +127,18 @@ const Settings = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
+      <main className="flex-grow container max-w-4xl mx-auto px-4 py-12">
+        <h1 className="text-3xl font-bold mb-12">Account Settings</h1>
 
-        <div className="space-y-8">
+        <div className="space-y-12">
           {/* Password Change Section */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="bg-white p-8 rounded-lg shadow-sm border">
+            <div className="flex items-center gap-3 mb-6">
               <Lock className="h-5 w-5 text-gray-500" />
               <h2 className="text-xl font-semibold">Change Password</h2>
             </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
+            <div className="space-y-6">
+              <div className="space-y-3">
                 <Label htmlFor="new-password">New Password</Label>
                 <Input
                   id="new-password"
@@ -147,7 +147,7 @@ const Settings = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Label htmlFor="confirm-password">Confirm Password</Label>
                 <Input
                   id="confirm-password"
@@ -166,12 +166,12 @@ const Settings = () => {
           </div>
 
           {/* Subscription Section */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="bg-white p-8 rounded-lg shadow-sm border">
+            <div className="flex items-center gap-3 mb-6">
               <CreditCard className="h-5 w-5 text-gray-500" />
               <h2 className="text-xl font-semibold">Subscription</h2>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p className="text-gray-600">
                 Current Plan: <span className="font-semibold capitalize">{subscriptionStatus}</span>
               </p>
@@ -184,12 +184,12 @@ const Settings = () => {
           </div>
 
           {/* Delete Account Section */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="bg-white p-8 rounded-lg shadow-sm border">
+            <div className="flex items-center gap-3 mb-6">
               <Trash2 className="h-5 w-5 text-red-500" />
               <h2 className="text-xl font-semibold text-red-500">Delete Account</h2>
             </div>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-6">
               Once you delete your account, there is no going back. Please be certain.
             </p>
             <AlertDialog>
