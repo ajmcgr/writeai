@@ -338,37 +338,40 @@ const Write = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background">
       <Navigation />
+      <div className="h-16" /> {/* Spacer for fixed header */}
       <SidebarProvider>
-        <div className="container flex-grow py-8 mt-16 flex w-full relative">
+        <div className="flex w-full">
           <DocumentSidebar />
-          <div className="flex flex-1">
-            <EditorArea 
-              content={content}
-              setContent={setContent}
-            />
-            <AnalysisSidebar 
-              analysis={analysis} 
-              onApply={applySuggestion}
-            />
-          </div>
-        </div>
+          <div className="flex flex-1 flex-col">
+            <div className="container py-8 flex-grow flex">
+              <EditorArea 
+                content={content}
+                setContent={setContent}
+              />
+              <AnalysisSidebar 
+                analysis={analysis} 
+                onApply={applySuggestion}
+              />
+            </div>
 
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
-          <div className="container max-w-screen-xl mx-auto">
-            <FormattingToolbar
-              onFormat={formatText}
-              onExport={exportToDocx}
-              onCopy={copyToClipboard}
-              onHistory={() => setShowVersionHistory(true)}
-              onFileUpload={handleFileUpload}
-              onRewrite={rewriteContent}
-              onAnalyze={analyzeContent}
-              isLoading={isLoading || isAnalyzing}
-              hasContent={!!content}
-              hasContentId={!!currentContentId}
-            />
+            <div className="border-t border-border p-4">
+              <div className="container max-w-screen-xl mx-auto">
+                <FormattingToolbar
+                  onFormat={formatText}
+                  onExport={exportToDocx}
+                  onCopy={copyToClipboard}
+                  onHistory={() => setShowVersionHistory(true)}
+                  onFileUpload={handleFileUpload}
+                  onRewrite={rewriteContent}
+                  onAnalyze={analyzeContent}
+                  isLoading={isLoading || isAnalyzing}
+                  hasContent={!!content}
+                  hasContentId={!!currentContentId}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </SidebarProvider>
