@@ -19,6 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface FormattingToolbarProps {
   onFormat: (type: string) => void;
@@ -132,7 +133,6 @@ export const FormattingToolbar = ({
             </TooltipTrigger>
             <TooltipContent>Numbered List</TooltipContent>
           </Tooltip>
-
         </TooltipProvider>
       </div>
 
@@ -212,7 +212,11 @@ export const FormattingToolbar = ({
                 disabled={!hasContent || isLoading}
                 className="w-full"
               >
-                <RefreshCw className="h-4 w-4 mr-2" />
+                {isLoading ? (
+                  <LoadingSpinner className="h-4 w-4 mr-2" />
+                ) : (
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                )}
                 AI Re-write
               </Button>
             </TooltipTrigger>
@@ -227,7 +231,11 @@ export const FormattingToolbar = ({
                 disabled={!hasContent || isLoading}
                 className="w-full"
               >
-                <Search className="h-4 w-4 mr-2" />
+                {isLoading ? (
+                  <LoadingSpinner className="h-4 w-4 mr-2" />
+                ) : (
+                  <Search className="h-4 w-4 mr-2" />
+                )}
                 AI Analyze
               </Button>
             </TooltipTrigger>
