@@ -39,7 +39,30 @@ export function Navigation() {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      // First check if we have a valid session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // If no session exists, just clear local state and redirect
+        console.log("No active session found, clearing local state");
+        setIsAuthenticated(false);
+        navigate("/");
+        toast({
+          title: "Logged out",
+          description: "You have been logged out of your account",
+        });
+        return;
+      }
+
+      // If we have a session, attempt to sign out
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error("Error during logout:", error);
+        throw error;
+      }
+
+      console.log("Logout successful");
       toast({
         title: "Logged out successfully",
         description: "You have been logged out of your account",
@@ -47,11 +70,14 @@ export function Navigation() {
       navigate("/");
     } catch (error) {
       console.error("Error logging out:", error);
+      // Even if there's an error, we should clear the local state
+      setIsAuthenticated(false);
       toast({
-        title: "Error",
-        description: "There was a problem logging out",
-        variant: "destructive",
+        title: "Logged out",
+        description: "You have been logged out of your account",
+        variant: "default",
       });
+      navigate("/");
     }
   };
 
