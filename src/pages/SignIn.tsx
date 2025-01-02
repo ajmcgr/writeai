@@ -4,22 +4,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { AuthChangeEvent } from "@supabase/supabase-js";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Sign in page - Auth state changed:", event, session?.user?.email);
-      if (event === AuthChangeEvent.SIGNED_IN && session) {
+      if (event === 'SIGNED_IN' && session) {
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
         navigate("/write");
-      } else if (event === AuthChangeEvent.USER_DELETED) {
+      } else if (event === 'USER_DELETED') {
         toast({
           title: "Error",
           description: "There was a problem with your account.",
