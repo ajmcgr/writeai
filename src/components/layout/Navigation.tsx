@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -13,6 +13,7 @@ import { ArrowLeft } from "lucide-react";
 
 export function Navigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -30,13 +31,24 @@ export function Navigation() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      navigate('/');
+    }
+  };
+
   return (
     <header className="fixed top-0 w-full bg-[#848ac8] z-50">
       <div className="container flex h-16 items-center justify-between">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link to={isAuthenticated ? "/write" : "/"} className="flex items-center group">
+              <Link 
+                to={isAuthenticated ? "/write" : "/"} 
+                className="flex items-center group"
+                onClick={handleLogoClick}
+              >
                 <img 
                   src="/lovable-uploads/b8c19210-8dc7-4ed7-858c-f00f6267982e.png" 
                   alt="Write AI Logo" 
