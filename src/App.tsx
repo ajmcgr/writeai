@@ -34,7 +34,7 @@ function App() {
         <Route path="/tools/quote" element={<Quote />} />
         <Route path="/tools/cta" element={<CTA />} />
       </Routes>
-      <Toaster />
+      <Toaster position="top-right" />
     </Router>
   );
 }
