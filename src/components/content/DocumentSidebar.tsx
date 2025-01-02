@@ -17,53 +17,52 @@ export function DocumentSidebar() {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        setIsLoading(true);
-        
-        // First check if we have a session
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          console.log("No session found, skipping document fetch");
-          setDocuments([]);
-          return;
-        }
+  const fetchDocuments = async () => {
+    try {
+      setIsLoading(true);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.log("No session found, skipping document fetch");
+        setDocuments([]);
+        return;
+      }
 
-        console.log("Fetching documents for user:", session.user.id);
-        const { data, error } = await supabase
-          .from("content")
-          .select("*")
-          .eq("user_id", session.user.id)
-          .order("created_at", { ascending: false });
+      console.log("Fetching documents for user:", session.user.id);
+      const { data, error } = await supabase
+        .from("content")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .order("updated_at", { ascending: false });
 
-        if (error) {
-          console.error("Error fetching documents:", error);
-          toast({
-            title: "Error",
-            description: "Failed to load documents. Please try again.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        console.log("Documents fetched successfully:", data?.length || 0);
-        setDocuments(data || []);
-      } catch (error) {
-        console.error("Error in fetchDocuments:", error);
+      if (error) {
+        console.error("Error fetching documents:", error);
         toast({
           title: "Error",
-          description: "An unexpected error occurred. Please try again.",
+          description: "Failed to load documents. Please try again.",
           variant: "destructive",
         });
-      } finally {
-        setIsLoading(false);
+        return;
       }
-    };
 
+      console.log("Documents fetched successfully:", data?.length || 0);
+      setDocuments(data || []);
+    } catch (error) {
+      console.error("Error in fetchDocuments:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchDocuments();
 
-    // Set up real-time subscription
+    // Set up real-time subscription for all document changes
     const channel = supabase
       .channel("document_changes")
       .on(
@@ -75,15 +74,18 @@ export function DocumentSidebar() {
         },
         (payload) => {
           console.log("Document changes detected:", payload);
-          fetchDocuments();
+          fetchDocuments(); // Refresh the document list when any change occurs
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Subscription status:", status);
+      });
 
     return () => {
+      console.log("Cleaning up subscription");
       channel.unsubscribe();
     };
-  }, [toast]);
+  }, []);
 
   return (
     <Sidebar>
