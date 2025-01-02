@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Navigation } from "@/components/layout/Navigation";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const SignIn = () => {
           description: "You have successfully signed in.",
         });
         navigate("/write");
-      } else if (event === 'USER_DELETED') {
+      } else if (event === "SIGNED_OUT") {
         toast({
           variant: "destructive",
           title: "Error",
@@ -32,6 +33,7 @@ const SignIn = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <Navigation />
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
