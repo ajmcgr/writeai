@@ -9,6 +9,7 @@ import { DocumentSidebar } from "@/components/content/DocumentSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { EditorArea } from "@/components/content/EditorArea";
 import { AnalysisSidebar } from "@/components/content/AnalysisSidebar";
+import { AuthCheck } from "@/components/auth/AuthCheck";
 
 const Write = () => {
   const { id } = useParams();
@@ -21,16 +22,22 @@ const Write = () => {
   const navigate = useNavigate();
   const [currentContentId, setCurrentContentId] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate("/signin");
-      }
+      setIsAuthenticated(!!session);
     };
     checkAuth();
-  }, [navigate]);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, session?.user?.email);
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     const loadDocument = async () => {
@@ -325,6 +332,10 @@ const Write = () => {
   const applySuggestion = (suggestion: string) => {
     setContent(suggestion);
   };
+
+  if (!isAuthenticated) {
+    return <AuthCheck isAuthenticated={isAuthenticated} />;
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
