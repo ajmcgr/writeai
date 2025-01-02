@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sidebar";
 import type { Database } from "@/integrations/supabase/types";
 import { DocumentList } from "./DocumentList";
+import { NewDocumentButton } from "./NewDocumentButton";
 
 type Content = Database["public"]["Tables"]["content"]["Row"];
 
@@ -56,6 +57,9 @@ export function DocumentSidebar() {
 
   return (
     <Sidebar>
+      <SidebarHeader className="p-2">
+        <NewDocumentButton />
+      </SidebarHeader>
       <SidebarContent>
         <DocumentList documents={documents} />
       </SidebarContent>
