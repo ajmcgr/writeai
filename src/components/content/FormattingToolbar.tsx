@@ -7,10 +7,11 @@ import {
   List,
   ListOrdered,
   Upload,
-  Save,
   FileText,
   Copy,
   History,
+  RefreshCw,
+  Search,
 } from "lucide-react";
 import {
   Tooltip,
@@ -21,11 +22,12 @@ import {
 
 interface FormattingToolbarProps {
   onFormat: (type: string) => void;
-  onSave: () => void;
   onExport: () => void;
   onCopy: () => void;
   onHistory: () => void;
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onRewrite: () => void;
+  onAnalyze: () => void;
   isLoading: boolean;
   hasContent: boolean;
   hasContentId: boolean;
@@ -33,11 +35,12 @@ interface FormattingToolbarProps {
 
 export const FormattingToolbar = ({
   onFormat,
-  onSave,
   onExport,
   onCopy,
   onHistory,
   onFileUpload,
+  onRewrite,
+  onAnalyze,
   isLoading,
   hasContent,
   hasContentId,
@@ -129,10 +132,11 @@ export const FormattingToolbar = ({
             </TooltipTrigger>
             <TooltipContent>Numbered List</TooltipContent>
           </Tooltip>
+
         </TooltipProvider>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -153,21 +157,6 @@ export const FormattingToolbar = ({
               </div>
             </TooltipTrigger>
             <TooltipContent>Upload Document</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                onClick={onSave}
-                disabled={isLoading}
-                className="w-full"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                Save Draft
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Save Draft</TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -213,6 +202,36 @@ export const FormattingToolbar = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent>Version History</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={onRewrite}
+                disabled={!hasContent || isLoading}
+                className="w-full"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                AI Re-write
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>AI Re-write Content</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={onAnalyze}
+                disabled={!hasContent || isLoading}
+                className="w-full"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                AI Analyze
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>AI Analyze Content</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>

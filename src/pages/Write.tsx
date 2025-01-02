@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -9,7 +9,6 @@ import { FormattingToolbar } from "@/components/content/FormattingToolbar";
 import { VersionHistory } from "@/components/content/VersionHistory";
 import { DocumentSidebar } from "@/components/content/DocumentSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AIActions } from "@/components/content/AIActions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Write = () => {
@@ -20,6 +19,7 @@ const Write = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [currentContentId, setCurrentContentId] = useState<string | null>(null);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -30,6 +30,92 @@ const Write = () => {
     };
     checkAuth();
   }, [navigate]);
+
+  const saveDraft = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to save drafts",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      let contentId = currentContentId;
+
+      if (!contentId) {
+        const { data: newContent, error: contentError } = await supabase
+          .from('content')
+          .insert({
+            content,
+            type: 'press_release',
+            title: 'Draft Press Release',
+            is_draft: true,
+            user_id: session.user.id
+          })
+          .select()
+          .single();
+
+        if (contentError) throw contentError;
+        contentId = newContent.id;
+        setCurrentContentId(contentId);
+      } else {
+        const { error: updateError } = await supabase
+          .from('content')
+          .update({ 
+            content, 
+            updated_at: new Date().toISOString(),
+            user_id: session.user.id
+          })
+          .eq('id', contentId);
+
+        if (updateError) throw updateError;
+      }
+
+      const { data: versions } = await supabase
+        .from('content_versions')
+        .select('version')
+        .eq('content_id', contentId)
+        .order('version', { ascending: false })
+        .limit(1);
+
+      const nextVersion = versions && versions.length > 0 ? versions[0].version + 1 : 1;
+
+      await supabase
+        .from('content_versions')
+        .insert({
+          content_id: contentId,
+          content,
+          version: nextVersion
+        });
+
+      setLastSaved(new Date());
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save draft. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [content, currentContentId, toast]);
+
+  // Auto-save effect
+  useEffect(() => {
+    if (!content) return;
+
+    const timer = setTimeout(() => {
+      saveDraft();
+    }, 10000); // 10 seconds
+
+    return () => clearTimeout(timer);
+  }, [content, saveDraft]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -101,84 +187,6 @@ const Write = () => {
     setContent(newContent);
   };
 
-  const saveDraft = async () => {
-    try {
-      setIsLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          title: "Authentication required",
-          description: "Please sign in to save drafts",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      let contentId = currentContentId;
-
-      if (!contentId) {
-        const { data: newContent, error: contentError } = await supabase
-          .from('content')
-          .insert({
-            content,
-            type: 'press_release',
-            title: 'Draft Press Release',
-            is_draft: true,
-            user_id: session.user.id
-          })
-          .select()
-          .single();
-
-        if (contentError) throw contentError;
-        contentId = newContent.id;
-        setCurrentContentId(contentId);
-      } else {
-        const { error: updateError } = await supabase
-          .from('content')
-          .update({ 
-            content, 
-            updated_at: new Date().toISOString(),
-            user_id: session.user.id
-          })
-          .eq('id', contentId);
-
-        if (updateError) throw updateError;
-      }
-
-      const { data: versions } = await supabase
-        .from('content_versions')
-        .select('version')
-        .eq('content_id', contentId)
-        .order('version', { ascending: false })
-        .limit(1);
-
-      const nextVersion = versions && versions.length > 0 ? versions[0].version + 1 : 1;
-
-      await supabase
-        .from('content_versions')
-        .insert({
-          content_id: contentId,
-          content,
-          version: nextVersion
-        });
-
-      toast({
-        title: "Success",
-        description: "Draft saved successfully",
-      });
-    } catch (error) {
-      console.error("Error saving draft:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save draft. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const exportToDocx = async () => {
     try {
       const { data, error } = await supabase.functions.invoke("export-to-docx", {
@@ -220,6 +228,66 @@ const Write = () => {
     }
   };
 
+  const rewriteContent = async () => {
+    if (!content) {
+      toast({
+        title: "No content",
+        description: "Please enter some content to rewrite.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.functions.invoke("generate-content", {
+        body: { type: "rewrite", content }
+      });
+
+      if (error) throw error;
+      setContent(data.generatedText);
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to rewrite content. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const analyzeContent = async () => {
+    if (!content) {
+      toast({
+        title: "No content",
+        description: "Please enter some content to analyze.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.functions.invoke("analyze-content", {
+        body: { content }
+      });
+
+      if (error) throw error;
+      setAnalysis(data.analysis);
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to analyze content. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
@@ -227,13 +295,6 @@ const Write = () => {
         <div className="container flex-grow py-8 mt-16 flex w-full relative">
           <DocumentSidebar />
           <div className="flex-1 space-y-6 px-4">
-            <div className="flex justify-end mb-4">
-              <AIActions
-                content={content}
-                onContentGenerated={setContent}
-                onAnalysis={setAnalysis}
-              />
-            </div>
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -253,11 +314,12 @@ const Write = () => {
               <div className="container max-w-screen-xl mx-auto">
                 <FormattingToolbar
                   onFormat={formatText}
-                  onSave={saveDraft}
                   onExport={exportToDocx}
                   onCopy={copyToClipboard}
                   onHistory={() => setShowVersionHistory(true)}
                   onFileUpload={handleFileUpload}
+                  onRewrite={rewriteContent}
+                  onAnalyze={analyzeContent}
                   isLoading={isLoading}
                   hasContent={!!content}
                   hasContentId={!!currentContentId}
