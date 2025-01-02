@@ -9,11 +9,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, User, LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 export function Navigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -22,7 +30,6 @@ export function Navigation() {
     };
     checkAuth();
 
-    // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       setIsAuthenticated(!!session);
@@ -34,6 +41,24 @@ export function Navigation() {
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     navigate(isAuthenticated ? "/write" : "/");
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of your account",
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast({
+        title: "Error",
+        description: "There was a problem logging out",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -94,12 +119,39 @@ export function Navigation() {
         </NavigationMenu>
 
         <div className="flex items-center gap-4">
-          <Link to="/signin">
-            <Button variant="ghost" className="text-white hover:bg-[#9599d1]">Sign In</Button>
-          </Link>
-          <Link to="/signup">
-            <Button className="bg-white text-[#848ac8] hover:bg-gray-100">Sign Up</Button>
-          </Link>
+          {isAuthenticated ? (
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-white hover:bg-[#9599d1]">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate("/settings")}>
+                    Account Settings
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="text-white hover:bg-[#9599d1]"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Link to="/signin">
+                <Button variant="ghost" className="text-white hover:bg-[#9599d1]">Sign In</Button>
+              </Link>
+              <Link to="/signup">
+                <Button className="bg-white text-[#848ac8] hover:bg-gray-100">Sign Up</Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
