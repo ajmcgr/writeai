@@ -1,13 +1,22 @@
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 interface EditorAreaProps {
   content: string;
   setContent: (content: string) => void;
+  title: string;
+  setTitle: (title: string) => void;
 }
 
-export const EditorArea = ({ content, setContent }: EditorAreaProps) => {
+export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaProps) => {
   return (
     <div className="flex-1 space-y-6 px-4">
+      <Input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Enter your document title..."
+        className="text-lg font-semibold"
+      />
       <Textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}

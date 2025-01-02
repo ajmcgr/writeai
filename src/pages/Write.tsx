@@ -14,6 +14,7 @@ import { AuthCheck } from "@/components/auth/AuthCheck";
 const Write = () => {
   const { id } = useParams();
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("Untitled Document");
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
@@ -61,6 +62,7 @@ const Write = () => {
 
       if (data) {
         setContent(data.content);
+        setTitle(data.title || "Untitled Document");
         setCurrentContentId(data.id);
       }
     };
@@ -89,8 +91,8 @@ const Write = () => {
           .from('content')
           .insert({
             content,
+            title,
             type: 'press_release',
-            title: 'Draft Press Release',
             is_draft: true,
             user_id: session.user.id
           })
@@ -105,6 +107,7 @@ const Write = () => {
           .from('content')
           .update({ 
             content, 
+            title,
             updated_at: new Date().toISOString(),
             user_id: session.user.id
           })
@@ -131,6 +134,10 @@ const Write = () => {
         });
 
       setLastSaved(new Date());
+      toast({
+        title: "Success",
+        description: "Draft saved successfully",
+      });
     } catch (error) {
       console.error("Error saving draft:", error);
       toast({
@@ -141,7 +148,7 @@ const Write = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [content, currentContentId, toast]);
+  }, [content, title, currentContentId, toast]);
 
   useEffect(() => {
     if (!content || !currentContentId) return;
@@ -347,6 +354,8 @@ const Write = () => {
             <EditorArea 
               content={content}
               setContent={setContent}
+              title={title}
+              setTitle={setTitle}
             />
             <AnalysisSidebar 
               analysis={analysis} 
