@@ -20,6 +20,14 @@ export function Navigation() {
       setIsAuthenticated(!!session);
     };
     checkAuth();
+
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, session?.user?.email);
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   return (
@@ -35,8 +43,8 @@ export function Navigation() {
                   className="h-8 w-auto"
                 />
                 {isAuthenticated && (
-                  <span className="ml-2 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center">
-                    <ArrowLeft className="w-4 h-4 mr-1" />
+                  <span className="ml-2 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center">
+                    <ArrowLeft className="w-3 h-3 mr-1" />
                     Back to editor
                   </span>
                 )}

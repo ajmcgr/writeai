@@ -3,19 +3,32 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
+      console.log("Sign in page - Auth state changed:", event, session?.user?.email);
+      if (event === 'SIGNED_IN' && session) {
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in.",
+        });
         navigate("/write");
+      } else if (event === 'USER_DELETED') {
+        toast({
+          title: "Error",
+          description: "There was a problem with your account.",
+          variant: "destructive",
+        });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   return (
     <div className="flex min-h-screen flex-col">
