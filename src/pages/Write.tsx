@@ -10,6 +10,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { EditorArea } from "@/components/content/EditorArea";
 import { AnalysisSidebar } from "@/components/content/AnalysisSidebar";
 import { AuthCheck } from "@/components/auth/AuthCheck";
+import { useUsageCheck } from "@/utils/usageCheck";
 
 const Write = () => {
   const { id } = useParams();
@@ -70,8 +71,13 @@ const Write = () => {
     loadDocument();
   }, [id, toast]);
 
+  const { checkUsageLimit } = useUsageCheck();
+
   const saveDraft = useCallback(async () => {
     try {
+      const canProceed = await checkUsageLimit();
+      if (!canProceed) return;
+
       setIsLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -148,7 +154,7 @@ const Write = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [content, title, currentContentId, toast]);
+  }, [content, title, currentContentId, toast, checkUsageLimit]);
 
   useEffect(() => {
     if (!content || !currentContentId) return;
@@ -233,6 +239,9 @@ const Write = () => {
   };
 
   const exportToDocx = async () => {
+    const canProceed = await checkUsageLimit();
+    if (!canProceed) return;
+
     try {
       const { data, error } = await supabase.functions.invoke("export-to-docx", {
         body: { content },
@@ -257,6 +266,9 @@ const Write = () => {
   };
 
   const copyToClipboard = async () => {
+    const canProceed = await checkUsageLimit();
+    if (!canProceed) return;
+
     try {
       await navigator.clipboard.writeText(content);
       toast({
@@ -291,7 +303,6 @@ const Write = () => {
 
       if (error) throw error;
       
-      // Replace the existing content with the generated content
       setContent(data.generatedText);
       
     } catch (error) {
