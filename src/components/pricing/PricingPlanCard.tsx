@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface PricingPlan {
   name: string;
@@ -19,11 +20,21 @@ interface PricingPlanCardProps {
 }
 
 export function PricingPlanCard({ plan, isLoading, subscriptionStatus, onUpgrade }: PricingPlanCardProps) {
+  const navigate = useNavigate();
+
   const getButtonText = (planName: string) => {
     if (isLoading) return "Loading...";
     if (subscriptionStatus === "pro" && planName === "Pro") return "Current Plan";
     if (planName === "Free") return "Get Started";
     return "Upgrade Now";
+  };
+
+  const handleButtonClick = () => {
+    if (plan.name === "Free") {
+      navigate("/signup", { state: { redirectTo: "/write" } });
+    } else {
+      onUpgrade(plan.stripeUrl);
+    }
   };
 
   return (
@@ -47,7 +58,7 @@ export function PricingPlanCard({ plan, isLoading, subscriptionStatus, onUpgrade
         </ul>
         <Button 
           className="w-full mt-8"
-          onClick={() => onUpgrade(plan.stripeUrl)}
+          onClick={handleButtonClick}
           disabled={isLoading || (subscriptionStatus === "pro" && plan.name === "Pro")}
         >
           {getButtonText(plan.name)}
