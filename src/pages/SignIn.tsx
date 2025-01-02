@@ -13,13 +13,13 @@ const SignIn = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
       console.log("Sign in page - Auth state changed:", event, session?.user?.email);
-      if (event === 'SIGNED_IN' && session) {
+      if (event === AuthChangeEvent.SIGNED_IN && session) {
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
         navigate("/write");
-      } else if (event === 'USER_DELETED') {
+      } else if (event === AuthChangeEvent.USER_DELETED) {
         toast({
           title: "Error",
           description: "There was a problem with your account.",
