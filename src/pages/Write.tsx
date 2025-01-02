@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/layout/Navigation";
@@ -11,6 +11,7 @@ import { EditorArea } from "@/components/content/EditorArea";
 import { AnalysisSidebar } from "@/components/content/AnalysisSidebar";
 
 const Write = () => {
+  const { id } = useParams();
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -30,6 +31,35 @@ const Write = () => {
     };
     checkAuth();
   }, [navigate]);
+
+  useEffect(() => {
+    const loadDocument = async () => {
+      if (!id) return;
+
+      const { data, error } = await supabase
+        .from("content")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("Error loading document:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load document",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data) {
+        setContent(data.content);
+        setCurrentContentId(data.id);
+      }
+    };
+
+    loadDocument();
+  }, [id, toast]);
 
   const saveDraft = useCallback(async () => {
     try {
@@ -291,6 +321,10 @@ const Write = () => {
     }
   };
 
+  const applySuggestion = (suggestion: string) => {
+    setContent(suggestion);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
@@ -301,9 +335,11 @@ const Write = () => {
             <EditorArea 
               content={content}
               setContent={setContent}
-              analysis={analysis}
             />
-            <AnalysisSidebar analysis={analysis} />
+            <AnalysisSidebar 
+              analysis={analysis} 
+              onApply={applySuggestion}
+            />
           </div>
         </div>
 
