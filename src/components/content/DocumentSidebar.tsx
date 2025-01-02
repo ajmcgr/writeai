@@ -56,8 +56,9 @@ export function DocumentSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-2">
+      <SidebarHeader className="border-b p-4">
         <NewDocumentButton />
+        <h2 className="text-lg font-semibold mt-4">Documents</h2>
       </SidebarHeader>
       <SidebarContent>
         <DocumentList documents={documents} />

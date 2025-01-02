@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useRef } from "react";
 
 interface FormattingToolbarProps {
   onFormat: (type: string) => void;
@@ -46,6 +47,12 @@ export const FormattingToolbar = ({
   hasContent,
   hasContentId,
 }: FormattingToolbarProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="flex flex-col space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
@@ -143,17 +150,19 @@ export const FormattingToolbar = ({
               <div className="w-full">
                 <input
                   type="file"
-                  id="file-upload"
+                  ref={fileInputRef}
                   className="hidden"
                   accept=".txt,.doc,.docx"
                   onChange={onFileUpload}
                 />
-                <label htmlFor="file-upload" className="w-full">
-                  <Button variant="outline" className="w-full cursor-pointer">
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload
-                  </Button>
-                </label>
+                <Button
+                  variant="outline"
+                  onClick={handleUploadClick}
+                  className="w-full cursor-pointer"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload
+                </Button>
               </div>
             </TooltipTrigger>
             <TooltipContent>Upload Document</TooltipContent>
