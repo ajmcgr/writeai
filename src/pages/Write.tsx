@@ -139,6 +139,7 @@ const Write = () => {
   useEffect(() => {
     if (!content || !currentContentId) return;
 
+    console.log("Setting up auto-save timer...");
     const timer = setTimeout(() => {
       console.log("Auto-saving document...");
       saveDraft();

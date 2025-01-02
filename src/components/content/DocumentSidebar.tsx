@@ -6,7 +6,6 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import type { Database } from "@/integrations/supabase/types";
-import { NewDocumentButton } from "./NewDocumentButton";
 import { DocumentList } from "./DocumentList";
 
 type Content = Database["public"]["Tables"]["content"]["Row"];
@@ -44,6 +43,7 @@ export function DocumentSidebar() {
           table: "content",
         },
         () => {
+          console.log("Document changes detected, refreshing list...");
           fetchDocuments();
         }
       )
@@ -56,9 +56,6 @@ export function DocumentSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="border-b p-4">
-        <NewDocumentButton />
-      </SidebarHeader>
       <SidebarContent>
         <DocumentList documents={documents} />
       </SidebarContent>

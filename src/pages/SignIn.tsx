@@ -19,12 +19,6 @@ const SignIn = () => {
           description: "You have successfully signed in.",
         });
         navigate("/write");
-      } else if (event === "SIGNED_OUT") {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "There was a problem with your account.",
-        });
       }
     });
 

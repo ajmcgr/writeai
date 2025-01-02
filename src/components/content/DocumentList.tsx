@@ -1,4 +1,4 @@
-import { File } from "lucide-react";
+import { File, FilePlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
 import {
@@ -9,6 +9,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { NewDocumentButton } from "./NewDocumentButton";
 
 type Content = Database["public"]["Tables"]["content"]["Row"];
 
@@ -21,6 +22,9 @@ export function DocumentList({ documents }: DocumentListProps) {
 
   return (
     <SidebarGroup>
+      <div className="px-2 mb-2">
+        <NewDocumentButton />
+      </div>
       <SidebarGroupLabel>Documents</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
