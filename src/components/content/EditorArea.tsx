@@ -17,11 +17,16 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         placeholder="Enter your document title..."
         className="text-4xl font-semibold border-none text-foreground focus-visible:ring-0 focus-visible:ring-offset-0 [font-size:4rem]"
       />
+      <div 
+        className="prose prose-lg max-w-none"
+        dangerouslySetInnerHTML={{ __html: content }}
+        style={{ display: 'none' }}
+      />
       <Textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="Start writing or generate content..."
-        className="min-h-[calc(100vh-400px)] w-full p-4 resize-none border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+        className="min-h-[calc(100vh-400px)] w-full p-4 resize-none border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xl leading-relaxed"
       />
     </div>
   );

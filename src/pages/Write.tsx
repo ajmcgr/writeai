@@ -3,21 +3,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/layout/Navigation";
-import { FormattingToolbar } from "@/components/content/FormattingToolbar";
 import { VersionHistory } from "@/components/content/VersionHistory";
 import { DocumentSidebar } from "@/components/content/DocumentSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { EditorArea } from "@/components/content/EditorArea";
-import { AnalysisSidebar } from "@/components/content/AnalysisSidebar";
 import { AuthCheck } from "@/components/auth/AuthCheck";
 import { useUsageCheck } from "@/utils/usageCheck";
+import { WritingInterface } from "@/components/content/WritingInterface";
 
 const Write = () => {
   const { id } = useParams();
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("Untitled Document");
   const [isLoading, setIsLoading] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const { toast } = useToast();
@@ -163,7 +160,7 @@ const Write = () => {
     const timer = setTimeout(() => {
       console.log("Auto-saving document...");
       saveDraft();
-    }, 10000); // 10 seconds
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, [content, currentContentId, saveDraft]);
@@ -200,42 +197,6 @@ const Write = () => {
         variant: "destructive",
       });
     }
-  };
-
-  const formatText = (type: string) => {
-    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = content.substring(start, end);
-
-    let formattedText = '';
-    switch (type) {
-      case 'bold':
-        formattedText = `**${selectedText}**`;
-        break;
-      case 'italic':
-        formattedText = `*${selectedText}*`;
-        break;
-      case 'underline':
-        formattedText = `_${selectedText}_`;
-        break;
-      case 'heading':
-        formattedText = `# ${selectedText}`;
-        break;
-      case 'bullet':
-        formattedText = `• ${selectedText}`;
-        break;
-      case 'number':
-        formattedText = `1. ${selectedText}`;
-        break;
-      default:
-        return;
-    }
-
-    const newContent = content.substring(0, start) + formattedText + content.substring(end);
-    setContent(newContent);
   };
 
   const exportToDocx = async () => {
@@ -328,7 +289,7 @@ const Write = () => {
     }
 
     try {
-      setIsAnalyzing(true);
+      setIsLoading(true);
       const { data, error } = await supabase.functions.invoke("analyze-content", {
         body: { content }
       });
@@ -343,12 +304,8 @@ const Write = () => {
         variant: "destructive",
       });
     } finally {
-      setIsAnalyzing(false);
+      setIsLoading(false);
     }
-  };
-
-  const applySuggestion = (suggestion: string) => {
-    setContent(suggestion);
   };
 
   if (!isAuthenticated) {
@@ -361,37 +318,22 @@ const Write = () => {
       <SidebarProvider>
         <div className="container flex-grow py-8 mt-16 flex w-full relative">
           <DocumentSidebar />
-          <div className="flex flex-1">
-            <EditorArea 
-              content={content}
-              setContent={setContent}
-              title={title}
-              setTitle={setTitle}
-            />
-            <AnalysisSidebar 
-              analysis={analysis} 
-              onApply={applySuggestion}
-              content={content}
-            />
-          </div>
-        </div>
-
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
-          <div className="container max-w-screen-xl mx-auto">
-            <FormattingToolbar
-              onFormat={formatText}
-              onExport={exportToDocx}
-              onCopy={copyToClipboard}
-              onHistory={() => setShowVersionHistory(true)}
-              onFileUpload={handleFileUpload}
-              onRewrite={rewriteContent}
-              onAnalyze={analyzeContent}
-              onSaveDraft={saveDraft}
-              isLoading={isLoading || isAnalyzing}
-              hasContent={!!content}
-              hasContentId={!!currentContentId}
-            />
-          </div>
+          <WritingInterface
+            content={content}
+            setContent={setContent}
+            title={title}
+            setTitle={setTitle}
+            onSaveDraft={saveDraft}
+            onExport={exportToDocx}
+            onCopy={copyToClipboard}
+            onHistory={() => setShowVersionHistory(true)}
+            onFileUpload={handleFileUpload}
+            onRewrite={rewriteContent}
+            onAnalyze={analyzeContent}
+            isLoading={isLoading}
+            analysis={analysis}
+            currentContentId={currentContentId}
+          />
         </div>
       </SidebarProvider>
 
