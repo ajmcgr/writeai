@@ -20,9 +20,9 @@ const SignIn = () => {
         navigate("/write");
       } else if (event === 'USER_DELETED') {
         toast({
+          variant: "destructive",
           title: "Error",
           description: "There was a problem with your account.",
-          variant: "destructive",
         });
       }
     });
