@@ -21,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/write" element={<Write />} />
+        <Route path="/write/:id" element={<Write />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/pricing" element={<Pricing />} />

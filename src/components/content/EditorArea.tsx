@@ -15,7 +15,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Enter your document title..."
-        className="text-3xl font-semibold border-none text-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
+        className="text-3xl font-semibold border-none text-foreground focus-visible:ring-0 focus-visible:ring-offset-0 [font-size:2rem]"
       />
       <Textarea
         value={content}
