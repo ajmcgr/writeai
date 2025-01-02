@@ -365,6 +365,7 @@ const Write = () => {
               onFileUpload={handleFileUpload}
               onRewrite={rewriteContent}
               onAnalyze={analyzeContent}
+              onSaveDraft={saveDraft}
               isLoading={isLoading || isAnalyzing}
               hasContent={!!content}
               hasContentId={!!currentContentId}
