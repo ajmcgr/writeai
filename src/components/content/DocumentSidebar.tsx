@@ -8,32 +8,62 @@ import {
 import type { Database } from "@/integrations/supabase/types";
 import { DocumentList } from "./DocumentList";
 import { NewDocumentButton } from "./NewDocumentButton";
+import { useToast } from "@/hooks/use-toast";
 
 type Content = Database["public"]["Tables"]["content"]["Row"];
 
 export function DocumentSidebar() {
   const [documents, setDocuments] = useState<Content[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchDocuments = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
+      try {
+        setIsLoading(true);
+        
+        // First check if we have a session
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          console.log("No session found, skipping document fetch");
+          setDocuments([]);
+          return;
+        }
 
-      const { data, error } = await supabase
-        .from("content")
-        .select("*")
-        .order("created_at", { ascending: false });
+        console.log("Fetching documents for user:", session.user.id);
+        const { data, error } = await supabase
+          .from("content")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching documents:", error);
-        return;
+        if (error) {
+          console.error("Error fetching documents:", error);
+          toast({
+            title: "Error",
+            description: "Failed to load documents. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        console.log("Documents fetched successfully:", data?.length || 0);
+        setDocuments(data || []);
+      } catch (error) {
+        console.error("Error in fetchDocuments:", error);
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
       }
-
-      setDocuments(data || []);
     };
 
     fetchDocuments();
 
+    // Set up real-time subscription
     const channel = supabase
       .channel("document_changes")
       .on(
@@ -43,8 +73,8 @@ export function DocumentSidebar() {
           schema: "public",
           table: "content",
         },
-        () => {
-          console.log("Document changes detected, refreshing list...");
+        (payload) => {
+          console.log("Document changes detected:", payload);
           fetchDocuments();
         }
       )
@@ -53,7 +83,7 @@ export function DocumentSidebar() {
     return () => {
       channel.unsubscribe();
     };
-  }, []);
+  }, [toast]);
 
   return (
     <Sidebar>
