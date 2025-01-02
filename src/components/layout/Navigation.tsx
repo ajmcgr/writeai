@@ -32,10 +32,8 @@ export function Navigation() {
   }, []);
 
   const handleLogoClick = (e: React.MouseEvent) => {
-    if (!isAuthenticated) {
-      e.preventDefault();
-      navigate('/');
-    }
+    e.preventDefault();
+    navigate(isAuthenticated ? "/write" : "/");
   };
 
   return (
@@ -45,7 +43,7 @@ export function Navigation() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link 
-                to={isAuthenticated ? "/write" : "/"} 
+                to="/"
                 className="flex items-center group"
                 onClick={handleLogoClick}
               >
