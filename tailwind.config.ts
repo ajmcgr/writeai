@@ -18,6 +18,9 @@ export default {
 			}
 		},
 		extend: {
+			fontSize: {
+				'sm': ['2rem', '1.5'], // Updated size for text-sm
+			},
 			fontFamily: {
 				merriweather: ['Merriweather', 'serif'],
 				inter: ['Inter', 'sans-serif'],
