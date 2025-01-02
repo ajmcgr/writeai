@@ -11,18 +11,37 @@ const SignIn = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check if there's an existing session on mount
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        console.log("Existing session found, redirecting to write page");
+        navigate("/write");
+      }
+    };
+    checkSession();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Sign in page - Auth state changed:", event, session?.user?.email);
+      
       if (event === 'SIGNED_IN' && session) {
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
         navigate("/write");
+      } else if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
+        console.log("User signed out or deleted");
+        navigate("/");
+      } else if (event === 'INITIAL_SESSION') {
+        console.log("Initial session check completed");
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log("Cleaning up auth state change subscription");
+      subscription.unsubscribe();
+    };
   }, [navigate, toast]);
 
   return (
@@ -51,6 +70,14 @@ const SignIn = () => {
             }}
             providers={["google"]}
             theme="light"
+            onError={(error) => {
+              console.error("Auth error:", error);
+              toast({
+                title: "Authentication Error",
+                description: error.message,
+                variant: "destructive",
+              });
+            }}
           />
         </div>
       </div>

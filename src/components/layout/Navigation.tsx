@@ -20,6 +20,7 @@ export function Navigation() {
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      console.log("Initial auth check:", session ? "Session exists" : "No session");
       setIsAuthenticated(!!session);
     };
     checkAuth();
@@ -59,7 +60,14 @@ export function Navigation() {
       
       if (error) {
         console.error("Error during logout:", error);
-        throw error;
+        // Even if there's an error, we should clear the local state
+        setIsAuthenticated(false);
+        navigate("/");
+        toast({
+          title: "Logged out",
+          description: "You have been logged out of your account",
+        });
+        return;
       }
 
       console.log("Logout successful");
