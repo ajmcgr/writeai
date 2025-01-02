@@ -108,14 +108,15 @@ const Write = () => {
 
   // Auto-save effect
   useEffect(() => {
-    if (!content) return;
+    if (!content || !currentContentId) return;
 
     const timer = setTimeout(() => {
+      console.log("Auto-saving document...");
       saveDraft();
     }, 10000); // 10 seconds
 
     return () => clearTimeout(timer);
-  }, [content, saveDraft]);
+  }, [content, currentContentId, saveDraft]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
