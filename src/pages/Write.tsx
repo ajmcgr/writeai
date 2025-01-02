@@ -4,7 +4,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/layout/Navigation";
-import { Footer } from "@/components/layout/Footer";
 import { FormattingToolbar } from "@/components/content/FormattingToolbar";
 import { VersionHistory } from "@/components/content/VersionHistory";
 import { DocumentSidebar } from "@/components/content/DocumentSidebar";
@@ -337,8 +336,6 @@ const Write = () => {
         isOpen={showVersionHistory}
         onOpenChange={setShowVersionHistory}
       />
-
-      <Footer />
     </div>
   );
 };
