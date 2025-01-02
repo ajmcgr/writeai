@@ -90,17 +90,6 @@ export const FormattingToolbar = ({
       </div>
 
       <div className="flex items-center gap-2">
-        {onSaveDraft && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onSaveDraft}
-            disabled={isLoading || !hasContent}
-          >
-            <Save className="h-4 w-4 mr-2" />
-            Save Draft
-          </Button>
-        )}
         <Button
           variant="outline"
           size="sm"
@@ -122,20 +111,11 @@ export const FormattingToolbar = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={onExport}
-          disabled={isLoading || !hasContent}
-        >
-          <FileDown className="h-4 w-4 mr-2" />
-          Export
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
           onClick={onRewrite}
           disabled={isLoading || !hasContent}
         >
           <Wand2 className="h-4 w-4 mr-2" />
-          Re-write
+          AI Re-write
         </Button>
         <Button
           variant="outline"
@@ -144,7 +124,7 @@ export const FormattingToolbar = ({
           disabled={isLoading || !hasContent}
         >
           <LineChart className="h-4 w-4 mr-2" />
-          Analyze
+          AI Analyze
         </Button>
         <Button variant="outline" size="sm" disabled={isLoading} asChild>
           <label>
@@ -157,6 +137,27 @@ export const FormattingToolbar = ({
               accept=".txt,.doc,.docx"
             />
           </label>
+        </Button>
+        {onSaveDraft && (
+          <Button
+            variant="default"
+            size="sm"
+            onClick={onSaveDraft}
+            disabled={isLoading || !hasContent}
+            className="bg-primary hover:bg-primary/90"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            Save Draft
+          </Button>
+        )}
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onExport}
+          disabled={isLoading || !hasContent}
+        >
+          <FileDown className="h-4 w-4 mr-2" />
+          Export
         </Button>
       </div>
     </div>

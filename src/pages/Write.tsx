@@ -371,6 +371,7 @@ const Write = () => {
             <AnalysisSidebar 
               analysis={analysis} 
               onApply={applySuggestion}
+              content={content}
             />
           </div>
         </div>
