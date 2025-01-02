@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { File, FilePlus, FolderOpen } from "lucide-react";
+import { File, FilePlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -178,9 +178,6 @@ export function DocumentSidebar() {
     }
   };
 
-  const drafts = documents.filter((doc) => doc.is_draft);
-  const published = documents.filter((doc) => !doc.is_draft);
-
   return (
     <Sidebar>
       <SidebarHeader className="p-2">
@@ -196,29 +193,13 @@ export function DocumentSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Drafts</SidebarGroupLabel>
+          <SidebarGroupLabel>Documents</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {drafts.map((doc) => (
+              {documents.map((doc) => (
                 <SidebarMenuItem key={doc.id} onClick={() => navigate(`/write/${doc.id}`)}>
                   <SidebarMenuButton>
                     <File className="h-4 w-4 mr-2" />
-                    <span>{doc.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Published</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {published.map((doc) => (
-                <SidebarMenuItem key={doc.id} onClick={() => navigate(`/write/${doc.id}`)}>
-                  <SidebarMenuButton>
-                    <FolderOpen className="h-4 w-4 mr-2" />
                     <span>{doc.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
