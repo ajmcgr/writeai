@@ -90,6 +90,18 @@ export function NewDocumentButton() {
       if (!canProceed) return;
 
       setIsCreating(true);
+      
+      // Get the current user's session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to create documents",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { data, error } = await supabase
         .from("content")
         .insert({
@@ -97,6 +109,7 @@ export function NewDocumentButton() {
           content: "",
           type: "press_release",
           is_draft: true,
+          user_id: session.user.id  // Explicitly set the user_id
         })
         .select()
         .single();
