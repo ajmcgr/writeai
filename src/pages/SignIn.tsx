@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/layout/Navigation";
-import { AuthError, AuthChangeEvent } from "@supabase/supabase-js";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ const SignIn = () => {
     };
     checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Sign in page - Auth state changed:", event, session?.user?.email);
       
       if (event === 'SIGNED_IN' && session) {
@@ -31,8 +30,8 @@ const SignIn = () => {
           description: "You have successfully signed in.",
         });
         navigate("/write");
-      } else if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
-        console.log("User signed out or deleted");
+      } else if (event === 'SIGNED_OUT') {
+        console.log("User signed out");
         navigate("/");
       } else if (event === 'INITIAL_SESSION') {
         console.log("Initial session check completed");
