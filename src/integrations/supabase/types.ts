@@ -82,6 +82,7 @@ export type Database = {
           created_at: string | null
           daily_uses: number | null
           id: string
+          last_document_created_at: string | null
           last_use_date: string | null
           subscription_status: string | null
           updated_at: string | null
@@ -91,6 +92,7 @@ export type Database = {
           created_at?: string | null
           daily_uses?: number | null
           id?: string
+          last_document_created_at?: string | null
           last_use_date?: string | null
           subscription_status?: string | null
           updated_at?: string | null
@@ -100,6 +102,7 @@ export type Database = {
           created_at?: string | null
           daily_uses?: number | null
           id?: string
+          last_document_created_at?: string | null
           last_use_date?: string | null
           subscription_status?: string | null
           updated_at?: string | null
