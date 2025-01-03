@@ -34,7 +34,7 @@ const Settings = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-grow container max-w-4xl mx-auto px-4 py-12">
+      <main className="flex-grow container max-w-4xl mx-auto px-4 pt-24 pb-12">
         <h1 className="text-3xl font-bold mb-12">Account Settings</h1>
 
         <div className="space-y-12">
