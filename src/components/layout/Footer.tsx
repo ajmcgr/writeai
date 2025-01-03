@@ -4,7 +4,7 @@ export const Footer = () => {
   return (
     <footer className="bg-gray-100">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
@@ -39,7 +39,7 @@ export const Footer = () => {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-200">
-          <p className="text-center text-gray-600">Copyright © 2025 Works App, Inc.</p>
+          <p className="text-center text-gray-600 text-sm">Copyright © 2025 Works App, Inc.</p>
         </div>
       </div>
     </footer>

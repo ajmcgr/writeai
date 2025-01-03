@@ -47,18 +47,18 @@ export function Pricing() {
 
   return (
     <section className="py-16 md:py-24 bg-gray-50">
-      <div className="container">
+      <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight sm:text-4xl mb-4">
             Simple, transparent pricing
           </h2>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-lg md:text-xl text-muted-foreground">
             Choose the plan that best fits your needs.
           </p>
         </div>
 
         <Tabs defaultValue="monthly" className="w-full">
-          <TabsList className="grid w-full max-w-[400px] grid-cols-2 mx-auto mb-8">
+          <TabsList className="grid w-full max-w-[300px] md:max-w-[400px] grid-cols-2 mx-auto mb-8">
             <TabsTrigger value="monthly">Monthly</TabsTrigger>
             <TabsTrigger value="annual">Annual (Save 17%)</TabsTrigger>
           </TabsList>
