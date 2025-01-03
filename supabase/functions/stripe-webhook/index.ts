@@ -31,13 +31,19 @@ serve(async (req) => {
     
     if (!signature) {
       console.error('No stripe signature found');
-      return new Response('No signature', { status: 400, headers: corsHeaders });
+      return new Response(
+        JSON.stringify({ error: 'No signature provided' }), 
+        { status: 400, headers: corsHeaders }
+      );
     }
 
     const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
     if (!webhookSecret) {
       console.error('Webhook secret not configured');
-      return new Response('Webhook secret not configured', { status: 500, headers: corsHeaders });
+      return new Response(
+        JSON.stringify({ error: 'Webhook secret not configured' }), 
+        { status: 500, headers: corsHeaders }
+      );
     }
 
     const body = await req.text();
@@ -49,10 +55,10 @@ serve(async (req) => {
       console.log('Event constructed successfully:', event.type);
     } catch (err) {
       console.error(`Webhook signature verification failed:`, err);
-      return new Response(`Webhook signature verification failed: ${err.message}`, { 
-        status: 400, 
-        headers: corsHeaders 
-      });
+      return new Response(
+        JSON.stringify({ error: `Webhook signature verification failed: ${err.message}` }), 
+        { status: 400, headers: corsHeaders }
+      );
     }
 
     if (event.type === 'checkout.session.completed') {
@@ -96,9 +102,9 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error processing webhook:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: corsHeaders,
-      status: 400,
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }), 
+      { headers: corsHeaders, status: 400 }
+    );
   }
 });
