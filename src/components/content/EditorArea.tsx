@@ -14,7 +14,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
       <Input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Enter your document title..."
+        placeholder=""
         className="text-4xl font-semibold border-none text-foreground focus-visible:ring-0 focus-visible:ring-offset-0 [font-size:4rem]"
       />
       <div 

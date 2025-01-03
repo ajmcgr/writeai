@@ -7,7 +7,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,9 +15,11 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface AIPromptDialogProps {
   onContentGenerated: (content: string) => void;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export const AIPromptDialog = ({ onContentGenerated }: AIPromptDialogProps) => {
+export const AIPromptDialog = ({ onContentGenerated, isOpen, onOpenChange }: AIPromptDialogProps) => {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -43,6 +44,7 @@ export const AIPromptDialog = ({ onContentGenerated }: AIPromptDialogProps) => {
       
       onContentGenerated(data.generatedText);
       setPrompt("");
+      onOpenChange(false);
       
     } catch (error) {
       console.error("Error generating content:", error);
@@ -57,12 +59,7 @@ export const AIPromptDialog = ({ onContentGenerated }: AIPromptDialogProps) => {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-full mb-4">
-          Start with AI Prompt
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Generate Content with AI</DialogTitle>

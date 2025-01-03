@@ -41,6 +41,7 @@ export const WritingInterface = ({
 }: WritingInterfaceProps) => {
   const [showAnalysis, setShowAnalysis] = useState(true);
   const [editorContent, setEditorContent] = useState(content);
+  const [showAIPrompt, setShowAIPrompt] = useState(true);
 
   useEffect(() => {
     setEditorContent(content);
@@ -90,7 +91,11 @@ export const WritingInterface = ({
   return (
     <div className="flex flex-1">
       <div className="flex-1 flex flex-col">
-        <AIPromptDialog onContentGenerated={setContent} />
+        <AIPromptDialog 
+          onContentGenerated={setContent} 
+          isOpen={showAIPrompt} 
+          onOpenChange={setShowAIPrompt}
+        />
         <EditorArea
           content={editorContent}
           setContent={(newContent) => {
