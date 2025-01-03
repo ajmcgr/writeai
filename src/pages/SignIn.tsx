@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/layout/Navigation";
+import { AuthError } from "@supabase/supabase-js";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -44,6 +45,15 @@ const SignIn = () => {
     };
   }, [navigate, toast]);
 
+  const handleError = (error: AuthError) => {
+    console.error("Auth error:", error);
+    toast({
+      title: "Authentication Error",
+      description: error.message,
+      variant: "destructive",
+    });
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navigation />
@@ -70,14 +80,7 @@ const SignIn = () => {
             }}
             providers={["google"]}
             theme="light"
-            onError={(error) => {
-              console.error("Auth error:", error);
-              toast({
-                title: "Authentication Error",
-                description: error.message,
-                variant: "destructive",
-              });
-            }}
+            onError={handleError}
           />
         </div>
       </div>
