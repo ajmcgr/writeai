@@ -13,12 +13,14 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
   apiVersion: '2023-10-16',
 });
 
-const supabaseClient = createClient(
+const supabaseAdmin = createClient(
   Deno.env.get('SUPABASE_URL') ?? '',
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
 );
 
 serve(async (req) => {
+  console.log('Received webhook request');
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -26,61 +28,66 @@ serve(async (req) => {
 
   try {
     const signature = req.headers.get('stripe-signature');
+    
     if (!signature) {
+      console.error('No stripe signature found');
       return new Response('No signature', { status: 400, headers: corsHeaders });
     }
 
-    const body = await req.text();
     const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
-    
     if (!webhookSecret) {
       console.error('Webhook secret not configured');
       return new Response('Webhook secret not configured', { status: 500, headers: corsHeaders });
     }
 
+    const body = await req.text();
+    console.log('Webhook body:', body);
+
     let event;
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      console.log('Event constructed successfully:', event.type);
     } catch (err) {
-      console.error(`Webhook signature verification failed: ${err.message}`);
+      console.error(`Webhook signature verification failed:`, err);
       return new Response(`Webhook signature verification failed: ${err.message}`, { 
         status: 400, 
         headers: corsHeaders 
       });
     }
 
-    console.log('Processing event:', event.type);
-
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
-      const customerEmail = session.customer_details.email;
+      console.log('Processing checkout session:', session);
 
+      const customerEmail = session.customer_details?.email;
       if (!customerEmail) {
         throw new Error('No customer email in session');
       }
 
-      // Get user by email
-      const { data: users, error: userError } = await supabaseClient
+      console.log('Looking up user with email:', customerEmail);
+      const { data: users, error: userError } = await supabaseAdmin
         .from('auth.users')
         .select('id')
         .eq('email', customerEmail)
         .single();
 
       if (userError || !users) {
+        console.error('User lookup error:', userError);
         throw new Error('User not found');
       }
 
-      // Update subscription status
-      const { error: updateError } = await supabaseClient
+      console.log('Updating subscription status for user:', users.id);
+      const { error: updateError } = await supabaseAdmin
         .from('profiles')
         .update({ subscription_status: 'pro' })
         .eq('user_id', users.id);
 
       if (updateError) {
+        console.error('Profile update error:', updateError);
         throw new Error(`Failed to update subscription status: ${updateError.message}`);
       }
 
-      console.log('Successfully updated subscription status for user:', customerEmail);
+      console.log('Successfully updated subscription status');
     }
 
     return new Response(JSON.stringify({ received: true }), {

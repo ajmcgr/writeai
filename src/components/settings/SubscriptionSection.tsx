@@ -1,13 +1,38 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SubscriptionSectionProps {
   subscriptionStatus: string | null;
 }
 
-export function SubscriptionSection({ subscriptionStatus }: SubscriptionSectionProps) {
+export function SubscriptionSection({ subscriptionStatus: initialStatus }: SubscriptionSectionProps) {
   const navigate = useNavigate();
+  const [status, setStatus] = useState(initialStatus);
+
+  useEffect(() => {
+    const checkSubscription = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("subscription_status")
+        .eq("user_id", session.user.id)
+        .single();
+
+      if (profile) {
+        setStatus(profile.subscription_status);
+      }
+    };
+
+    checkSubscription();
+
+    const interval = setInterval(checkSubscription, 5000); // Check every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   const handleUpgrade = () => {
     navigate("/pricing");
@@ -21,9 +46,9 @@ export function SubscriptionSection({ subscriptionStatus }: SubscriptionSectionP
       </div>
       <div className="space-y-6">
         <p className="text-gray-600">
-          Current Plan: <span className="font-semibold capitalize">{subscriptionStatus}</span>
+          Current Plan: <span className="font-semibold capitalize">{status}</span>
         </p>
-        {subscriptionStatus === "free" && (
+        {status === "free" && (
           <Button onClick={handleUpgrade}>
             Upgrade to Pro
           </Button>
