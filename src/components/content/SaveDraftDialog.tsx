@@ -59,8 +59,28 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
         .update({ last_document_created_at: new Date().toISOString() })
         .eq("user_id", session.user.id);
 
+      // Save the document
+      const { data: newContent, error: contentError } = await supabase
+        .from('content')
+        .insert({
+          title,
+          content,
+          type: 'press_release',
+          is_draft: true,
+          user_id: session.user.id
+        })
+        .select()
+        .single();
+
+      if (contentError) throw contentError;
+
       onSave(title);
       onOpenChange(false);
+
+      // Trigger a refresh of the documents list by navigating to the new document
+      if (newContent?.id) {
+        navigate(`/write/${newContent.id}`);
+      }
       
     } catch (error) {
       console.error("Error saving draft:", error);
