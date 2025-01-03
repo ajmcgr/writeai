@@ -9,6 +9,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AuthCheck } from "@/components/auth/AuthCheck";
 import { useUsageCheck } from "@/utils/usageCheck";
 import { WritingInterface } from "@/components/content/WritingInterface";
+import { SaveDraftDialog } from "@/components/content/SaveDraftDialog";
 
 const Write = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const Write = () => {
   const [currentContentId, setCurrentContentId] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -70,7 +72,7 @@ const Write = () => {
 
   const { checkUsageLimit } = useUsageCheck();
 
-  const saveDraft = useCallback(async () => {
+  const saveDraft = useCallback(async (newTitle?: string) => {
     try {
       const canProceed = await checkUsageLimit();
       if (!canProceed) return;
@@ -94,7 +96,7 @@ const Write = () => {
           .from('content')
           .insert({
             content,
-            title,
+            title: newTitle || "Untitled Document",
             type: 'press_release',
             is_draft: true,
             user_id: session.user.id
@@ -110,7 +112,7 @@ const Write = () => {
           .from('content')
           .update({ 
             content, 
-            title,
+            title: newTitle || title,
             updated_at: new Date().toISOString(),
             user_id: session.user.id
           })
@@ -323,7 +325,10 @@ const Write = () => {
             setContent={setContent}
             title={title}
             setTitle={setTitle}
-            onSaveDraft={saveDraft}
+            onSaveDraft={(newTitle) => {
+              saveDraft(newTitle);
+              setShowSaveDialog(false);
+            }}
             onExport={exportToDocx}
             onCopy={copyToClipboard}
             onHistory={() => setShowVersionHistory(true)}
@@ -342,6 +347,12 @@ const Write = () => {
         onVersionSelect={setContent}
         isOpen={showVersionHistory}
         onOpenChange={setShowVersionHistory}
+      />
+      <SaveDraftDialog
+        isOpen={showSaveDialog}
+        onOpenChange={setShowSaveDialog}
+        content={content}
+        onSave={saveDraft}
       />
     </div>
   );

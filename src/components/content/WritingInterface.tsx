@@ -3,6 +3,7 @@ import { EditorArea } from "./EditorArea";
 import { FormattingToolbar } from "./FormattingToolbar";
 import { AnalysisSidebar } from "./AnalysisSidebar";
 import { AIPromptDialog } from "./AIPromptDialog";
+import { SaveDraftDialog } from "./SaveDraftDialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -11,7 +12,7 @@ interface WritingInterfaceProps {
   setContent: (content: string) => void;
   title: string;
   setTitle: (title: string) => void;
-  onSaveDraft: () => void;
+  onSaveDraft: (title?: string) => void;
   onExport: () => void;
   onCopy: () => void;
   onHistory: () => void;
@@ -42,6 +43,7 @@ export const WritingInterface = ({
   const [showAnalysis, setShowAnalysis] = useState(true);
   const [editorContent, setEditorContent] = useState(content);
   const [showAIPrompt, setShowAIPrompt] = useState(true);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   useEffect(() => {
     setEditorContent(content);
@@ -88,6 +90,10 @@ export const WritingInterface = ({
     setContent(suggestion);
   };
 
+  const handleSaveDraft = (newTitle?: string) => {
+    onSaveDraft(newTitle);
+  };
+
   return (
     <div className="flex flex-1">
       <div className="flex-1 flex flex-col">
@@ -95,6 +101,12 @@ export const WritingInterface = ({
           onContentGenerated={setContent} 
           isOpen={showAIPrompt} 
           onOpenChange={setShowAIPrompt}
+        />
+        <SaveDraftDialog
+          isOpen={showSaveDialog}
+          onOpenChange={setShowSaveDialog}
+          content={content}
+          onSave={handleSaveDraft}
         />
         <EditorArea
           content={editorContent}
@@ -136,7 +148,7 @@ export const WritingInterface = ({
               setShowAnalysis(true);
               onAnalyze();
             }}
-            onSaveDraft={onSaveDraft}
+            onSaveDraft={() => setShowSaveDialog(true)}
             isLoading={isLoading}
             hasContent={!!content}
             hasContentId={!!currentContentId}
