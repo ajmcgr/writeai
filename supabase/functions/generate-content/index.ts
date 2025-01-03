@@ -15,12 +15,14 @@ serve(async (req) => {
     const { type, content } = await req.json();
 
     const systemPrompt = type === "generate" 
-      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging."
+      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Follow the user's prompt exactly."
       : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message:";
 
     const userPrompt = type === "generate"
-      ? "Write a press release about a new innovative product or service."
+      ? content // Use the actual user prompt
       : content;
+
+    console.log('Generating content with prompt:', userPrompt);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -34,11 +36,14 @@ serve(async (req) => {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
+        temperature: 0.7,
       }),
     });
 
     const data = await response.json();
     const generatedText = data.choices[0].message.content;
+
+    console.log('Generated text:', generatedText);
 
     return new Response(JSON.stringify({ generatedText }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
