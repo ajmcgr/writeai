@@ -35,9 +35,9 @@ const Settings = () => {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
+        <h1 className="text-3xl font-bold mb-12">Account Settings</h1>
 
-        <div className="space-y-8">
+        <div className="space-y-12">
           <SubscriptionSection subscriptionStatus={subscriptionStatus} />
           <PasswordSection />
           <DeleteAccountSection />
