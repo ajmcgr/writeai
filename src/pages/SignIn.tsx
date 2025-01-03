@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/layout/Navigation";
-import { AuthError } from "@supabase/supabase-js";
+import { AuthError, AuthChangeEvent } from "@supabase/supabase-js";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const SignIn = () => {
     };
     checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
       console.log("Sign in page - Auth state changed:", event, session?.user?.email);
       
       if (event === 'SIGNED_IN' && session) {
@@ -44,15 +44,6 @@ const SignIn = () => {
       subscription.unsubscribe();
     };
   }, [navigate, toast]);
-
-  const handleError = (error: AuthError) => {
-    console.error("Auth error:", error);
-    toast({
-      title: "Authentication Error",
-      description: error.message,
-      variant: "destructive",
-    });
-  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -80,7 +71,6 @@ const SignIn = () => {
             }}
             providers={["google"]}
             theme="light"
-            onError={handleError}
           />
         </div>
       </div>
