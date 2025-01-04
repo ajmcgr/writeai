@@ -1,16 +1,16 @@
 export const plans = {
   monthly: [
     {
-      name: "Free",
-      description: "Perfect for trying out Write AI",
+      name: "Free Trial",
+      description: "Try Write AI for 7 days",
       price: "0",
       features: [
-        "1 AI press release per day",
-        "Basic templates",
+        "7 days unlimited access",
+        "All templates",
         "Standard support",
         "Save unlimited drafts",
       ],
-      cta: "Get Started",
+      cta: "Start Free Trial",
       highlighted: false,
     },
     {
@@ -30,16 +30,16 @@ export const plans = {
   ],
   annual: [
     {
-      name: "Free",
-      description: "Perfect for trying out Write AI",
+      name: "Free Trial",
+      description: "Try Write AI for 7 days",
       price: "0",
       features: [
-        "1 AI press release per day",
-        "Basic templates",
+        "7 days unlimited access",
+        "All templates",
         "Standard support",
         "Save unlimited drafts",
       ],
-      cta: "Get Started",
+      cta: "Start Free Trial",
       highlighted: false,
     },
     {

@@ -20,9 +20,20 @@ export function Hero() {
       setIsAuthenticated(!!session);
     });
 
+    // Load Senja widget script
+    const script = document.createElement('script');
+    script.src = "https://widget.senja.io/widget/f10a97a0-8bad-4cf0-8ced-3790e0588932/platform.js";
+    script.async = true;
+    script.type = "text/javascript";
+    document.body.appendChild(script);
+
     return () => {
       console.log("Cleaning up Hero auth subscription");
       subscription.unsubscribe();
+      // Clean up script if component unmounts
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -40,6 +51,17 @@ export function Hero() {
             Start Writing
           </Button>
         </Link>
+        
+        {/* Senja Widget */}
+        <div className="w-full max-w-4xl">
+          <div className="senja-embed" 
+               data-id="f10a97a0-8bad-4cf0-8ced-3790e0588932" 
+               data-mode="shadow" 
+               data-lazyload="false" 
+               style={{display: 'block'}}
+          />
+        </div>
+
         <div className="mt-8 w-full max-w-5xl">
           <div className="rounded-lg overflow-hidden shadow-2xl">
             {/* Browser Window Header */}
