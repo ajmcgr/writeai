@@ -62,7 +62,7 @@ export function DocumentSidebar() {
   useEffect(() => {
     fetchDocuments();
 
-    // Set up real-time subscription for all document changes
+    // Set up real-time subscription for document changes
     const channel = supabase
       .channel("document_changes")
       .on(
@@ -74,7 +74,30 @@ export function DocumentSidebar() {
         },
         (payload) => {
           console.log("Document changes detected:", payload);
-          fetchDocuments(); // Refresh the document list when any change occurs
+          const { eventType } = payload;
+          const newRecord = payload.new as Content;
+          const oldRecord = payload.old as Content;
+
+          // Only update if the change is for the current user's documents
+          const { data: { session } } = supabase.auth.getSession();
+          if (!session || newRecord.user_id !== session.user.id) {
+            return;
+          }
+
+          setDocuments(currentDocs => {
+            switch (eventType) {
+              case "INSERT":
+                return [newRecord, ...currentDocs];
+              case "UPDATE":
+                return currentDocs.map(doc => 
+                  doc.id === newRecord.id ? newRecord : doc
+                );
+              case "DELETE":
+                return currentDocs.filter(doc => doc.id !== oldRecord.id);
+              default:
+                return currentDocs;
+            }
+          });
         }
       )
       .subscribe((status) => {
