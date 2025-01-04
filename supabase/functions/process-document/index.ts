@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { mammoth } from 'https://deno.land/x/mammoth@1.6.0/mod.ts'
+import { Document, Packer } from "https://esm.sh/docx@8.5.0"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -31,12 +31,20 @@ serve(async (req) => {
         break
       case 'doc':
       case 'docx':
-        const result = await mammoth.extractRawText({ arrayBuffer })
-        text = result.value
+        try {
+          const doc = new Document(arrayBuffer)
+          const buffer = await Packer.toBase64String(doc)
+          const decoder = new TextDecoder('utf-8')
+          text = decoder.decode(buffer)
+        } catch (error) {
+          console.error('Error processing doc/docx:', error)
+          // Fallback to basic text extraction
+          const decoder = new TextDecoder('utf-8')
+          text = decoder.decode(arrayBuffer)
+        }
         break
       case 'odt':
-        // For ODT files, we'll use a simple text extraction for now
-        // In a production environment, you might want to use a more robust ODT parser
+        // For ODT files, we'll use a simple text extraction
         const decoder = new TextDecoder('utf-8')
         text = decoder.decode(arrayBuffer)
         break
