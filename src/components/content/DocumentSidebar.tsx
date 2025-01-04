@@ -72,32 +72,36 @@ export function DocumentSidebar() {
           schema: "public",
           table: "content",
         },
-        (payload) => {
+        async (payload) => {
           console.log("Document changes detected:", payload);
           const { eventType } = payload;
           const newRecord = payload.new as Content;
           const oldRecord = payload.old as Content;
 
-          // Only update if the change is for the current user's documents
-          const { data: { session } } = supabase.auth.getSession();
-          if (!session || newRecord.user_id !== session.user.id) {
-            return;
-          }
-
-          setDocuments(currentDocs => {
-            switch (eventType) {
-              case "INSERT":
-                return [newRecord, ...currentDocs];
-              case "UPDATE":
-                return currentDocs.map(doc => 
-                  doc.id === newRecord.id ? newRecord : doc
-                );
-              case "DELETE":
-                return currentDocs.filter(doc => doc.id !== oldRecord.id);
-              default:
-                return currentDocs;
+          try {
+            // Only update if the change is for the current user's documents
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session || newRecord.user_id !== session.user.id) {
+              return;
             }
-          });
+
+            setDocuments(currentDocs => {
+              switch (eventType) {
+                case "INSERT":
+                  return [newRecord, ...currentDocs];
+                case "UPDATE":
+                  return currentDocs.map(doc => 
+                    doc.id === newRecord.id ? newRecord : doc
+                  );
+                case "DELETE":
+                  return currentDocs.filter(doc => doc.id !== oldRecord.id);
+                default:
+                  return currentDocs;
+              }
+            });
+          } catch (error) {
+            console.error("Error handling document change:", error);
+          }
         }
       )
       .subscribe((status) => {
