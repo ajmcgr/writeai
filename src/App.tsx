@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Index from "./pages/Index";
 import Write from "./pages/Write";
@@ -14,13 +14,58 @@ import Boilerplate from "./pages/tools/Boilerplate";
 import Headline from "./pages/tools/Headline";
 import Quote from "./pages/tools/Quote";
 import CTA from "./pages/tools/CTA";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log("App auth check:", session ? "Authenticated" : "Not authenticated");
+        setIsAuthenticated(!!session);
+      } catch (error) {
+        console.error("Auth check error:", error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("App auth state changed:", event, session?.user?.email);
+      setIsAuthenticated(!!session);
+    });
+
+    return () => {
+      console.log("Cleaning up App auth subscription");
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  if (isLoading) {
+    return null; // Or a loading spinner if you prefer
+  }
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/write" element={<Write />} />
+        <Route 
+          path="/write" 
+          element={
+            isAuthenticated ? (
+              <Write />
+            ) : (
+              <Navigate to="/signup" replace state={{ redirectTo: "/write" }} />
+            )
+          } 
+        />
         <Route path="/write/:id" element={<Write />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
