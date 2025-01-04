@@ -23,7 +23,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
   };
 
   return (
-    <div className="flex-1 h-[calc(100vh-200px)] overflow-hidden">
+    <div className="h-full overflow-hidden pb-24">
       <div
         ref={editorRef}
         contentEditable
