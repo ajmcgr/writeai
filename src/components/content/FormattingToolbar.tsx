@@ -8,6 +8,7 @@ import {
   Wand2,
   LineChart,
   Sparkles,
+  XCircle,
 } from "lucide-react";
 
 interface FormattingToolbarProps {
@@ -39,6 +40,25 @@ export const FormattingToolbar = ({
   hasContent,
   hasContentId,
 }: FormattingToolbarProps) => {
+  const clearFormatting = () => {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const content = range.extractContents();
+      const textContent = content.textContent;
+      if (textContent) {
+        const textNode = document.createTextNode(textContent);
+        range.insertNode(textNode);
+      }
+    } else {
+      // If no selection, clear formatting for the entire editable content
+      const editor = document.querySelector('[contenteditable="true"]');
+      if (editor) {
+        editor.textContent = editor.textContent;
+      }
+    }
+  };
+
   return (
     <div className="flex items-center justify-between gap-2 p-4">
       <div className="flex items-center gap-2">
@@ -89,6 +109,15 @@ export const FormattingToolbar = ({
           disabled={isLoading}
         >
           1.
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={clearFormatting}
+          disabled={isLoading}
+        >
+          <XCircle className="h-4 w-4 mr-2" />
+          Clear Format
         </Button>
       </div>
 
