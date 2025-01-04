@@ -17,42 +17,42 @@ export const TextFormatButtons = ({
       <FormattingButton
         onClick={() => onFormat("bold")}
         disabled={isLoading}
-        label="Make text bold"
+        label="Make selected text bold (Ctrl+B)"
       >
         B
       </FormattingButton>
       <FormattingButton
         onClick={() => onFormat("italic")}
         disabled={isLoading}
-        label="Make text italic"
+        label="Make selected text italic (Ctrl+I)"
       >
         I
       </FormattingButton>
       <FormattingButton
         onClick={() => onFormat("underline")}
         disabled={isLoading}
-        label="Underline text"
+        label="Underline selected text (Ctrl+U)"
       >
         U
       </FormattingButton>
       <FormattingButton
         onClick={() => onFormat("formatBlock")}
         disabled={isLoading}
-        label="Convert to heading"
+        label="Convert selected text to heading"
       >
         H
       </FormattingButton>
       <FormattingButton
         onClick={() => onFormat("insertUnorderedList")}
         disabled={isLoading}
-        label="Create bullet list"
+        label="Create a bulleted list"
       >
         •
       </FormattingButton>
       <FormattingButton
         onClick={() => onFormat("insertOrderedList")}
         disabled={isLoading}
-        label="Create numbered list"
+        label="Create a numbered list"
       >
         1.
       </FormattingButton>
@@ -60,7 +60,7 @@ export const TextFormatButtons = ({
         onClick={clearFormatting}
         disabled={isLoading}
         icon={Eraser}
-        label="Remove all formatting from selected text"
+        label="Remove all formatting from selected text (keeps the text content)"
       />
     </div>
   );

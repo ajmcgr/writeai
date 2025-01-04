@@ -43,36 +43,36 @@ export const ActionButtons = ({
         onClick={onHistory}
         disabled={isLoading || !hasContentId}
         icon={History}
-        label="View document version history"
+        label="View previous versions of this document"
       />
       <FormattingButton
         onClick={onCopy}
         disabled={isLoading || !hasContent}
         icon={Copy}
-        label="Copy content to clipboard"
+        label="Copy all content to clipboard"
       />
       <FormattingButton
         onClick={onAIGenerate}
         disabled={isLoading}
         icon={Sparkles}
-        label="Generate new content with AI"
+        label="Generate new content using AI assistant"
       />
       <FormattingButton
         onClick={onRewrite}
         disabled={isLoading || !hasContent}
         icon={Wand2}
-        label="Rewrite content with AI"
+        label="Rewrite current content using AI"
       />
       <FormattingButton
         onClick={onAnalyze}
         disabled={isLoading || !hasContent}
         icon={LineChart}
-        label="Analyze content with AI"
+        label="Analyze content quality and get suggestions"
       />
       <FormattingButton
         disabled={isLoading}
         icon={FileUp}
-        label="Upload document (.txt, .doc, .docx, .odt)"
+        label="Import content from a document file"
         asChild
       >
         <label>
@@ -90,14 +90,14 @@ export const ActionButtons = ({
           onClick={onSaveDraft}
           disabled={isLoading || !hasContent}
           icon={Save}
-          label="Save as draft"
+          label="Save current content as a draft"
         />
       )}
       <FormattingButton
         onClick={onExport}
         disabled={isLoading || !hasContent}
         icon={FileDown}
-        label="Export document as DOCX"
+        label="Export content as a Word document"
       />
     </div>
   );
