@@ -1,25 +1,43 @@
 import { Button } from "@/components/ui/button";
-import { LucideIcon } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface FormattingButtonProps {
+  icon: React.ReactNode;
+  label: string;
   onClick?: () => void;
+  isActive?: boolean;
   disabled?: boolean;
-  children?: React.ReactNode;
-  icon?: LucideIcon;
-  asChild?: boolean;
+  className?: string;
 }
 
-export const FormattingButton = ({ onClick, disabled, children, icon: Icon, asChild }: FormattingButtonProps) => {
+export const FormattingButton = ({
+  icon,
+  label,
+  onClick,
+  isActive,
+  disabled,
+  className,
+}: FormattingButtonProps) => {
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={onClick}
-      disabled={disabled}
-      asChild={asChild}
-    >
-      {Icon && <Icon className="h-4 w-4" />}
-      {children}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClick}
+          className={cn(
+            "h-8 w-8",
+            isActive && "bg-accent text-accent-foreground",
+            className
+          )}
+          disabled={disabled}
+        >
+          {icon}
+          <span className="sr-only">{label}</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   );
 };

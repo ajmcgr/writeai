@@ -12,6 +12,7 @@ import { WritingInterface } from "@/components/content/WritingInterface";
 import { SaveDraftDialog } from "@/components/content/SaveDraftDialog";
 import { useWriteAuth } from "@/hooks/useWriteAuth";
 import { LoadingState } from "@/components/ui/loading-state";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 const Write = () => {
   const { id } = useParams();
@@ -24,31 +25,48 @@ const Write = () => {
   const [currentContentId, setCurrentContentId] = useState<string | null>(null);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const { isAuthenticated, isLoading: authLoading } = useWriteAuth();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     const loadDocument = async () => {
-      if (!id) return;
+      if (!id) {
+        setIsInitialLoad(false);
+        return;
+      }
 
-      const { data, error } = await supabase
-        .from("content")
-        .select("*")
-        .eq("id", id)
-        .single();
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from("content")
+          .select("*")
+          .eq("id", id)
+          .single();
 
-      if (error) {
-        console.error("Error loading document:", error);
+        if (error) {
+          console.error("Error loading document:", error);
+          toast({
+            title: "Error",
+            description: "Failed to load document",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (data) {
+          setContent(data.content);
+          setTitle(data.title || "Untitled Document");
+          setCurrentContentId(data.id);
+        }
+      } catch (error) {
+        console.error("Error:", error);
         toast({
           title: "Error",
           description: "Failed to load document",
           variant: "destructive",
         });
-        return;
-      }
-
-      if (data) {
-        setContent(data.content);
-        setTitle(data.title || "Untitled Document");
-        setCurrentContentId(data.id);
+      } finally {
+        setIsLoading(false);
+        setIsInitialLoad(false);
       }
     };
 
@@ -281,7 +299,7 @@ const Write = () => {
     }
   };
 
-  if (authLoading) {
+  if (authLoading || isInitialLoad) {
     return <LoadingState />;
   }
 
@@ -290,46 +308,48 @@ const Write = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Navigation />
-      <SidebarProvider>
-        <div className="container flex-grow py-8 mt-16 flex w-full relative">
-          <DocumentSidebar />
-          <WritingInterface
-            content={content}
-            setContent={setContent}
-            title={title}
-            setTitle={setTitle}
-            onSaveDraft={(newTitle) => {
-              saveDraft(newTitle);
-              setShowSaveDialog(false);
-            }}
-            onExport={exportToDocx}
-            onCopy={copyToClipboard}
-            onHistory={() => setShowVersionHistory(true)}
-            onFileUpload={handleFileUpload}
-            onRewrite={rewriteContent}
-            onAnalyze={analyzeContent}
-            isLoading={isLoading}
-            analysis={analysis}
-            currentContentId={currentContentId}
-          />
-        </div>
-      </SidebarProvider>
+    <ErrorBoundary>
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navigation />
+        <SidebarProvider>
+          <div className="container flex-grow py-8 mt-16 flex w-full relative">
+            <DocumentSidebar />
+            <WritingInterface
+              content={content}
+              setContent={setContent}
+              title={title}
+              setTitle={setTitle}
+              onSaveDraft={(newTitle) => {
+                saveDraft(newTitle);
+                setShowSaveDialog(false);
+              }}
+              onExport={exportToDocx}
+              onCopy={copyToClipboard}
+              onHistory={() => setShowVersionHistory(true)}
+              onFileUpload={handleFileUpload}
+              onRewrite={rewriteContent}
+              onAnalyze={analyzeContent}
+              isLoading={isLoading}
+              analysis={analysis}
+              currentContentId={currentContentId}
+            />
+          </div>
+        </SidebarProvider>
 
-      <VersionHistory
-        contentId={currentContentId}
-        onVersionSelect={setContent}
-        isOpen={showVersionHistory}
-        onOpenChange={setShowVersionHistory}
-      />
-      <SaveDraftDialog
-        isOpen={showSaveDialog}
-        onOpenChange={setShowSaveDialog}
-        content={content}
-        onSave={saveDraft}
-      />
-    </div>
+        <VersionHistory
+          contentId={currentContentId}
+          onVersionSelect={setContent}
+          isOpen={showVersionHistory}
+          onOpenChange={setShowVersionHistory}
+        />
+        <SaveDraftDialog
+          isOpen={showSaveDialog}
+          onOpenChange={setShowSaveDialog}
+          content={content}
+          onSave={saveDraft}
+        />
+      </div>
+    </ErrorBoundary>
   );
 };
 
