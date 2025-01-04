@@ -50,17 +50,17 @@ export function Hero() {
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               </div>
               <div className="flex-1 flex justify-center">
-                <div className="bg-white px-8 py-1 rounded-md text-sm text-gray-600 -mb-3">
+                <div className="bg-white px-8 py-1 rounded-md text-sm text-gray-600">
                   write.ai
                 </div>
               </div>
             </div>
-            {/* Browser Window Content */}
-            <div className="bg-white p-4">
+            {/* Browser Window Content - Removed padding and adjusted image container */}
+            <div className="bg-white">
               <img
-                src="/lovable-uploads/e3e2c224-6c20-4147-9da2-5ae543bd77c4.png"
+                src="/lovable-uploads/c5e37cd7-f33b-4c16-ac10-2a25dfa2deab.png"
                 alt="Write AI Interface Screenshot"
-                className="w-full rounded"
+                className="w-full"
               />
             </div>
           </div>
