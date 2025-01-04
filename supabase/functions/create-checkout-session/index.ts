@@ -59,8 +59,10 @@ serve(async (req) => {
     let priceId;
     if (period === 'monthly') {
       priceId = Deno.env.get('STRIPE_MONTHLY_PRICE_ID');
+      console.log('Using monthly price ID:', priceId);
     } else if (period === 'annual') {
       priceId = Deno.env.get('STRIPE_ANNUAL_PRICE_ID');
+      console.log('Using annual price ID:', priceId);
     }
 
     if (!priceId) {
