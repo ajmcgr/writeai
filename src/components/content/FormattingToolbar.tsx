@@ -146,7 +146,7 @@ export const FormattingToolbar = ({
               type="file"
               className="hidden"
               onChange={onFileUpload}
-              accept=".txt,.doc,.docx"
+              accept=".txt,.doc,.docx,.odt"
             />
           </label>
         </Button>
