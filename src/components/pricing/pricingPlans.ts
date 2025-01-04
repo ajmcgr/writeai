@@ -16,7 +16,7 @@ export const plans = {
     {
       name: "Pro",
       description: "For professionals who need more power",
-      price: "29",
+      price: "30",
       features: [
         "Unlimited AI press releases",
         "All templates",
