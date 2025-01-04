@@ -15,32 +15,67 @@ const SignUp = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
+        console.log('User signed in, creating HubSpot contact');
+        
         try {
-          const { error } = await supabase.functions.invoke('hubspot-contact', {
+          // Create HubSpot contact
+          const { error: hubspotError } = await supabase.functions.invoke('hubspot-contact', {
             body: {
               email: session.user.email,
               name: session.user.user_metadata?.full_name,
             },
           });
 
-          if (error) throw error;
+          if (hubspotError) throw hubspotError;
 
-          console.log('Successfully created HubSpot contact');
+          // If this is coming from a pricing plan selection, create checkout session
+          if (location.state?.price) {
+            console.log('Creating Stripe checkout session');
+            const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
+              'create-checkout-session',
+              {
+                body: { 
+                  priceId: location.state.price,
+                  email: session.user.email,
+                  userId: session.user.id
+                },
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`
+                }
+              }
+            );
+
+            if (checkoutError) {
+              console.error('Checkout error:', checkoutError);
+              throw checkoutError;
+            }
+
+            if (checkoutData?.url) {
+              console.log('Redirecting to checkout:', checkoutData.url);
+              window.location.href = checkoutData.url;
+              return; // Prevent further navigation
+            }
+          }
+
+          toast({
+            title: "Welcome!",
+            description: "Your account was created successfully.",
+          });
+
+          navigate(redirectTo);
         } catch (error) {
-          console.error('Error creating HubSpot contact:', error);
+          console.error('Error in signup process:', error);
+          toast({
+            title: "Error",
+            description: "There was an error setting up your account. Please try again.",
+            variant: "destructive",
+          });
         }
-
-        toast({
-          title: "Welcome!",
-          description: "Your account was created successfully.",
-        });
-
-        navigate(redirectTo);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, toast, redirectTo]);
+  }, [navigate, toast, redirectTo, location.state]);
 
   return (
     <div className="flex min-h-screen flex-col">
