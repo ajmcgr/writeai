@@ -49,12 +49,8 @@ export const FormattingToolbar = ({
       if (textContent) {
         const textNode = document.createTextNode(textContent);
         range.insertNode(textNode);
-      }
-    } else {
-      // If no selection, clear formatting for the entire editable content
-      const editor = document.querySelector('[contenteditable="true"]');
-      if (editor) {
-        editor.textContent = editor.textContent;
+        selection.removeAllRanges();
+        selection.addRange(range);
       }
     }
   };
