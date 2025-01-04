@@ -8,7 +8,7 @@ import {
   Wand2,
   LineChart,
   Sparkles,
-  XCircle,
+  Eraser,
 } from "lucide-react";
 
 interface FormattingToolbarProps {
@@ -116,7 +116,7 @@ export const FormattingToolbar = ({
           onClick={clearFormatting}
           disabled={isLoading}
         >
-          <XCircle className="h-4 w-4 mr-2" />
+          <Eraser className="h-4 w-4 mr-2" />
           Clear Format
         </Button>
       </div>
