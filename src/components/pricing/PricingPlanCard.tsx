@@ -32,8 +32,8 @@ export function PricingPlanCard({ plan, isLoading, subscriptionStatus, onUpgrade
   const handleButtonClick = () => {
     if (plan.name === "Free") {
       navigate("/signup", { state: { redirectTo: "/write" } });
-    } else {
-      onUpgrade(plan.stripeUrl);
+    } else if (plan.stripeUrl) {
+      window.location.href = plan.stripeUrl;
     }
   };
 

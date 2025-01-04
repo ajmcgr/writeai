@@ -20,11 +20,14 @@ export const useUsageCheck = () => {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select()
+        .select("subscription_status, stripe_customer_id, last_use_date, daily_uses")
         .eq("user_id", session.user.id)
         .single();
 
       if (!profile) return false;
+
+      console.log("Checking usage limit for user with subscription status:", profile.subscription_status);
+      console.log("Stripe customer ID:", profile.stripe_customer_id);
 
       // Pro users bypass the usage check
       if (profile.subscription_status === "pro") {

@@ -19,11 +19,13 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("subscription_status")
+        .select("subscription_status, stripe_customer_id, stripe_subscription_id")
         .eq("user_id", session.user.id)
         .single();
 
       if (profile) {
+        console.log("Subscription status:", profile.subscription_status);
+        console.log("Stripe customer ID:", profile.stripe_customer_id);
         setStatus(profile.subscription_status);
       }
     };

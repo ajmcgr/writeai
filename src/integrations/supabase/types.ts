@@ -84,6 +84,8 @@ export type Database = {
           id: string
           last_document_created_at: string | null
           last_use_date: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
           subscription_status: string | null
           updated_at: string | null
           user_id: string | null
@@ -94,6 +96,8 @@ export type Database = {
           id?: string
           last_document_created_at?: string | null
           last_use_date?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           subscription_status?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -104,6 +108,8 @@ export type Database = {
           id?: string
           last_document_created_at?: string | null
           last_use_date?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           subscription_status?: string | null
           updated_at?: string | null
           user_id?: string | null
