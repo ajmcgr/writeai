@@ -1,50 +1,7 @@
-import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { PricingPlansGrid } from "../pricing/PricingPlansGrid";
 
 export function Pricing() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const checkSubscription = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          setIsLoading(false);
-          return;
-        }
-
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("subscription_status")
-          .eq("user_id", session.user.id)
-          .single();
-
-        setSubscriptionStatus(profile?.subscription_status || null);
-      } catch (error) {
-        console.error("Error checking subscription:", error);
-        toast({
-          title: "Error",
-          description: "Failed to check subscription status",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkSubscription();
-  }, [toast]);
-
-  const handleUpgrade = (url: string) => {
-    if (!url) return;
-    window.location.href = url;
-  };
-
   return (
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="container px-4 md:px-6">
@@ -64,21 +21,11 @@ export function Pricing() {
           </TabsList>
 
           <TabsContent value="monthly">
-            <PricingPlansGrid
-              period="monthly"
-              isLoading={isLoading}
-              subscriptionStatus={subscriptionStatus}
-              onUpgrade={handleUpgrade}
-            />
+            <PricingPlansGrid period="monthly" isLoading={false} subscriptionStatus={null} />
           </TabsContent>
 
           <TabsContent value="annual">
-            <PricingPlansGrid
-              period="annual"
-              isLoading={isLoading}
-              subscriptionStatus={subscriptionStatus}
-              onUpgrade={handleUpgrade}
-            />
+            <PricingPlansGrid period="annual" isLoading={false} subscriptionStatus={null} />
           </TabsContent>
         </Tabs>
       </div>
