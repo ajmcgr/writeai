@@ -24,24 +24,40 @@ export const FormattingButton = ({
   children,
   asChild,
 }: FormattingButtonProps) => {
+  const buttonContent = Icon ? (
+    <Icon className="h-4 w-4" />
+  ) : (
+    children
+  );
+
+  const ButtonWrapper = ({ children }: { children: React.ReactNode }) => {
+    if (asChild) {
+      return <>{children}</>;
+    }
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={onClick}
+        className={cn(
+          "h-8 w-8",
+          isActive && "bg-accent text-accent-foreground",
+          className
+        )}
+        disabled={disabled}
+      >
+        {children}
+      </Button>
+    );
+  };
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClick}
-          className={cn(
-            "h-8 w-8",
-            isActive && "bg-accent text-accent-foreground",
-            className
-          )}
-          disabled={disabled}
-          asChild={asChild}
-        >
-          {Icon ? <Icon className="h-4 w-4" /> : children}
+        <ButtonWrapper>
+          {buttonContent}
           <span className="sr-only">{label}</span>
-        </Button>
+        </ButtonWrapper>
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>
