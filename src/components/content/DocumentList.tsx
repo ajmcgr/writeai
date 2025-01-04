@@ -19,6 +19,8 @@ interface DocumentListProps {
 export function DocumentList({ documents }: DocumentListProps) {
   const navigate = useNavigate();
 
+  console.log("Documents in DocumentList:", documents);
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Documents</SidebarGroupLabel>
@@ -35,7 +37,7 @@ export function DocumentList({ documents }: DocumentListProps) {
               <SidebarMenuItem key={doc.id} onClick={() => navigate(`/write/${doc.id}`)}>
                 <SidebarMenuButton>
                   <File className="h-4 w-4 mr-2" />
-                  <span>{doc.title}</span>
+                  <span className="truncate">{doc.title || "Untitled Document"}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))
