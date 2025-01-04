@@ -40,12 +40,30 @@ export function Hero() {
             Start Writing
           </Button>
         </Link>
-        <div className="mt-8 w-full max-w-5xl rounded-lg border bg-card p-4 shadow-lg">
-          <img
-            src="/lovable-uploads/e3e2c224-6c20-4147-9da2-5ae543bd77c4.png"
-            alt="Write AI Interface Screenshot"
-            className="w-full rounded"
-          />
+        <div className="mt-8 w-full max-w-5xl">
+          <div className="rounded-lg overflow-hidden shadow-2xl">
+            {/* Browser Window Header */}
+            <div className="bg-gray-100 px-4 py-3 flex items-center border-b">
+              <div className="flex space-x-2">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="bg-white px-8 py-1 rounded-md text-sm text-gray-600 -mb-3">
+                  write.ai
+                </div>
+              </div>
+            </div>
+            {/* Browser Window Content */}
+            <div className="bg-white p-4">
+              <img
+                src="/lovable-uploads/e3e2c224-6c20-4147-9da2-5ae543bd77c4.png"
+                alt="Write AI Interface Screenshot"
+                className="w-full rounded"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
