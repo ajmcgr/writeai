@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useCallback, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/layout/Navigation";
@@ -10,6 +10,8 @@ import { AuthCheck } from "@/components/auth/AuthCheck";
 import { useUsageCheck } from "@/utils/usageCheck";
 import { WritingInterface } from "@/components/content/WritingInterface";
 import { SaveDraftDialog } from "@/components/content/SaveDraftDialog";
+import { useWriteAuth } from "@/hooks/useWriteAuth";
+import { LoadingState } from "@/components/ui/loading-state";
 
 const Write = () => {
   const { id } = useParams();
@@ -19,26 +21,10 @@ const Write = () => {
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [currentContentId, setCurrentContentId] = useState<string | null>(null);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-    };
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event, session?.user?.email);
-      setIsAuthenticated(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const { isAuthenticated, isLoading: authLoading } = useWriteAuth();
+  const { checkUsageLimit } = useUsageCheck();
 
   useEffect(() => {
     const loadDocument = async () => {
@@ -69,8 +55,6 @@ const Write = () => {
 
     loadDocument();
   }, [id, toast]);
-
-  const { checkUsageLimit } = useUsageCheck();
 
   const saveDraft = useCallback(async (newTitle?: string) => {
     try {
@@ -138,7 +122,6 @@ const Write = () => {
           version: nextVersion
         });
 
-      setLastSaved(new Date());
       toast({
         title: "Success",
         description: "Draft saved successfully",
@@ -158,9 +141,7 @@ const Write = () => {
   useEffect(() => {
     if (!content || !currentContentId) return;
 
-    console.log("Setting up auto-save timer...");
     const timer = setTimeout(() => {
-      console.log("Auto-saving document...");
       saveDraft();
     }, 10000);
 
@@ -310,8 +291,12 @@ const Write = () => {
     }
   };
 
-  if (!isAuthenticated) {
-    return <AuthCheck isAuthenticated={isAuthenticated} />;
+  if (authLoading) {
+    return <LoadingState />;
+  }
+
+  if (isAuthenticated === false) {
+    return <AuthCheck isAuthenticated={false} />;
   }
 
   return (
