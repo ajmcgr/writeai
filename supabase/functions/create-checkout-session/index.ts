@@ -30,14 +30,19 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     });
 
+    const { period } = await req.json();
+    const priceId = period === 'annual' 
+      ? 'price_1QddMiPqjwGz87OwZecZTh6X'  // Annual price ID
+      : 'price_1QddJvPqjwGz87OwsHhbLiY9'; // Monthly price ID
+
     const customers = await stripe.customers.list({
       email: user.email,
       limit: 1
     });
 
-    let customer_id = undefined;
+    let customerId = undefined;
     if (customers.data.length > 0) {
-      customer_id = customers.data[0].id;
+      customerId = customers.data[0].id;
       const subscriptions = await stripe.subscriptions.list({
         customer: customers.data[0].id,
         status: 'active',
@@ -49,20 +54,22 @@ serve(async (req) => {
       }
     }
 
+    console.log('Creating checkout session...');
     const session = await stripe.checkout.sessions.create({
-      customer: customer_id,
-      customer_email: customer_id ? undefined : user.email,
+      customer: customerId,
+      customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: Deno.env.get('STRIPE_PRICE_ID'),
+          price: priceId,
           quantity: 1,
         },
       ],
       mode: 'subscription',
-      success_url: `${req.headers.get('origin')}/`,
-      cancel_url: `${req.headers.get('origin')}/`,
+      success_url: `${req.headers.get('origin')}/settings`,
+      cancel_url: `${req.headers.get('origin')}/pricing`,
     });
 
+    console.log('Checkout session created:', session.id);
     return new Response(
       JSON.stringify({ url: session.url }),
       { 

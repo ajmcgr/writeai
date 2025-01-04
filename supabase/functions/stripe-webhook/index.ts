@@ -50,7 +50,7 @@ serve(async (req) => {
 
     let event;
     try {
-      event = await stripe.webhooks.constructEventAsync(
+      event = stripe.webhooks.constructEvent(
         body,
         signature,
         webhookSecret
@@ -76,17 +76,14 @@ serve(async (req) => {
       let subscriptionId;
 
       if (event.type === 'checkout.session.completed') {
-        // For checkout sessions
         customerEmail = session.customer_details?.email;
         customerId = session.customer;
         subscriptionId = session.subscription;
       } else {
-        // For subscription events
         const subscription = event.data.object;
         customerId = subscription.customer;
         subscriptionId = subscription.id;
         
-        // Get customer email from Stripe
         const customer = await stripe.customers.retrieve(customerId);
         customerEmail = typeof customer === 'object' ? customer.email : null;
       }
@@ -130,7 +127,6 @@ serve(async (req) => {
       const subscription = event.data.object;
       const customerId = subscription.customer;
 
-      // Get customer email from Stripe
       const customer = await stripe.customers.retrieve(customerId);
       const customerEmail = typeof customer === 'object' ? customer.email : null;
 
