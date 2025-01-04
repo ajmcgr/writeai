@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
+import { Settings, LogOut } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface DesktopNavProps {
   isAuthenticated: boolean;
@@ -11,18 +18,38 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
   if (isAuthenticated) {
     return (
       <div className="hidden md:flex items-center gap-2">
-        <Link to="/settings">
-          <Button variant="ghost" className="text-white hover:bg-[#9599d1]">
-            Account Settings
-          </Button>
-        </Link>
-        <Button 
-          variant="ghost" 
-          className="text-white hover:bg-[#9599d1]"
-          onClick={handleLogout}
-        >
-          Logout
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/settings">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-[#9599d1]">
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Account Settings</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="text-white hover:bg-[#9599d1]"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Logout</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     );
   }
