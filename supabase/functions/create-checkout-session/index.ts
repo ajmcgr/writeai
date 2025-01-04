@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@12.0.0?target=deno";
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
-  apiVersion: '2023-10-16',
-});
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -58,6 +54,17 @@ serve(async (req) => {
       console.error('Missing period parameter');
       throw new Error('Missing period parameter');
     }
+
+    const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY');
+    if (!stripeSecretKey) {
+      console.error('Missing Stripe secret key');
+      throw new Error('Stripe secret key not configured');
+    }
+
+    // Initialize Stripe with the secret key
+    const stripe = new Stripe(stripeSecretKey, {
+      apiVersion: '2023-10-16',
+    });
 
     // Get the appropriate price ID based on the period
     let priceId;
