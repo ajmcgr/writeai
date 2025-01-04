@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface PricingPlanProps {
   name: string;
@@ -27,6 +28,8 @@ export function PricingPlanCard({
   disabled = false,
   currentPlan = false,
 }: PricingPlanProps) {
+  const isFreeTrialPlan = name === "Free Trial";
+
   return (
     <Card className={`relative p-6 ${highlighted ? "border-primary shadow-lg" : ""}`}>
       {highlighted && (
@@ -56,14 +59,26 @@ export function PricingPlanCard({
           </li>
         ))}
       </ul>
-      <Button
-        onClick={onSelect}
-        className="w-full"
-        disabled={disabled}
-        variant={highlighted ? "default" : "outline"}
-      >
-        {currentPlan ? "Current Plan" : cta}
-      </Button>
+      {isFreeTrialPlan ? (
+        <Link to="/signup">
+          <Button
+            className="w-full"
+            disabled={disabled}
+            variant={highlighted ? "default" : "outline"}
+          >
+            {currentPlan ? "Current Plan" : cta}
+          </Button>
+        </Link>
+      ) : (
+        <Button
+          onClick={onSelect}
+          className="w-full"
+          disabled={disabled}
+          variant={highlighted ? "default" : "outline"}
+        >
+          {currentPlan ? "Current Plan" : cta}
+        </Button>
+      )}
     </Card>
   );
 }
