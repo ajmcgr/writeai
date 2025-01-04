@@ -116,8 +116,7 @@ export const FormattingToolbar = ({
           onClick={clearFormatting}
           disabled={isLoading}
         >
-          <Eraser className="h-4 w-4 mr-2" />
-          Clear Format
+          <Eraser className="h-4 w-4" />
         </Button>
       </div>
 
