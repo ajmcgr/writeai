@@ -69,7 +69,7 @@ export const FormattingToolbar = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onFormat("heading")}
+          onClick={() => onFormat("formatBlock")}
           disabled={isLoading}
         >
           H
@@ -77,7 +77,7 @@ export const FormattingToolbar = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onFormat("bullet")}
+          onClick={() => onFormat("insertUnorderedList")}
           disabled={isLoading}
         >
           •
@@ -85,7 +85,7 @@ export const FormattingToolbar = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onFormat("number")}
+          onClick={() => onFormat("insertOrderedList")}
           disabled={isLoading}
         >
           1.

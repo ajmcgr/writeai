@@ -1,4 +1,4 @@
-import { Textarea } from "@/components/ui/textarea";
+import { useEffect, useRef } from "react";
 
 interface EditorAreaProps {
   content: string;
@@ -8,18 +8,28 @@ interface EditorAreaProps {
 }
 
 export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaProps) => {
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (editorRef.current && content !== editorRef.current.innerHTML) {
+      editorRef.current.innerHTML = content;
+    }
+  }, [content]);
+
+  const handleInput = () => {
+    if (editorRef.current) {
+      setContent(editorRef.current.innerHTML);
+    }
+  };
+
   return (
     <div className="flex-1 h-[calc(100vh-200px)] overflow-hidden">
-      <div 
-        className="prose prose-lg max-w-none"
-        dangerouslySetInnerHTML={{ __html: content }}
-        style={{ display: 'none' }}
-      />
-      <Textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
+      <div
+        ref={editorRef}
+        contentEditable
+        onInput={handleInput}
+        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-xl leading-relaxed"
         placeholder="Start writing or generate content..."
-        className="w-full h-full p-4 resize-none border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xl leading-relaxed overflow-y-auto"
       />
     </div>
   );

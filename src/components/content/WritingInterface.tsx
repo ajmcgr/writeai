@@ -41,49 +41,11 @@ export const WritingInterface = ({
   currentContentId,
 }: WritingInterfaceProps) => {
   const [showAnalysis, setShowAnalysis] = useState(true);
-  const [editorContent, setEditorContent] = useState(content);
   const [showAIPrompt, setShowAIPrompt] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
 
-  useEffect(() => {
-    setEditorContent(content);
-  }, [content]);
-
   const formatText = (type: string) => {
-    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = editorContent.substring(start, end);
-    let formattedText = selectedText;
-
-    switch (type) {
-      case 'bold':
-        formattedText = `<strong>${selectedText}</strong>`;
-        break;
-      case 'italic':
-        formattedText = `<em>${selectedText}</em>`;
-        break;
-      case 'underline':
-        formattedText = `<u>${selectedText}</u>`;
-        break;
-      case 'heading':
-        formattedText = `<h2>${selectedText}</h2>`;
-        break;
-      case 'bullet':
-        formattedText = `<li>${selectedText}</li>`;
-        break;
-      case 'number':
-        formattedText = `<ol><li>${selectedText}</li></ol>`;
-        break;
-      default:
-        return;
-    }
-
-    const newContent = editorContent.substring(0, start) + formattedText + editorContent.substring(end);
-    setEditorContent(newContent);
-    setContent(newContent);
+    document.execCommand(type, false);
   };
 
   const handleApplySuggestion = (suggestion: string) => {
@@ -109,11 +71,8 @@ export const WritingInterface = ({
           onSave={handleSaveDraft}
         />
         <EditorArea
-          content={editorContent}
-          setContent={(newContent) => {
-            setEditorContent(newContent);
-            setContent(newContent);
-          }}
+          content={content}
+          setContent={setContent}
           title={title}
           setTitle={setTitle}
         />
