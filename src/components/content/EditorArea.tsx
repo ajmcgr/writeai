@@ -29,7 +29,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         contentEditable
         onInput={handleInput}
         data-placeholder="Start writing or generate content..."
-        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-xl leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground"
+        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-lg leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground"
       />
     </div>
   );
