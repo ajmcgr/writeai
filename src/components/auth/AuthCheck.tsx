@@ -1,5 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 interface AuthCheckProps {
   isAuthenticated: boolean;
@@ -7,6 +8,19 @@ interface AuthCheckProps {
 
 export const AuthCheck = ({ isAuthenticated }: AuthCheckProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // If coming from a payment (Stripe adds ?session_id to the URL)
+    const searchParams = new URLSearchParams(location.search);
+    const sessionId = searchParams.get('session_id');
+    
+    if (sessionId) {
+      console.log("Payment redirect detected, redirecting to signin with return URL");
+      navigate("/signin", { state: { redirectTo: location.pathname } });
+      return;
+    }
+  }, [location, navigate]);
 
   if (!isAuthenticated) {
     return (
@@ -17,7 +31,9 @@ export const AuthCheck = ({ isAuthenticated }: AuthCheckProps) => {
             Your AI-powered assistant for creating professional press releases and blog posts.
           </p>
           <Button
-            onClick={() => navigate("/auth")}
+            onClick={() => navigate("/signin", { 
+              state: { redirectTo: location.pathname } 
+            })}
             className="w-full"
           >
             Sign In to Continue

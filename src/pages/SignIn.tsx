@@ -1,22 +1,24 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/layout/Navigation";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const redirectTo = location.state?.redirectTo || "/write";
 
   useEffect(() => {
     // Check if there's an existing session on mount
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        console.log("Existing session found, redirecting to write page");
-        navigate("/write");
+        console.log("Existing session found, redirecting to:", redirectTo);
+        navigate(redirectTo);
       }
     };
     checkSession();
@@ -29,7 +31,7 @@ const SignIn = () => {
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
-        navigate("/write");
+        navigate(redirectTo);
       } else if (event === 'SIGNED_OUT') {
         console.log("User signed out");
         navigate("/");
@@ -42,7 +44,7 @@ const SignIn = () => {
       console.log("Cleaning up auth state change subscription");
       subscription.unsubscribe();
     };
-  }, [navigate, toast]);
+  }, [navigate, toast, redirectTo]);
 
   return (
     <div className="flex min-h-screen flex-col">

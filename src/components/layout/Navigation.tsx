@@ -152,7 +152,7 @@ export function Navigation() {
   );
 
   return (
-    <header className="fixed top-0 w-full bg-[#848ac8] z-50">
+    <header className="fixed top-0 w-full bg-[#848ac8] z-50 shadow-md">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <TooltipProvider>
           <Tooltip>
