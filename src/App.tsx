@@ -16,6 +16,7 @@ import Quote from "./pages/tools/Quote";
 import CTA from "./pages/tools/CTA";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { LoadingState } from "@/components/ui/loading-state";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -49,7 +50,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return null; // Or a loading spinner if you prefer
+    return <LoadingState />;
   }
 
   return (
@@ -59,7 +60,9 @@ function App() {
         <Route 
           path="/write" 
           element={
-            isAuthenticated ? (
+            isLoading ? (
+              <LoadingState />
+            ) : isAuthenticated ? (
               <Write />
             ) : (
               <Navigate to="/signup" replace state={{ redirectTo: "/write" }} />
