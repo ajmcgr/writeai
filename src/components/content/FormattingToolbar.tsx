@@ -1,15 +1,5 @@
-import { Button } from "@/components/ui/button";
-import {
-  Save,
-  FileUp,
-  History,
-  Copy,
-  FileDown,
-  Wand2,
-  LineChart,
-  Sparkles,
-  Eraser,
-} from "lucide-react";
+import { TextFormatButtons } from "./formatting/TextFormatButtons";
+import { ActionButtons } from "./formatting/ActionButtons";
 
 interface FormattingToolbarProps {
   onFormat: (type: string) => void;
@@ -57,145 +47,24 @@ export const FormattingToolbar = ({
 
   return (
     <div className="flex items-center justify-between gap-2 p-4">
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onFormat("bold")}
-          disabled={isLoading}
-        >
-          B
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onFormat("italic")}
-          disabled={isLoading}
-        >
-          I
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onFormat("underline")}
-          disabled={isLoading}
-        >
-          U
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onFormat("formatBlock")}
-          disabled={isLoading}
-        >
-          H
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onFormat("insertUnorderedList")}
-          disabled={isLoading}
-        >
-          •
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onFormat("insertOrderedList")}
-          disabled={isLoading}
-        >
-          1.
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={clearFormatting}
-          disabled={isLoading}
-        >
-          <Eraser className="h-4 w-4" />
-        </Button>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onHistory}
-          disabled={isLoading || !hasContentId}
-        >
-          <History className="h-4 w-4 mr-2" />
-          History
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onCopy}
-          disabled={isLoading || !hasContent}
-        >
-          <Copy className="h-4 w-4 mr-2" />
-          Copy
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onAIGenerate}
-          disabled={isLoading}
-        >
-          <Sparkles className="h-4 w-4 mr-2" />
-          AI Generate
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onRewrite}
-          disabled={isLoading || !hasContent}
-        >
-          <Wand2 className="h-4 w-4 mr-2" />
-          AI Re-write
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onAnalyze}
-          disabled={isLoading || !hasContent}
-        >
-          <LineChart className="h-4 w-4 mr-2" />
-          AI Analyze
-        </Button>
-        <Button variant="outline" size="sm" disabled={isLoading} asChild>
-          <label>
-            <FileUp className="h-4 w-4 mr-2" />
-            Upload
-            <input
-              type="file"
-              className="hidden"
-              onChange={onFileUpload}
-              accept=".txt,.doc,.docx,.odt"
-            />
-          </label>
-        </Button>
-        {onSaveDraft && (
-          <Button
-            variant="default"
-            size="sm"
-            onClick={onSaveDraft}
-            disabled={isLoading || !hasContent}
-            className="bg-primary hover:bg-primary/90"
-          >
-            <Save className="h-4 w-4 mr-2" />
-            Save Draft
-          </Button>
-        )}
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onExport}
-          disabled={isLoading || !hasContent}
-        >
-          <FileDown className="h-4 w-4 mr-2" />
-          Export
-        </Button>
-      </div>
+      <TextFormatButtons
+        onFormat={onFormat}
+        clearFormatting={clearFormatting}
+        isLoading={isLoading}
+      />
+      <ActionButtons
+        onHistory={onHistory}
+        onCopy={onCopy}
+        onAIGenerate={onAIGenerate}
+        onRewrite={onRewrite}
+        onAnalyze={onAnalyze}
+        onFileUpload={onFileUpload}
+        onSaveDraft={onSaveDraft}
+        onExport={onExport}
+        isLoading={isLoading}
+        hasContent={hasContent}
+        hasContentId={hasContentId}
+      />
     </div>
   );
 };
