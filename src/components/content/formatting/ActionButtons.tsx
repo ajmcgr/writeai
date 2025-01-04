@@ -1,14 +1,21 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   History,
   Copy,
-  FileDown,
-  Wand2,
-  LineChart,
-  Sparkles,
-  Save,
   FileUp,
+  Download,
+  Wand2,
+  Search,
+  Save,
+  Sparkles,
 } from "lucide-react";
-import { FormattingButton } from "./FormattingButton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ActionButtonsProps {
   onHistory: () => void;
@@ -39,66 +46,139 @@ export const ActionButtons = ({
 }: ActionButtonsProps) => {
   return (
     <div className="flex items-center gap-2">
-      <FormattingButton
-        onClick={onHistory}
-        disabled={isLoading || !hasContentId}
-        icon={History}
-        label="View previous versions of this document"
-      />
-      <FormattingButton
-        onClick={onCopy}
-        disabled={isLoading || !hasContent}
-        icon={Copy}
-        label="Copy all content to clipboard"
-      />
-      <FormattingButton
-        onClick={onAIGenerate}
-        disabled={isLoading}
-        icon={Sparkles}
-        label="Generate new content using AI assistant"
-      />
-      <FormattingButton
-        onClick={onRewrite}
-        disabled={isLoading || !hasContent}
-        icon={Wand2}
-        label="Rewrite current content using AI"
-      />
-      <FormattingButton
-        onClick={onAnalyze}
-        disabled={isLoading || !hasContent}
-        icon={LineChart}
-        label="Analyze content quality and get suggestions"
-      />
-      <FormattingButton
-        disabled={isLoading}
-        icon={FileUp}
-        label="Import content from a document file"
-        asChild
-      >
-        <label>
-          Upload
-          <input
-            type="file"
-            className="hidden"
-            onChange={onFileUpload}
-            accept=".txt,.doc,.docx,.odt"
-          />
-        </label>
-      </FormattingButton>
-      {onSaveDraft && (
-        <FormattingButton
-          onClick={onSaveDraft}
-          disabled={isLoading || !hasContent}
-          icon={Save}
-          label="Save current content as a draft"
-        />
-      )}
-      <FormattingButton
-        onClick={onExport}
-        disabled={isLoading || !hasContent}
-        icon={FileDown}
-        label="Export content as a Word document"
-      />
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onHistory}
+              disabled={!hasContentId || isLoading}
+            >
+              <History className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Version History (Ctrl+H)</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onCopy}
+              disabled={!hasContent || isLoading}
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Copy to Clipboard (Ctrl+C)</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" onClick={onAIGenerate}>
+              <Sparkles className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Generate with AI</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onRewrite}
+              disabled={!hasContent || isLoading}
+            >
+              <Wand2 className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Rewrite Content</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onAnalyze}
+              disabled={!hasContent || isLoading}
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Analyze Content</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <Input
+                type="file"
+                className="hidden"
+                onChange={onFileUpload}
+                accept=".txt,.doc,.docx"
+                id="file-upload"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => document.getElementById("file-upload")?.click()}
+                disabled={isLoading}
+              >
+                <FileUp className="h-4 w-4" />
+              </Button>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Upload Document (.txt, .doc, .docx)</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onSaveDraft}
+              disabled={!hasContent || isLoading}
+            >
+              <Save className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Save Draft (Ctrl+S)</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onExport}
+              disabled={!hasContent || isLoading}
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Export to Word</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 };
