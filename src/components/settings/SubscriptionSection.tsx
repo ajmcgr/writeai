@@ -44,8 +44,34 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
     return () => clearInterval(interval);
   }, []);
 
-  const handleUpgrade = () => {
-    navigate("/pricing"); // Changed from window.open to navigate
+  const handleUpgrade = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.error("No session found");
+        return;
+      }
+
+      const response = await fetch('/functions/v1/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create checkout session');
+      }
+
+      const { url } = await response.json();
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+    }
   };
 
   const getSubscriptionDisplay = () => {
