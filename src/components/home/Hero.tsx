@@ -42,8 +42,8 @@ export function Hero() {
         </Link>
         <div className="mt-8 w-full max-w-5xl rounded-lg border bg-card p-4 shadow-lg">
           <img
-            src="/placeholder.svg"
-            alt="Write AI Screenshot"
+            src="/lovable-uploads/e3e2c224-6c20-4147-9da2-5ae543bd77c4.png"
+            alt="Write AI Interface Screenshot"
             className="w-full rounded"
           />
         </div>
