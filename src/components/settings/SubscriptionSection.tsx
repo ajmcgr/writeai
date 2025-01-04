@@ -45,7 +45,7 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
   }, []);
 
   const handleUpgrade = () => {
-    window.open("/pricing", '_blank');
+    navigate("/pricing"); // Changed from window.open to navigate
   };
 
   const getSubscriptionDisplay = () => {
