@@ -11,6 +11,7 @@ interface SubscriptionSectionProps {
 export function SubscriptionSection({ subscriptionStatus: initialStatus }: SubscriptionSectionProps) {
   const navigate = useNavigate();
   const [status, setStatus] = useState(initialStatus);
+  const [trialEndsAt, setTrialEndsAt] = useState<Date | null>(null);
 
   useEffect(() => {
     const checkSubscription = async () => {
@@ -19,7 +20,7 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("subscription_status, stripe_customer_id, stripe_subscription_id")
+        .select("subscription_status, stripe_customer_id, stripe_subscription_id, created_at")
         .eq("user_id", session.user.id)
         .single();
 
@@ -27,6 +28,13 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
         console.log("Subscription status:", profile.subscription_status);
         console.log("Stripe customer ID:", profile.stripe_customer_id);
         setStatus(profile.subscription_status);
+
+        // Calculate trial end date
+        if (profile.created_at && profile.subscription_status === "free") {
+          const trialEnd = new Date(profile.created_at);
+          trialEnd.setDate(trialEnd.getDate() + 7);
+          setTrialEndsAt(trialEnd);
+        }
       }
     };
 
@@ -40,6 +48,23 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
     navigate("/pricing");
   };
 
+  const getSubscriptionDisplay = () => {
+    if (status === "pro") {
+      return "Pro";
+    }
+    
+    if (trialEndsAt) {
+      const now = new Date();
+      if (now < trialEndsAt) {
+        const daysLeft = Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        return `Free Trial (${daysLeft} days left)`;
+      }
+      return "Trial Expired";
+    }
+    
+    return "Free Trial";
+  };
+
   return (
     <div className="bg-white p-8 rounded-lg shadow-sm border">
       <div className="flex items-center gap-3 mb-6">
@@ -48,7 +73,7 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
       </div>
       <div className="space-y-6">
         <p className="text-gray-600">
-          Current Plan: <span className="font-semibold capitalize">{status}</span>
+          Current Plan: <span className="font-semibold">{getSubscriptionDisplay()}</span>
         </p>
         {status === "free" && (
           <Button onClick={handleUpgrade}>

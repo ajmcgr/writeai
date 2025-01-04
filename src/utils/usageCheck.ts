@@ -20,7 +20,7 @@ export const useUsageCheck = () => {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("subscription_status, stripe_customer_id, last_use_date, daily_uses")
+        .select("subscription_status, stripe_customer_id, created_at")
         .eq("user_id", session.user.id)
         .single();
 
@@ -28,24 +28,29 @@ export const useUsageCheck = () => {
 
       console.log("Checking usage limit for user with subscription status:", profile.subscription_status);
       console.log("Stripe customer ID:", profile.stripe_customer_id);
+      console.log("Account created at:", profile.created_at);
 
       // Pro users bypass the usage check
       if (profile.subscription_status === "pro") {
         return true;
       }
 
-      // Check daily limit for free users
-      const today = new Date().toISOString().split("T")[0];
-      if (profile.last_use_date === today && (profile.daily_uses ?? 0) >= 1) {
-        toast({
-          title: "Usage limit reached",
-          description: "You've reached your daily limit. Please upgrade to Pro for unlimited access.",
-        });
-        navigate("/pricing");
-        return false;
+      // Check if user is within 7-day trial period
+      const trialEndDate = new Date(profile.created_at);
+      trialEndDate.setDate(trialEndDate.getDate() + 7);
+      const isInTrialPeriod = new Date() < trialEndDate;
+
+      if (isInTrialPeriod) {
+        return true;
       }
 
-      return true;
+      // Trial has ended
+      toast({
+        title: "Trial period ended",
+        description: "Your free trial has expired. Please upgrade to Pro for unlimited access.",
+      });
+      navigate("/pricing");
+      return false;
     } catch (error) {
       console.error("Error checking usage limit:", error);
       return false;

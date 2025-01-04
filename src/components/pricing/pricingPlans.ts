@@ -1,14 +1,14 @@
 export const plans = {
   monthly: [
     {
-      name: "Free",
-      description: "Perfect for occasional press releases",
+      name: "Free Trial",
+      description: "Try all Pro features free for 7 days",
       price: "0",
       period: "month",
       features: [
-        "1 free AI press release document every 24 hours",
+        "7-day free trial with unlimited access",
         "AI-powered suggestions",
-        "Basic templates",
+        "Premium templates",
         "Download text",
         "Priority support",
       ],
@@ -31,14 +31,14 @@ export const plans = {
   ],
   annual: [
     {
-      name: "Free",
-      description: "Perfect for occasional press releases",
+      name: "Free Trial",
+      description: "Try all Pro features free for 7 days",
       price: "0",
       period: "year",
       features: [
-        "1 free AI press release document every 24 hours",
+        "7-day free trial with unlimited access",
         "AI-powered suggestions",
-        "Basic templates",
+        "Premium templates",
         "Download text",
         "Priority support",
       ],

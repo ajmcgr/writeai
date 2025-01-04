@@ -12,8 +12,8 @@ export function FAQ() {
       answer: "Our AI assistant uses advanced language models to help you generate and refine press releases. Simply input your content or start from scratch, and our AI will help you create professional, engaging press releases.",
     },
     {
-      question: "What's included in the free plan?",
-      answer: "The free plan includes 3 AI press release rewrites every 24 hours, basic templates, and the ability to download your content in text format. You also get access to our AI-powered suggestions.",
+      question: "What's included in the free trial?",
+      answer: "Our 7-day free trial gives you full access to all Pro features including unlimited AI press release generation, premium templates, and AI-powered suggestions. No credit card required to start.",
     },
     {
       question: "Can I upgrade or downgrade my plan anytime?",
@@ -25,7 +25,7 @@ export function FAQ() {
     },
     {
       question: "How do I get started?",
-      answer: "Simply sign up for a free account to begin. You can immediately start using our AI assistant to create press releases, and upgrade to pro whenever you need more features.",
+      answer: "Simply sign up for a free trial to begin. You'll get immediate access to all Pro features for 7 days, with no credit card required. You can upgrade to a Pro plan anytime to continue using all features.",
     },
   ];
 
