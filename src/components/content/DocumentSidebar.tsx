@@ -81,19 +81,33 @@ export function DocumentSidebar() {
           try {
             // Only update if the change is for the current user's documents
             const { data: { session } } = await supabase.auth.getSession();
-            if (!session || newRecord.user_id !== session.user.id) {
+            if (!session) {
+              console.log("No session found, skipping real-time update");
               return;
             }
 
+            // For delete events, we check the old record's user_id
+            const relevantUserId = eventType === "DELETE" ? oldRecord?.user_id : newRecord?.user_id;
+            
+            if (relevantUserId !== session.user.id) {
+              console.log("Change not relevant to current user, skipping update");
+              return;
+            }
+
+            console.log(`Processing ${eventType} event for document`);
+            
             setDocuments(currentDocs => {
               switch (eventType) {
                 case "INSERT":
+                  console.log("Adding new document to list");
                   return [newRecord, ...currentDocs];
                 case "UPDATE":
+                  console.log("Updating existing document in list");
                   return currentDocs.map(doc => 
                     doc.id === newRecord.id ? newRecord : doc
                   );
                 case "DELETE":
+                  console.log("Removing document from list");
                   return currentDocs.filter(doc => doc.id !== oldRecord.id);
                 default:
                   return currentDocs;
@@ -110,7 +124,7 @@ export function DocumentSidebar() {
 
     return () => {
       console.log("Cleaning up subscription");
-      channel.unsubscribe();
+      supabase.removeChannel(channel);
     };
   }, []);
 
