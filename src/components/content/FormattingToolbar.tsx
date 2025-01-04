@@ -7,6 +7,7 @@ import {
   FileDown,
   Wand2,
   LineChart,
+  Sparkles,
 } from "lucide-react";
 
 interface FormattingToolbarProps {
@@ -17,6 +18,7 @@ interface FormattingToolbarProps {
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRewrite: () => void;
   onAnalyze: () => void;
+  onAIGenerate: () => void;
   onSaveDraft?: () => void;
   isLoading: boolean;
   hasContent: boolean;
@@ -31,6 +33,7 @@ export const FormattingToolbar = ({
   onFileUpload,
   onRewrite,
   onAnalyze,
+  onAIGenerate,
   onSaveDraft,
   isLoading,
   hasContent,
@@ -107,6 +110,15 @@ export const FormattingToolbar = ({
         >
           <Copy className="h-4 w-4 mr-2" />
           Copy
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onAIGenerate}
+          disabled={isLoading}
+        >
+          <Sparkles className="h-4 w-4 mr-2" />
+          AI Generate
         </Button>
         <Button
           variant="outline"

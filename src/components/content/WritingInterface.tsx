@@ -42,7 +42,7 @@ export const WritingInterface = ({
 }: WritingInterfaceProps) => {
   const [showAnalysis, setShowAnalysis] = useState(true);
   const [editorContent, setEditorContent] = useState(content);
-  const [showAIPrompt, setShowAIPrompt] = useState(true);
+  const [showAIPrompt, setShowAIPrompt] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   useEffect(() => {
@@ -144,10 +144,8 @@ export const WritingInterface = ({
             onHistory={onHistory}
             onFileUpload={onFileUpload}
             onRewrite={onRewrite}
-            onAnalyze={() => {
-              setShowAnalysis(true);
-              onAnalyze();
-            }}
+            onAnalyze={onAnalyze}
+            onAIGenerate={() => setShowAIPrompt(true)}
             onSaveDraft={() => setShowSaveDialog(true)}
             isLoading={isLoading}
             hasContent={!!content}
