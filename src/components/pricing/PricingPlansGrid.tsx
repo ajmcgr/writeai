@@ -22,27 +22,24 @@ export function PricingPlansGrid({ period, isLoading, subscriptionStatus }: Pric
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-          navigate("/signin");
+          navigate("/signup", { state: { period } });
           return;
         }
 
-        const response = await fetch('/functions/v1/create-checkout-session', {
-          method: 'POST',
+        const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+          body: { period },
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ period }),
+            Authorization: `Bearer ${session.access_token}`
+          }
         });
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Failed to create checkout session');
+        if (error) {
+          console.error('Error creating checkout session:', error);
+          throw error;
         }
 
-        const { url } = await response.json();
-        if (url) {
-          window.location.href = url;
+        if (data?.url) {
+          window.location.href = data.url;
         }
       } catch (error) {
         console.error('Error creating checkout session:', error);

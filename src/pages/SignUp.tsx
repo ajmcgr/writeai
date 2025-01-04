@@ -29,30 +29,23 @@ const SignUp = () => {
           if (hubspotError) throw hubspotError;
 
           // If this is coming from a pricing plan selection, create checkout session
-          if (location.state?.price) {
-            console.log('Creating Stripe checkout session');
-            const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
-              'create-checkout-session',
-              {
-                body: { 
-                  priceId: location.state.price,
-                  email: session.user.email,
-                  userId: session.user.id
-                },
-                headers: {
-                  Authorization: `Bearer ${session.access_token}`
-                }
+          if (location.state?.period) {
+            console.log('Creating Stripe checkout session with period:', location.state.period);
+            const response = await supabase.functions.invoke('create-checkout-session', {
+              body: { period: location.state.period },
+              headers: {
+                Authorization: `Bearer ${session.access_token}`
               }
-            );
+            });
 
-            if (checkoutError) {
-              console.error('Checkout error:', checkoutError);
-              throw checkoutError;
+            if (response.error) {
+              console.error('Checkout error:', response.error);
+              throw new Error(response.error.message || 'Failed to create checkout session');
             }
 
-            if (checkoutData?.url) {
-              console.log('Redirecting to checkout:', checkoutData.url);
-              window.location.href = checkoutData.url;
+            if (response.data?.url) {
+              console.log('Redirecting to checkout:', response.data.url);
+              window.location.href = response.data.url;
               return; // Prevent further navigation
             }
           }

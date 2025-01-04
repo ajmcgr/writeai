@@ -23,21 +23,53 @@ serve(async (req) => {
       throw new Error('Missing authorization header');
     }
 
-    const { priceId, email, userId } = await req.json();
-    console.log('Creating checkout session for:', { priceId, email, userId });
-
-    if (!priceId || !email || !userId) {
-      throw new Error('Missing required parameters');
+    // Get JWT token from Authorization header
+    const token = authHeader.replace('Bearer ', '');
+    
+    // Verify the JWT token with Supabase
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
+    
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Missing Supabase configuration');
     }
 
+    const verifyResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: supabaseKey,
+      },
+    });
+
+    if (!verifyResponse.ok) {
+      throw new Error('Invalid authentication token');
+    }
+
+    const user = await verifyResponse.json();
+    console.log('Authenticated user:', user.email);
+
+    const { period } = await req.json();
+    console.log('Creating checkout session for period:', period);
+
+    if (!period) {
+      throw new Error('Missing period parameter');
+    }
+
+    // Set the price ID based on the period
+    const priceId = period === 'monthly' 
+      ? 'price_1OeXXXXXXXXXXXXXXXXXXXXX'  // Replace with your monthly price ID
+      : 'price_1OeXXXXXXXXXXXXXXXXXXXXX'; // Replace with your annual price ID
+
     // Create or retrieve customer
-    const customers = await stripe.customers.list({ email });
+    const customers = await stripe.customers.list({ email: user.email });
     let customer;
 
     if (customers.data.length > 0) {
       customer = customers.data[0];
+      console.log('Found existing customer:', customer.id);
     } else {
-      customer = await stripe.customers.create({ email });
+      customer = await stripe.customers.create({ email: user.email });
+      console.log('Created new customer:', customer.id);
     }
 
     // Create checkout session
@@ -52,10 +84,10 @@ serve(async (req) => {
       mode: 'subscription',
       success_url: `${req.headers.get('origin')}/write?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get('origin')}/pricing`,
-      client_reference_id: userId,
+      client_reference_id: user.id,
       subscription_data: {
         metadata: {
-          userId,
+          userId: user.id,
         },
       },
     });
