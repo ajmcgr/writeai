@@ -9,13 +9,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ArrowLeft, User, LogOut, Menu, X } from "lucide-react";
+import { ArrowLeft, User, LogOut, Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export function Navigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -42,8 +41,20 @@ export function Navigation() {
 
   const handleLogout = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      // First check if there's a valid session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
+      if (sessionError) {
+        console.error("Error checking session:", sessionError);
+        setIsAuthenticated(false);
+        navigate("/");
+        toast({
+          title: "Logged out",
+          description: "You have been logged out of your account",
+        });
+        return;
+      }
+
       if (!session) {
         console.log("No active session found, clearing local state");
         setIsAuthenticated(false);
@@ -55,15 +66,18 @@ export function Navigation() {
         return;
       }
 
-      const { error } = await supabase.auth.signOut();
+      // If we have a valid session, attempt to sign out
+      const { error: signOutError } = await supabase.auth.signOut();
       
-      if (error) {
-        console.error("Error during logout:", error);
+      if (signOutError) {
+        console.error("Error during logout:", signOutError);
+        // Even if there's an error, we should clean up the local state
         setIsAuthenticated(false);
         navigate("/");
         toast({
           title: "Logged out",
           description: "You have been logged out of your account",
+          variant: "default",
         });
         return;
       }
@@ -75,7 +89,7 @@ export function Navigation() {
       });
       navigate("/");
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error("Unexpected error during logout:", error);
       setIsAuthenticated(false);
       toast({
         title: "Logged out",
