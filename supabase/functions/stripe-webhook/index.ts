@@ -21,7 +21,6 @@ const supabaseAdmin = createClient(
 serve(async (req) => {
   console.log('Received webhook request');
 
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -51,7 +50,11 @@ serve(async (req) => {
 
     let event;
     try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      event = await stripe.webhooks.constructEventAsync(
+        body,
+        signature,
+        webhookSecret
+      );
       console.log('Event constructed successfully:', event.type);
     } catch (err) {
       console.error(`Webhook signature verification failed:`, err);
