@@ -20,6 +20,7 @@ serve(async (req) => {
     // Verify auth header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
+      console.error('Missing authorization header');
       throw new Error('Missing authorization header');
     }
 
@@ -31,6 +32,7 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
     
     if (!supabaseUrl || !supabaseKey) {
+      console.error('Missing Supabase configuration');
       throw new Error('Missing Supabase configuration');
     }
 
@@ -42,6 +44,7 @@ serve(async (req) => {
     });
 
     if (!verifyResponse.ok) {
+      console.error('Invalid authentication token');
       throw new Error('Invalid authentication token');
     }
 
@@ -52,6 +55,7 @@ serve(async (req) => {
     console.log('Creating checkout session for period:', period);
 
     if (!period) {
+      console.error('Missing period parameter');
       throw new Error('Missing period parameter');
     }
 
@@ -66,6 +70,7 @@ serve(async (req) => {
     }
 
     if (!priceId) {
+      console.error(`Missing price ID for ${period} period`);
       throw new Error(`Missing price ID for ${period} period`);
     }
 
