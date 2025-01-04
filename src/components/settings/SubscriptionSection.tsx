@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "react-hot-toast";
 
 interface SubscriptionSectionProps {
   subscriptionStatus: string | null;
@@ -52,25 +53,25 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
         return;
       }
 
-      const response = await fetch('/functions/v1/create-checkout-session', {
-        method: 'POST',
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: { period: 'monthly' },
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
+          Authorization: `Bearer ${session.access_token}`
+        }
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to create checkout session');
+      if (error) {
+        console.error('Error creating checkout session:', error);
+        toast.error('Failed to start checkout process. Please try again.');
+        return;
       }
 
-      const { url } = await response.json();
-      if (url) {
-        window.location.href = url;
+      if (data?.url) {
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
+      toast.error('Failed to start checkout process. Please try again.');
     }
   };
 

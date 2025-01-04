@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MobileNavProps {
   isAuthenticated: boolean;
@@ -9,6 +11,27 @@ interface MobileNavProps {
 }
 
 export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => {
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!isAuthenticated) return;
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('subscription_status')
+        .eq('user_id', session.user.id)
+        .single();
+
+      setSubscriptionStatus(profile?.subscription_status || 'free');
+    };
+
+    checkSubscription();
+  }, [isAuthenticated]);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -34,6 +57,11 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
           </a>
           {isAuthenticated ? (
             <>
+              {subscriptionStatus === 'free' && (
+                <Link to="/pricing" className="px-4 py-2 bg-white text-[#848ac8] hover:bg-gray-100 rounded-md text-center">
+                  Upgrade to Pro
+                </Link>
+              )}
               <Link to="/settings" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
                 Account Settings
               </Link>

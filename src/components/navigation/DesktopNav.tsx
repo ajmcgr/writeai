@@ -8,6 +8,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DesktopNavProps {
   isAuthenticated: boolean;
@@ -15,9 +17,37 @@ interface DesktopNavProps {
 }
 
 export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) => {
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!isAuthenticated) return;
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('subscription_status')
+        .eq('user_id', session.user.id)
+        .single();
+
+      setSubscriptionStatus(profile?.subscription_status || 'free');
+    };
+
+    checkSubscription();
+  }, [isAuthenticated]);
+
   if (isAuthenticated) {
     return (
       <div className="hidden md:flex items-center gap-2">
+        {subscriptionStatus === 'free' && (
+          <Link to="/pricing">
+            <Button variant="secondary" size="sm" className="mr-2">
+              Upgrade
+            </Button>
+          </Link>
+        )}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
