@@ -33,7 +33,7 @@ export function PricingPlanCard({ plan, isLoading, subscriptionStatus, onUpgrade
     if (plan.name === "Free Trial") {
       navigate("/signup", { state: { redirectTo: "/write" } });
     } else if (plan.stripeUrl) {
-      window.location.href = plan.stripeUrl;
+      window.open(plan.stripeUrl, '_blank');
     }
   };
 
