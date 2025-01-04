@@ -92,7 +92,7 @@ export function Navigation() {
 
   return (
     <header className="fixed top-0 w-full bg-[#848ac8] z-50">
-      <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+      <div className={`${isAuthenticated ? 'w-full px-4' : 'container px-4 md:px-6'} flex h-16 items-center justify-between`}>
         <Logo isAuthenticated={isAuthenticated} handleLogoClick={handleLogoClick} />
         <DesktopNav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
         <MobileNav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
