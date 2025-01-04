@@ -64,13 +64,35 @@ serve(async (req) => {
       );
     }
 
-    if (event.type === 'checkout.session.completed') {
+    // Handle subscription lifecycle events
+    if (event.type === 'customer.subscription.created' || 
+        event.type === 'customer.subscription.updated' ||
+        event.type === 'checkout.session.completed') {
       const session = event.data.object;
-      console.log('Processing checkout session:', session);
+      console.log('Processing subscription event:', event.type);
 
-      const customerEmail = session.customer_details?.email;
+      let customerEmail;
+      let customerId;
+      let subscriptionId;
+
+      if (event.type === 'checkout.session.completed') {
+        // For checkout sessions
+        customerEmail = session.customer_details?.email;
+        customerId = session.customer;
+        subscriptionId = session.subscription;
+      } else {
+        // For subscription events
+        const subscription = event.data.object;
+        customerId = subscription.customer;
+        subscriptionId = subscription.id;
+        
+        // Get customer email from Stripe
+        const customer = await stripe.customers.retrieve(customerId);
+        customerEmail = typeof customer === 'object' ? customer.email : null;
+      }
+
       if (!customerEmail) {
-        throw new Error('No customer email in session');
+        throw new Error('No customer email found in event');
       }
 
       console.log('Looking up user with email:', customerEmail);
@@ -88,7 +110,11 @@ serve(async (req) => {
       console.log('Updating subscription status for user:', users.id);
       const { error: updateError } = await supabaseAdmin
         .from('profiles')
-        .update({ subscription_status: 'pro' })
+        .update({ 
+          subscription_status: 'pro',
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subscriptionId,
+        })
         .eq('user_id', users.id);
 
       if (updateError) {
@@ -97,6 +123,48 @@ serve(async (req) => {
       }
 
       console.log('Successfully updated subscription status');
+    }
+
+    // Handle subscription cancellation/deletion
+    if (event.type === 'customer.subscription.deleted') {
+      const subscription = event.data.object;
+      const customerId = subscription.customer;
+
+      // Get customer email from Stripe
+      const customer = await stripe.customers.retrieve(customerId);
+      const customerEmail = typeof customer === 'object' ? customer.email : null;
+
+      if (!customerEmail) {
+        throw new Error('No customer email found in event');
+      }
+
+      console.log('Looking up user for subscription cancellation:', customerEmail);
+      const { data: users, error: userError } = await supabaseAdmin
+        .from('auth.users')
+        .select('id')
+        .eq('email', customerEmail)
+        .single();
+
+      if (userError || !users) {
+        console.error('User lookup error:', userError);
+        throw new Error('User not found');
+      }
+
+      console.log('Updating subscription status to free for user:', users.id);
+      const { error: updateError } = await supabaseAdmin
+        .from('profiles')
+        .update({ 
+          subscription_status: 'free',
+          stripe_subscription_id: null,
+        })
+        .eq('user_id', users.id);
+
+      if (updateError) {
+        console.error('Profile update error:', updateError);
+        throw new Error(`Failed to update subscription status: ${updateError.message}`);
+      }
+
+      console.log('Successfully updated subscription status to free');
     }
 
     return new Response(JSON.stringify({ received: true }), {
