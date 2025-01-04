@@ -22,30 +22,67 @@ export function DeleteAccountSection() {
   const handleDeleteAccount = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
+      
+      if (!session) {
+        console.error("No active session found");
+        toast({
+          title: "Error",
+          description: "You must be logged in to delete your account",
+          variant: "destructive",
+        });
+        navigate("/signin");
+        return;
+      }
 
-      await supabase
+      console.log("Starting account deletion process for user:", session.user.id);
+
+      // Delete user content first
+      const { error: contentError } = await supabase
         .from("content")
         .delete()
         .eq("user_id", session.user.id);
 
-      await supabase
+      if (contentError) {
+        console.error("Error deleting user content:", contentError);
+        throw new Error("Failed to delete user content");
+      }
+
+      console.log("Successfully deleted user content");
+
+      // Delete user profile
+      const { error: profileError } = await supabase
         .from("profiles")
         .delete()
         .eq("user_id", session.user.id);
 
-      await supabase.auth.signOut();
+      if (profileError) {
+        console.error("Error deleting user profile:", profileError);
+        throw new Error("Failed to delete user profile");
+      }
+
+      console.log("Successfully deleted user profile");
+
+      // Sign out the user last
+      const { error: signOutError } = await supabase.auth.signOut();
+      
+      if (signOutError) {
+        console.error("Error signing out:", signOutError);
+        throw new Error("Failed to sign out");
+      }
+
+      console.log("Successfully signed out user");
 
       toast({
         title: "Account deleted",
         description: "Your account has been successfully deleted",
       });
+      
       navigate("/");
     } catch (error) {
-      console.error("Error deleting account:", error);
+      console.error("Error in account deletion process:", error);
       toast({
         title: "Error",
-        description: "Failed to delete account",
+        description: error instanceof Error ? error.message : "Failed to delete account",
         variant: "destructive",
       });
     }
