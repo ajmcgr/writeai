@@ -43,38 +43,38 @@ export const ActionButtons = ({
         onClick={onHistory}
         disabled={isLoading || !hasContentId}
         icon={History}
-      >
-        History
-      </FormattingButton>
+        label="History"
+      />
       <FormattingButton
         onClick={onCopy}
         disabled={isLoading || !hasContent}
         icon={Copy}
-      >
-        Copy
-      </FormattingButton>
+        label="Copy"
+      />
       <FormattingButton
         onClick={onAIGenerate}
         disabled={isLoading}
         icon={Sparkles}
-      >
-        AI Generate
-      </FormattingButton>
+        label="AI Generate"
+      />
       <FormattingButton
         onClick={onRewrite}
         disabled={isLoading || !hasContent}
         icon={Wand2}
-      >
-        AI Re-write
-      </FormattingButton>
+        label="AI Re-write"
+      />
       <FormattingButton
         onClick={onAnalyze}
         disabled={isLoading || !hasContent}
         icon={LineChart}
+        label="AI Analyze"
+      />
+      <FormattingButton
+        disabled={isLoading}
+        icon={FileUp}
+        label="Upload"
+        asChild
       >
-        AI Analyze
-      </FormattingButton>
-      <FormattingButton disabled={isLoading} icon={FileUp} asChild>
         <label>
           Upload
           <input
@@ -90,17 +90,15 @@ export const ActionButtons = ({
           onClick={onSaveDraft}
           disabled={isLoading || !hasContent}
           icon={Save}
-        >
-          Save Draft
-        </FormattingButton>
+          label="Save Draft"
+        />
       )}
       <FormattingButton
         onClick={onExport}
         disabled={isLoading || !hasContent}
         icon={FileDown}
-      >
-        Export
-      </FormattingButton>
+        label="Export"
+      />
     </div>
   );
 };
