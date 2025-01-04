@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { LucideIcon } from "lucide-react";
 
 interface FormattingButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   children?: React.ReactNode;
   icon?: LucideIcon;
