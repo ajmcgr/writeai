@@ -22,9 +22,12 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
   const handleSave = async () => {
     try {
       setIsLoading(true);
+      console.log("Starting draft save process");
+      
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session?.user) {
+        console.log("No active session found");
         toast({
           title: "Authentication required",
           description: "Please sign in to save drafts",
@@ -32,32 +35,6 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
         });
         return;
       }
-
-      // Check if user is on free plan and has created a document in the last 24 hours
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("subscription_status, last_document_created_at")
-        .eq("user_id", session.user.id)
-        .single();
-
-      if (profile?.subscription_status === "free") {
-        const lastCreated = profile?.last_document_created_at;
-        if (lastCreated && new Date(lastCreated).getTime() > Date.now() - 24 * 60 * 60 * 1000) {
-          toast({
-            title: "Daily limit reached",
-            description: "Free users can only create one document every 24 hours. Upgrade to Pro for unlimited access.",
-          });
-          onOpenChange(false);
-          navigate("/pricing");
-          return;
-        }
-      }
-
-      // Update last_document_created_at
-      await supabase
-        .from("profiles")
-        .update({ last_document_created_at: new Date().toISOString() })
-        .eq("user_id", session.user.id);
 
       // Save the document
       const { data: newContent, error: contentError } = await supabase
@@ -72,16 +49,25 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
         .select()
         .single();
 
-      if (contentError) throw contentError;
+      if (contentError) {
+        console.error("Error saving draft:", contentError);
+        throw contentError;
+      }
 
+      console.log("Draft saved successfully:", newContent);
       onSave(title);
       onOpenChange(false);
 
-      // Trigger a refresh of the documents list by navigating to the new document
+      // Navigate to the new document
       if (newContent?.id) {
         navigate(`/write/${newContent.id}`);
       }
       
+      toast({
+        title: "Success",
+        description: "Draft saved successfully",
+      });
+
     } catch (error) {
       console.error("Error saving draft:", error);
       toast({

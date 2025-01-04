@@ -24,7 +24,6 @@ const Write = () => {
   const [currentContentId, setCurrentContentId] = useState<string | null>(null);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const { isAuthenticated, isLoading: authLoading } = useWriteAuth();
-  const { checkUsageLimit } = useUsageCheck();
 
   useEffect(() => {
     const loadDocument = async () => {
@@ -58,9 +57,6 @@ const Write = () => {
 
   const saveDraft = useCallback(async (newTitle?: string) => {
     try {
-      const canProceed = await checkUsageLimit();
-      if (!canProceed) return;
-
       setIsLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -136,7 +132,7 @@ const Write = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [content, title, currentContentId, toast, checkUsageLimit]);
+  }, [content, title, currentContentId, toast]);
 
   useEffect(() => {
     if (!content || !currentContentId) return;
@@ -183,9 +179,6 @@ const Write = () => {
   };
 
   const exportToDocx = async () => {
-    const canProceed = await checkUsageLimit();
-    if (!canProceed) return;
-
     try {
       const { data, error } = await supabase.functions.invoke("export-to-docx", {
         body: { content },
@@ -210,9 +203,6 @@ const Write = () => {
   };
 
   const copyToClipboard = async () => {
-    const canProceed = await checkUsageLimit();
-    if (!canProceed) return;
-
     try {
       await navigator.clipboard.writeText(content);
       toast({
