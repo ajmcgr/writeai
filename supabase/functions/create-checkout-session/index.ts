@@ -55,10 +55,17 @@ serve(async (req) => {
       throw new Error('Missing period parameter');
     }
 
-    // Set the price ID based on the period
-    const priceId = period === 'monthly' 
-      ? 'price_1OeXXXXXXXXXXXXXXXXXXXXX'  // Replace with your monthly price ID
-      : 'price_1OeXXXXXXXXXXXXXXXXXXXXX'; // Replace with your annual price ID
+    // Get the appropriate price ID based on the period
+    let priceId;
+    if (period === 'monthly') {
+      priceId = Deno.env.get('STRIPE_MONTHLY_PRICE_ID');
+    } else if (period === 'annual') {
+      priceId = Deno.env.get('STRIPE_ANNUAL_PRICE_ID');
+    }
+
+    if (!priceId) {
+      throw new Error(`Missing price ID for ${period} period`);
+    }
 
     // Create or retrieve customer
     const customers = await stripe.customers.list({ email: user.email });
