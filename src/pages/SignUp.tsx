@@ -6,11 +6,12 @@ import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/layout/Navigation";
 
-// Extend the Auth component props to include onViewChange
 type AuthViewType = 'sign_in' | 'sign_up';
-interface ExtendedAuthProps {
-  onViewChange?: (newView: AuthViewType) => void;
-}
+
+// Extend Auth component props
+type ExtendedAuth = typeof Auth & {
+  onViewChange?: (view: AuthViewType) => void;
+};
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -94,22 +95,24 @@ const SignUp = () => {
             </p>
           </div>
           <Auth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#848ac8',
-                    brandAccent: '#9599d1',
+            {...({
+              supabaseClient: supabase,
+              appearance: {
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: '#848ac8',
+                      brandAccent: '#9599d1',
+                    },
                   },
                 },
               },
-            }}
-            providers={["google"]}
-            view="sign_up"
-            theme="light"
-            onViewChange={handleViewChange as ExtendedAuthProps['onViewChange']}
+              providers: ["google"],
+              view: "sign_up",
+              theme: "light",
+              onViewChange: handleViewChange,
+            } as React.ComponentProps<ExtendedAuth>)}
           />
         </div>
       </div>
