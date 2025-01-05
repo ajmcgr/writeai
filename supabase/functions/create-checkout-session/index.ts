@@ -66,10 +66,15 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     });
 
-    // Use hardcoded price IDs
-    const monthlyPriceId = 'cc37727d74deb2d876567de5ea3b0afc59ce65e83ccc7b9e3c7dc62de8e3d64b';
-    const annualPriceId = '64cefa66dc5502ad79dfe91bbc6fc52caa90acc34f89e29c81690e36712e7692';
+    // Get price IDs from environment variables
+    const monthlyPriceId = Deno.env.get('STRIPE_MONTHLY_PRICE_ID');
+    const annualPriceId = Deno.env.get('STRIPE_ANNUAL_PRICE_ID');
     
+    if (!monthlyPriceId || !annualPriceId) {
+      console.error('Missing Stripe price IDs');
+      throw new Error('Stripe price IDs not configured');
+    }
+
     console.log('Available price IDs - Monthly:', monthlyPriceId, 'Annual:', annualPriceId);
 
     let priceId;
