@@ -70,6 +70,12 @@ const SignUp = () => {
     return () => subscription.unsubscribe();
   }, [navigate, toast, redirectTo, location.state]);
 
+  const handleViewChange = (view: 'sign_in' | 'sign_up') => {
+    if (view === 'sign_in') {
+      navigate('/signin', { state: { redirectTo } });
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navigation />
@@ -97,6 +103,7 @@ const SignUp = () => {
             providers={["google"]}
             view="sign_up"
             theme="light"
+            onViewChange={handleViewChange}
           />
         </div>
       </div>
