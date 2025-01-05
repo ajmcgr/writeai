@@ -6,6 +6,12 @@ import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/layout/Navigation";
 
+// Extend the Auth component props to include onViewChange
+type AuthViewType = 'sign_in' | 'sign_up';
+interface ExtendedAuthProps {
+  onViewChange?: (newView: AuthViewType) => void;
+}
+
 const SignUp = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,7 +76,7 @@ const SignUp = () => {
     return () => subscription.unsubscribe();
   }, [navigate, toast, redirectTo, location.state]);
 
-  const handleViewChange = (view: 'sign_in' | 'sign_up') => {
+  const handleViewChange = (view: AuthViewType) => {
     if (view === 'sign_in') {
       navigate('/signin', { state: { redirectTo } });
     }
@@ -103,7 +109,7 @@ const SignUp = () => {
             providers={["google"]}
             view="sign_up"
             theme="light"
-            onViewChange={handleViewChange}
+            onViewChange={handleViewChange as ExtendedAuthProps['onViewChange']}
           />
         </div>
       </div>
