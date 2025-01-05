@@ -67,12 +67,17 @@ serve(async (req) => {
     });
 
     // Get the appropriate price ID based on the period
+    const monthlyPriceId = Deno.env.get('STRIPE_MONTHLY_PRICE_ID');
+    const annualPriceId = Deno.env.get('STRIPE_ANNUAL_PRICE_ID');
+    
+    console.log('Available price IDs - Monthly:', monthlyPriceId, 'Annual:', annualPriceId);
+
     let priceId;
     if (period === 'monthly') {
-      priceId = Deno.env.get('STRIPE_MONTHLY_PRICE_ID');
+      priceId = monthlyPriceId;
       console.log('Using monthly price ID:', priceId);
     } else if (period === 'annual') {
-      priceId = Deno.env.get('STRIPE_ANNUAL_PRICE_ID');
+      priceId = annualPriceId;
       console.log('Using annual price ID:', priceId);
     }
 
