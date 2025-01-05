@@ -9,7 +9,7 @@ const corsHeaders = {
   'Content-Type': 'application/json',
 };
 
-console.log('Initializing Stripe webhook function');
+console.log('🚀 Initializing Stripe webhook function');
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
   apiVersion: '2023-10-16',
@@ -21,18 +21,19 @@ const supabaseAdmin = createClient(
 );
 
 serve(async (req) => {
-  console.log('🔔 Webhook received:', new Date().toISOString());
-  console.log('Request method:', req.method);
-  console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+  const timestamp = new Date().toISOString();
+  console.log(`\n🔔 [${timestamp}] Webhook received`);
+  console.log('📝 Request method:', req.method);
+  console.log('🔑 Request headers:', Object.fromEntries(req.headers.entries()));
 
   if (req.method === 'OPTIONS') {
-    console.log('Handling CORS preflight request');
+    console.log('✨ Handling CORS preflight request');
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const signature = req.headers.get('stripe-signature');
-    console.log('Stripe signature present:', !!signature);
+    console.log('🔐 Stripe signature present:', !!signature);
     
     if (!signature) {
       console.error('❌ No stripe signature found in request headers');
@@ -63,7 +64,7 @@ serve(async (req) => {
         webhookSecret
       );
       console.log('✅ Event constructed successfully:', event.type);
-      console.log('Event details:', {
+      console.log('📊 Event details:', {
         id: event.id,
         type: event.type,
         created: new Date(event.created * 1000).toISOString(),
@@ -71,7 +72,7 @@ serve(async (req) => {
       });
     } catch (err) {
       console.error('❌ Webhook signature verification failed:', err);
-      console.error('Error details:', {
+      console.error('🔍 Error details:', {
         message: err.message,
         stack: err.stack
       });
@@ -85,7 +86,7 @@ serve(async (req) => {
     if (event.type === 'customer.subscription.created' || 
         event.type === 'customer.subscription.updated' ||
         event.type === 'checkout.session.completed') {
-      console.log('🔄 Processing subscription event:', event.type);
+      console.log(`🔄 Processing subscription event: ${event.type}`);
       const session = event.data.object;
 
       let customerEmail;
@@ -97,7 +98,7 @@ serve(async (req) => {
         customerEmail = session.customer_details?.email;
         customerId = session.customer;
         subscriptionId = session.subscription;
-        console.log('Checkout session details:', {
+        console.log('📋 Checkout session details:', {
           customerEmail,
           customerId,
           subscriptionId,
@@ -112,7 +113,7 @@ serve(async (req) => {
         
         console.log('🔍 Retrieving customer details from Stripe');
         const customer = await stripe.customers.retrieve(customerId);
-        console.log('Customer retrieved:', customer);
+        console.log('👤 Customer retrieved:', customer);
         customerEmail = typeof customer === 'object' ? customer.email : null;
       }
 
@@ -130,7 +131,7 @@ serve(async (req) => {
 
       if (userError || !users) {
         console.error('❌ User lookup error:', userError);
-        console.error('Users data:', users);
+        console.error('👥 Users data:', users);
         throw new Error('User not found');
       }
 
@@ -204,7 +205,7 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('❌ Error processing webhook:', error);
-    console.error('Error details:', {
+    console.error('🔍 Error details:', {
       message: error.message,
       stack: error.stack
     });
