@@ -7,8 +7,11 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log('🚀 Create checkout session function started');
+  
   // Handle CORS
   if (req.method === 'OPTIONS') {
+    console.log('Handling CORS preflight request');
     return new Response('ok', { headers: corsHeaders });
   }
 
@@ -22,6 +25,7 @@ serve(async (req) => {
 
     // Get JWT token from Authorization header
     const token = authHeader.replace('Bearer ', '');
+    console.log('Token received, verifying with Supabase...');
     
     // Verify the JWT token with Supabase
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
@@ -77,21 +81,11 @@ serve(async (req) => {
 
     console.log('Available price IDs - Monthly:', monthlyPriceId, 'Annual:', annualPriceId);
 
-    let priceId;
-    if (period === 'monthly') {
-      priceId = monthlyPriceId;
-      console.log('Using monthly price ID:', priceId);
-    } else if (period === 'annual') {
-      priceId = annualPriceId;
-      console.log('Using annual price ID:', priceId);
-    }
-
-    if (!priceId) {
-      console.error(`Missing price ID for ${period} period`);
-      throw new Error(`Missing price ID for ${period} period`);
-    }
+    const priceId = period === 'monthly' ? monthlyPriceId : annualPriceId;
+    console.log('Selected price ID:', priceId);
 
     // Create or retrieve customer
+    console.log('Looking up customer by email:', user.email);
     const customers = await stripe.customers.list({ email: user.email });
     let customer;
 
@@ -104,6 +98,7 @@ serve(async (req) => {
     }
 
     // Create checkout session
+    console.log('Creating Stripe checkout session...');
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       line_items: [
@@ -123,7 +118,7 @@ serve(async (req) => {
       },
     });
 
-    console.log('Checkout session created:', session.id);
+    console.log('Checkout session created successfully:', session.id);
 
     return new Response(
       JSON.stringify({ url: session.url }),

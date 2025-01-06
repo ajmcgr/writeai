@@ -20,12 +20,16 @@ export function PricingPlansGrid({ period, isLoading, subscriptionStatus }: Pric
       navigate("/signup");
     } else {
       try {
+        console.log('Starting checkout process...');
         const { data: { session } } = await supabase.auth.getSession();
+        
         if (!session) {
+          console.log('No session found, redirecting to signup');
           navigate("/signup", { state: { period } });
           return;
         }
 
+        console.log('Creating checkout session with period:', period);
         const { data, error } = await supabase.functions.invoke('create-checkout-session', {
           body: { period },
           headers: {
@@ -34,15 +38,19 @@ export function PricingPlansGrid({ period, isLoading, subscriptionStatus }: Pric
         });
 
         if (error) {
-          console.error('Error creating checkout session:', error);
+          console.error('Error from create-checkout-session:', error);
           throw error;
         }
 
-        if (data?.url) {
-          window.location.href = data.url;
+        if (!data?.url) {
+          console.error('No checkout URL received:', data);
+          throw new Error('Invalid checkout session response');
         }
+
+        console.log('Checkout session created, redirecting to:', data.url);
+        window.location.href = data.url;
       } catch (error) {
-        console.error('Error creating checkout session:', error);
+        console.error('Checkout process error:', error);
         toast.error('Failed to start checkout process. Please try again.');
       }
     }
