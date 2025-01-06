@@ -108,7 +108,7 @@ export const ActionButtons = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Rewrite Content</p>
+            <p>AI Rewrite Content</p>
           </TooltipContent>
         </Tooltip>
 
@@ -124,7 +124,7 @@ export const ActionButtons = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Analyze Content</p>
+            <p>AI Analyze Content</p>
           </TooltipContent>
         </Tooltip>
 
