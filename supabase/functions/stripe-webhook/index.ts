@@ -12,7 +12,7 @@ const corsHeaders = {
 const handleSubscriptionChange = async (supabaseAdmin: any, customerEmail: string, status: 'pro' | 'free', customerId: string, subscriptionId: string | null = null) => {
   console.log(`🔄 Updating subscription for ${customerEmail} to ${status}`);
   
-  // Get user from auth.users using raw SQL query since the table is in the auth schema
+  // Get user from auth.users using the database function
   const { data: users, error: userError } = await supabaseAdmin.rpc('get_user_by_email', {
     p_email: customerEmail
   });
