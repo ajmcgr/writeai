@@ -76,7 +76,8 @@ serve(async (req) => {
     const body = await req.text();
     console.log('📦 Webhook payload received');
 
-    const event = stripe.webhooks.constructEvent(
+    // Using constructEventAsync instead of constructEvent
+    const event = await stripe.webhooks.constructEventAsync(
       body,
       signature,
       webhookSecret
