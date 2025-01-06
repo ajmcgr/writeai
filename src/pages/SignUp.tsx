@@ -31,7 +31,8 @@ const SignUp = () => {
         return;
       }
 
-      if (event === 'SIGNED_UP') {
+      // Instead of SIGNED_UP, we'll check for SIGNED_IN without a verified email
+      if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at === null) {
         toast({
           title: "Check your email",
           description: "Please check your email to confirm your account.",
