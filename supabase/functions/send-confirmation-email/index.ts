@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY');
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -24,6 +27,12 @@ const handler = async (req: Request): Promise<Response> => {
     const emailRequest: EmailRequest = await req.json();
     console.log("Processing confirmation email request:", emailRequest);
 
+    // Validate required environment variables
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not set");
+    }
+
+    console.log("Sending email via Resend API");
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -50,17 +59,27 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
+    const responseText = await res.text();
+    console.log("Resend API response status:", res.status);
+    console.log("Resend API response:", responseText);
+
     if (res.ok) {
-      const data = await res.json();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.log("Could not parse response as JSON:", e);
+        data = { raw: responseText };
+      }
+      
       console.log("Confirmation email sent successfully:", data);
       return new Response(JSON.stringify(data), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     } else {
-      const error = await res.text();
-      console.error("Error from Resend API:", error);
-      return new Response(JSON.stringify({ error }), {
+      console.error("Error from Resend API:", responseText);
+      return new Response(JSON.stringify({ error: responseText }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

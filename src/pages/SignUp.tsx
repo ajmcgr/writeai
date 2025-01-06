@@ -20,7 +20,7 @@ const SignUp = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event);
+      console.log('Auth state changed:', event, session);
       
       if (event === 'USER_UPDATED') {
         toast({
@@ -36,19 +36,24 @@ const SignUp = () => {
         console.log('New signup detected, sending confirmation email');
         
         try {
-          // Get the confirmation URL from the session
-          const confirmationToken = session.user.confirmation_sent_at;
-          const confirmationUrl = `${window.location.origin}/auth/confirm?token=${confirmationToken}`;
+          // Get the confirmation URL
+          const confirmationUrl = `${window.location.origin}/auth/callback?type=signup`;
+          console.log('Generated confirmation URL:', confirmationUrl);
 
           // Send confirmation email using our Edge Function
-          const { error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
+          const { data, error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
             body: {
               email: session.user.email,
               confirmationUrl: confirmationUrl,
             },
           });
 
-          if (emailError) throw emailError;
+          console.log('Edge function response:', data);
+
+          if (emailError) {
+            console.error('Edge function error:', emailError);
+            throw emailError;
+          }
 
           toast({
             title: "Check your email",
