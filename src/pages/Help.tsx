@@ -50,12 +50,12 @@ export default function Help() {
       <Navigation />
       <main className="flex-grow pt-24 pb-16">
         <div className="container max-w-2xl mx-auto px-4">
-          <h1 className="text-4xl font-reckless font-bold mb-8">Help Center</h1>
+          <h1 className="text-4xl font-bold mb-8">Help Center</h1>
           
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-reckless mb-4">Contact Us</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="text-2xl mb-4">Contact Us</h2>
+              <p className="text-muted-foreground mb-6">
                 Have a question or need assistance? Fill out the form below and we'll get back to you as soon as possible.
               </p>
             </div>
@@ -68,10 +68,10 @@ export default function Help() {
                 <Input
                   id="name"
                   {...register("name", { required: "Name is required" })}
-                  className={errors.name ? "border-red-500" : ""}
+                  className={errors.name ? "border-destructive" : ""}
                 />
                 {errors.name && (
-                  <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>
                 )}
               </div>
 
@@ -89,10 +89,10 @@ export default function Help() {
                       message: "Invalid email address"
                     }
                   })}
-                  className={errors.email ? "border-red-500" : ""}
+                  className={errors.email ? "border-destructive" : ""}
                 />
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
                 )}
               </div>
 
@@ -103,11 +103,10 @@ export default function Help() {
                 <Textarea
                   id="message"
                   {...register("message", { required: "Message is required" })}
-                  className={errors.message ? "border-red-500" : ""}
-                  rows={5}
+                  className={`min-h-[150px] ${errors.message ? "border-destructive" : ""}`}
                 />
                 {errors.message && (
-                  <p className="mt-1 text-sm text-red-500">{errors.message.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.message.message}</p>
                 )}
               </div>
 

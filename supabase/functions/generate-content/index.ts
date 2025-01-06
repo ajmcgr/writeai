@@ -15,11 +15,11 @@ serve(async (req) => {
     const { type, content } = await req.json();
 
     const systemPrompt = type === "generate" 
-      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Follow the user's prompt exactly."
-      : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message:";
+      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Format the output with proper HTML tags (<p>, <h2>, etc.) for structure and spacing. Include a headline, dateline, introduction, body paragraphs, quotes if relevant, and a boilerplate. Each section should be properly spaced and formatted."
+      : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message. Format the output with proper HTML tags (<p>, <h2>, etc.) for structure and spacing:";
 
     const userPrompt = type === "generate"
-      ? content // Use the actual user prompt
+      ? content
       : content;
 
     console.log('Generating content with prompt:', userPrompt);
