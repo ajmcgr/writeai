@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Wand2 } from "lucide-react";
 
 interface AIPromptDialogProps {
   onContentGenerated: (content: string) => void;
@@ -74,8 +75,18 @@ export const AIPromptDialog = ({ onContentGenerated, isOpen, onOpenChange }: AIP
           className="min-h-[100px]"
         />
         <DialogFooter>
-          <Button onClick={handleGenerateContent} disabled={isLoading}>
-            {isLoading ? <LoadingSpinner /> : "Generate"}
+          <Button onClick={handleGenerateContent} disabled={isLoading} className="gap-2">
+            {isLoading ? (
+              <>
+                <LoadingSpinner className="animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Wand2 className="h-4 w-4" />
+                Generate
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -16,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface ActionButtonsProps {
   onHistory: () => void;
@@ -81,8 +82,13 @@ export const ActionButtons = ({
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={onAIGenerate}>
-              <Sparkles className="h-4 w-4" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={onAIGenerate}
+              disabled={isLoading}
+            >
+              {isLoading ? <LoadingSpinner className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -98,7 +104,7 @@ export const ActionButtons = ({
               onClick={onRewrite}
               disabled={!hasContent || isLoading}
             >
-              <Wand2 className="h-4 w-4" />
+              {isLoading ? <LoadingSpinner className="h-4 w-4" /> : <Wand2 className="h-4 w-4" />}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -114,7 +120,7 @@ export const ActionButtons = ({
               onClick={onAnalyze}
               disabled={!hasContent || isLoading}
             >
-              <Search className="h-4 w-4" />
+              {isLoading ? <LoadingSpinner className="h-4 w-4" /> : <Search className="h-4 w-4" />}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -131,6 +137,7 @@ export const ActionButtons = ({
                 onChange={onFileUpload}
                 accept=".txt,.doc,.docx"
                 id="file-upload"
+                disabled={isLoading}
               />
               <Button
                 variant="ghost"
@@ -155,7 +162,7 @@ export const ActionButtons = ({
               onClick={onSaveDraft}
               disabled={!hasContent || isLoading}
             >
-              <Save className="h-4 w-4" />
+              {isLoading ? <LoadingSpinner className="h-4 w-4" /> : <Save className="h-4 w-4" />}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
