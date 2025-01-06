@@ -16,8 +16,8 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
   const handleApplySuggestion = (suggestion: string) => {
     if (!onApply) return;
     
-    // Clean any HTML tags from the suggestion
-    const cleanSuggestion = suggestion.replace(/<[^>]*>/g, '');
+    // Format the suggestion as rich text
+    const formattedSuggestion = `<p>${suggestion.replace(/\n/g, '</p><p>')}</p>`;
     
     // Insert the suggestion at the cursor position or at the end
     const textarea = document.querySelector('[contenteditable]') as HTMLElement;
@@ -25,16 +25,19 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
-        const textNode = document.createTextNode(cleanSuggestion + '\n\n');
-        range.insertNode(textNode);
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = formattedSuggestion;
+        
+        while (tempDiv.firstChild) {
+          range.insertNode(tempDiv.firstChild);
+        }
         range.collapse(false);
       } else {
-        const textNode = document.createTextNode(cleanSuggestion + '\n\n');
-        textarea.appendChild(textNode);
+        textarea.innerHTML += formattedSuggestion;
       }
     } else {
       // Fallback: append to the end if contenteditable not found
-      onApply(content + '\n\n' + cleanSuggestion);
+      onApply(content + formattedSuggestion);
     }
   };
 

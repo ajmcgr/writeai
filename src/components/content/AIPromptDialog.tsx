@@ -25,6 +25,14 @@ export const AIPromptDialog = ({ onContentGenerated, isOpen, onOpenChange }: AIP
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  const formatContent = (text: string) => {
+    // Convert double line breaks to paragraph tags
+    return text
+      .split('\n\n')
+      .map(paragraph => `<p>${paragraph.trim()}</p>`)
+      .join('');
+  };
+
   const handleGenerateContent = async () => {
     if (!prompt.trim()) {
       toast({
@@ -43,7 +51,9 @@ export const AIPromptDialog = ({ onContentGenerated, isOpen, onOpenChange }: AIP
 
       if (error) throw error;
       
-      onContentGenerated(data.generatedText);
+      // Format the generated text as rich text
+      const formattedContent = formatContent(data.generatedText);
+      onContentGenerated(formattedContent);
       setPrompt("");
       onOpenChange(false);
       

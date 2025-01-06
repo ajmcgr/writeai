@@ -12,35 +12,33 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
 
   useEffect(() => {
     if (editorRef.current && content !== editorRef.current.innerHTML) {
-      // Replace newlines with <br> tags for proper spacing
-      const formattedContent = content.split('\n\n').join('<br><br>');
-      editorRef.current.innerHTML = formattedContent;
+      // If content is plain text, convert it to rich text format
+      if (!content.includes('<p>')) {
+        const formattedContent = content
+          .split('\n\n')
+          .map(paragraph => `<p>${paragraph.trim()}</p>`)
+          .join('');
+        editorRef.current.innerHTML = formattedContent;
+      } else {
+        editorRef.current.innerHTML = content;
+      }
     }
   }, [content]);
 
   const handleInput = () => {
     if (editorRef.current) {
-      // Convert <br> tags back to newlines when saving content
-      const rawContent = editorRef.current.innerHTML;
-      const cleanContent = rawContent
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<[^>]*>/g, '')
-        .replace(/\n{3,}/g, '\n\n'); // Normalize multiple newlines to double newlines
-      setContent(cleanContent);
+      // Preserve rich text formatting when saving content
+      setContent(editorRef.current.innerHTML);
     }
   };
 
-  // Enable browser's native execCommand functionality
-  useEffect(() => {
-    if (editorRef.current) {
-      editorRef.current.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') {
-          e.preventDefault();
-          document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
-        }
-      });
+  // Enable rich text formatting commands
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
     }
-  }, []);
+  };
 
   return (
     <div className="flex-1 h-full overflow-hidden pb-24">
@@ -48,8 +46,13 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         ref={editorRef}
         contentEditable
         onInput={handleInput}
+        onKeyDown={handleKeyDown}
         data-placeholder="Start writing, generate content with AI or upload a document..."
-        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&>p]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ol]:list-decimal [&>ol]:ml-6"
+        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed 
+          empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground 
+          [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] 
+          [&>p]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ol]:list-decimal [&>ol]:ml-6
+          prose prose-sm max-w-none"
       />
     </div>
   );
