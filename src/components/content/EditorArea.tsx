@@ -30,6 +30,18 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
     }
   };
 
+  // Enable browser's native execCommand functionality
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+        }
+      });
+    }
+  }, []);
+
   return (
     <div className="flex-1 h-full overflow-hidden pb-24">
       <div
@@ -37,7 +49,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         contentEditable
         onInput={handleInput}
         data-placeholder="Start writing, generate content with AI or upload a document..."
-        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&>p]:mb-4"
+        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&>p]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ol]:list-decimal [&>ol]:ml-6"
       />
     </div>
   );
