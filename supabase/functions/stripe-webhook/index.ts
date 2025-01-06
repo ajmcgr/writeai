@@ -12,14 +12,20 @@ const corsHeaders = {
 const handleSubscriptionChange = async (supabaseAdmin: any, customerEmail: string, status: 'pro' | 'free', customerId: string, subscriptionId: string | null = null) => {
   console.log(`🔄 Updating subscription for ${customerEmail} to ${status}`);
   
+  // First, get the user from auth.users table
   const { data: users, error: userError } = await supabaseAdmin
-    .from('auth.users')
-    .select('id')
-    .eq('email', customerEmail)
+    .from('auth')
+    .select('users.id')
+    .eq('users.email', customerEmail)
     .single();
 
   if (userError) {
     console.error('❌ User lookup error:', userError);
+    throw new Error('User not found');
+  }
+
+  if (!users?.id) {
+    console.error('❌ No user found with email:', customerEmail);
     throw new Error('User not found');
   }
 
