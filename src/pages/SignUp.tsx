@@ -33,10 +33,35 @@ const SignUp = () => {
 
       // Instead of SIGNED_UP, we'll check for SIGNED_IN without a verified email
       if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at === null) {
-        toast({
-          title: "Check your email",
-          description: "Please check your email to confirm your account.",
-        });
+        console.log('New signup detected, sending confirmation email');
+        
+        try {
+          // Get the confirmation URL from the session
+          const confirmationToken = session.user.confirmation_sent_at;
+          const confirmationUrl = `${window.location.origin}/auth/confirm?token=${confirmationToken}`;
+
+          // Send confirmation email using our Edge Function
+          const { error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
+            body: {
+              email: session.user.email,
+              confirmationUrl: confirmationUrl,
+            },
+          });
+
+          if (emailError) throw emailError;
+
+          toast({
+            title: "Check your email",
+            description: "Please check your email to confirm your account.",
+          });
+        } catch (error) {
+          console.error('Error sending confirmation email:', error);
+          toast({
+            title: "Error",
+            description: "There was an error sending the confirmation email. Please try again.",
+            variant: "destructive",
+          });
+        }
         return;
       }
 
