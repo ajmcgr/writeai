@@ -12,24 +12,23 @@ const corsHeaders = {
 const handleSubscriptionChange = async (supabaseAdmin: any, customerEmail: string, status: 'pro' | 'free', customerId: string, subscriptionId: string | null = null) => {
   console.log(`🔄 Updating subscription for ${customerEmail} to ${status}`);
   
-  // First, get the user from auth.users table
-  const { data: users, error: userError } = await supabaseAdmin
-    .from('auth')
-    .select('users.id')
-    .eq('users.email', customerEmail)
-    .single();
+  // Get user from auth.users using raw SQL query since the table is in the auth schema
+  const { data: users, error: userError } = await supabaseAdmin.rpc('get_user_by_email', {
+    p_email: customerEmail
+  });
 
   if (userError) {
     console.error('❌ User lookup error:', userError);
-    throw new Error('User not found');
+    throw new Error('User lookup failed');
   }
 
-  if (!users?.id) {
+  if (!users || users.length === 0) {
     console.error('❌ No user found with email:', customerEmail);
     throw new Error('User not found');
   }
 
-  console.log(`✅ Found user: ${users.id}`);
+  const userId = users[0].id;
+  console.log(`✅ Found user: ${userId}`);
 
   const updateData = {
     subscription_status: status,
@@ -41,7 +40,7 @@ const handleSubscriptionChange = async (supabaseAdmin: any, customerEmail: strin
   const { error: updateError } = await supabaseAdmin
     .from('profiles')
     .update(updateData)
-    .eq('user_id', users.id);
+    .eq('user_id', userId);
 
   if (updateError) {
     console.error('❌ Profile update error:', updateError);
@@ -82,7 +81,6 @@ serve(async (req) => {
     const body = await req.text();
     console.log('📦 Webhook payload received');
 
-    // Using constructEventAsync instead of constructEvent
     const event = await stripe.webhooks.constructEventAsync(
       body,
       signature,
