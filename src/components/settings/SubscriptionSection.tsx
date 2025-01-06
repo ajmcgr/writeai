@@ -13,6 +13,7 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
   const navigate = useNavigate();
   const [status, setStatus] = useState(initialStatus);
   const [trialEndsAt, setTrialEndsAt] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const checkSubscription = async () => {
@@ -75,6 +76,50 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
     }
   };
 
+  const handleDowngrade = async () => {
+    try {
+      setIsLoading(true);
+      console.log('Starting downgrade process...');
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.error("No session found");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) {
+        console.error('Error cancelling subscription:', error);
+        toast.error('Failed to cancel subscription. Please try again.');
+        return;
+      }
+
+      console.log('Subscription cancelled successfully:', data);
+      toast.success('Your subscription has been cancelled. Changes will take effect at the end of your billing period.');
+      
+      // Refresh subscription status
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("subscription_status")
+        .eq("user_id", session.user.id)
+        .single();
+
+      if (profile) {
+        setStatus(profile.subscription_status);
+      }
+    } catch (error) {
+      console.error('Error during downgrade:', error);
+      toast.error('Failed to process downgrade. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getSubscriptionDisplay = () => {
     if (status === "pro") {
       return "Pro";
@@ -102,9 +147,17 @@ export function SubscriptionSection({ subscriptionStatus: initialStatus }: Subsc
         <p className="text-gray-600">
           Current Plan: <span className="font-semibold">{getSubscriptionDisplay()}</span>
         </p>
-        {status === "free" && (
+        {status === "free" ? (
           <Button onClick={handleUpgrade}>
             Upgrade to Pro
+          </Button>
+        ) : status === "pro" && (
+          <Button 
+            variant="destructive" 
+            onClick={handleDowngrade}
+            disabled={isLoading}
+          >
+            Cancel Subscription
           </Button>
         )}
       </div>
