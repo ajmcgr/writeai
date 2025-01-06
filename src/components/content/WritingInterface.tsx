@@ -115,9 +115,9 @@ export const WritingInterface = ({
         </div>
       )}
       {isLoading && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="animate-pulse text-center space-y-4">
-            <div className="w-16 h-16 mx-auto">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="bg-background/95 backdrop-blur-sm p-8 rounded-lg shadow-lg flex flex-col items-center space-y-4">
+            <div className="w-12 h-12">
               <svg className="animate-spin" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path
