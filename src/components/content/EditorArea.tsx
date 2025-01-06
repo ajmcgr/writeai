@@ -12,13 +12,21 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
 
   useEffect(() => {
     if (editorRef.current && content !== editorRef.current.innerHTML) {
-      editorRef.current.innerHTML = content;
+      // Replace newlines with <br> tags for proper spacing
+      const formattedContent = content.split('\n\n').join('<br><br>');
+      editorRef.current.innerHTML = formattedContent;
     }
   }, [content]);
 
   const handleInput = () => {
     if (editorRef.current) {
-      setContent(editorRef.current.innerHTML);
+      // Convert <br> tags back to newlines when saving content
+      const rawContent = editorRef.current.innerHTML;
+      const cleanContent = rawContent
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<[^>]*>/g, '')
+        .replace(/\n{3,}/g, '\n\n'); // Normalize multiple newlines to double newlines
+      setContent(cleanContent);
     }
   };
 
@@ -29,7 +37,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         contentEditable
         onInput={handleInput}
         data-placeholder="Start writing, generate content with AI or upload a document..."
-        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&>p]:mb-4"
       />
     </div>
   );

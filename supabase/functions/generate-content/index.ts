@@ -15,8 +15,8 @@ serve(async (req) => {
     const { type, content } = await req.json();
 
     const systemPrompt = type === "generate" 
-      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Format the output with proper HTML tags (<p>, <h2>, etc.) for structure and spacing. Include a headline, dateline, introduction, body paragraphs, quotes if relevant, and a boilerplate. Each section should be properly spaced and formatted."
-      : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message. Format the output with proper HTML tags (<p>, <h2>, etc.) for structure and spacing:";
+      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Format the output with proper spacing between paragraphs using double line breaks. Include a headline, dateline, introduction, body paragraphs, quotes if relevant, and a boilerplate. Each section should be properly spaced."
+      : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message. Format the output with proper spacing between paragraphs using double line breaks:";
 
     const userPrompt = type === "generate"
       ? content
@@ -41,7 +41,8 @@ serve(async (req) => {
     });
 
     const data = await response.json();
-    const generatedText = data.choices[0].message.content;
+    // Clean up any HTML tags that might be in the response
+    const generatedText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
 
     console.log('Generated text:', generatedText);
 

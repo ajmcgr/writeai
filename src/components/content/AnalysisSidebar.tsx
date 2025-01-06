@@ -16,22 +16,25 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
   const handleApplySuggestion = (suggestion: string) => {
     if (!onApply) return;
     
+    // Clean any HTML tags from the suggestion
+    const cleanSuggestion = suggestion.replace(/<[^>]*>/g, '');
+    
     // Insert the suggestion at the cursor position or at the end
-    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+    const textarea = document.querySelector('[contenteditable]') as HTMLElement;
     if (textarea) {
-      const cursorPosition = textarea.selectionStart;
-      const newContent = content.slice(0, cursorPosition) + suggestion + content.slice(cursorPosition);
-      onApply(newContent);
-      
-      // Set cursor position after the inserted text
-      setTimeout(() => {
-        textarea.selectionStart = cursorPosition + suggestion.length;
-        textarea.selectionEnd = cursorPosition + suggestion.length;
-        textarea.focus();
-      }, 0);
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const textNode = document.createTextNode(cleanSuggestion + '\n\n');
+        range.insertNode(textNode);
+        range.collapse(false);
+      } else {
+        const textNode = document.createTextNode(cleanSuggestion + '\n\n');
+        textarea.appendChild(textNode);
+      }
     } else {
-      // Fallback: append to the end if textarea not found
-      onApply(content + '\n' + suggestion);
+      // Fallback: append to the end if contenteditable not found
+      onApply(content + '\n\n' + cleanSuggestion);
     }
   };
 
