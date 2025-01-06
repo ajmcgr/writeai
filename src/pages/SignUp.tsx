@@ -8,7 +8,6 @@ import { Navigation } from "@/components/layout/Navigation";
 
 type AuthViewType = 'sign_in' | 'sign_up';
 
-// Extend Auth component props
 type ExtendedAuth = typeof Auth & {
   onViewChange?: (view: AuthViewType) => void;
 };
@@ -21,6 +20,25 @@ const SignUp = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event);
+      
+      if (event === 'USER_UPDATED') {
+        toast({
+          title: "Email confirmed!",
+          description: "Your email has been confirmed. You can now sign in.",
+        });
+        navigate('/signin');
+        return;
+      }
+
+      if (event === 'SIGNED_UP') {
+        toast({
+          title: "Check your email",
+          description: "Please check your email to confirm your account.",
+        });
+        return;
+      }
+
       if (event === 'SIGNED_IN' && session) {
         console.log('User signed in, creating HubSpot contact');
         
@@ -53,7 +71,7 @@ const SignUp = () => {
             if (response.data?.url) {
               console.log('Redirecting to checkout:', response.data.url);
               window.location.href = response.data.url;
-              return; // Prevent further navigation
+              return;
             }
           }
 
