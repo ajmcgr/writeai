@@ -6,9 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { PasswordSection } from "@/components/settings/PasswordSection";
 import { SubscriptionSection } from "@/components/settings/SubscriptionSection";
 import { DeleteAccountSection } from "@/components/settings/DeleteAccountSection";
+import { User } from "@supabase/supabase-js";
 
 const Settings = () => {
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,6 +20,8 @@ const Settings = () => {
         navigate("/signin");
         return;
       }
+
+      setUser(session.user);
 
       const { data: profile } = await supabase
         .from("profiles")
@@ -38,6 +42,12 @@ const Settings = () => {
         <h1 className="text-3xl font-bold mb-12">Account Settings</h1>
 
         <div className="space-y-12">
+          <div className="bg-white p-8 rounded-lg shadow-sm border">
+            <h2 className="text-xl font-semibold mb-6">Account Information</h2>
+            <p className="text-gray-600">
+              Email: <span className="font-medium">{user?.email}</span>
+            </p>
+          </div>
           <SubscriptionSection subscriptionStatus={subscriptionStatus} />
           <PasswordSection />
           <DeleteAccountSection />
