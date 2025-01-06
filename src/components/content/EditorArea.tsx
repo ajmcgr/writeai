@@ -28,7 +28,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         ref={editorRef}
         contentEditable
         onInput={handleInput}
-        data-placeholder="Start writing or generate content..."
+        data-placeholder="Start writing, generate content or upload a document..."
         className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       />
     </div>
