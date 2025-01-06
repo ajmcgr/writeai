@@ -87,6 +87,7 @@ export const ActionButtons = ({
               size="icon" 
               onClick={onAIGenerate}
               disabled={isLoading}
+              aria-label="Generate with AI"
             >
               {isLoading ? <LoadingSpinner className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
             </Button>
@@ -103,6 +104,7 @@ export const ActionButtons = ({
               size="icon"
               onClick={onRewrite}
               disabled={!hasContent || isLoading}
+              aria-label="AI Rewrite Content"
             >
               {isLoading ? <LoadingSpinner className="h-4 w-4" /> : <Wand2 className="h-4 w-4" />}
             </Button>
@@ -119,6 +121,7 @@ export const ActionButtons = ({
               size="icon"
               onClick={onAnalyze}
               disabled={!hasContent || isLoading}
+              aria-label="AI Analyze Content"
             >
               {isLoading ? <LoadingSpinner className="h-4 w-4" /> : <Search className="h-4 w-4" />}
             </Button>
@@ -144,6 +147,7 @@ export const ActionButtons = ({
                 size="icon"
                 onClick={() => document.getElementById("file-upload")?.click()}
                 disabled={isLoading}
+                aria-label="Upload Document"
               >
                 <FileUp className="h-4 w-4" />
               </Button>
@@ -161,6 +165,7 @@ export const ActionButtons = ({
               size="icon"
               onClick={onSaveDraft}
               disabled={!hasContent || isLoading}
+              aria-label="Save Draft"
             >
               {isLoading ? <LoadingSpinner className="h-4 w-4" /> : <Save className="h-4 w-4" />}
             </Button>
@@ -177,6 +182,7 @@ export const ActionButtons = ({
               size="icon"
               onClick={onExport}
               disabled={!hasContent || isLoading}
+              aria-label="Export to Word"
             >
               <Download className="h-4 w-4" />
             </Button>
