@@ -5,6 +5,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Logo } from "@/components/navigation/Logo";
 import { DesktopNav } from "@/components/navigation/DesktopNav";
 import { MobileNav } from "@/components/navigation/MobileNav";
+import { HelpCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function Navigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -94,8 +97,29 @@ export function Navigation() {
     <header className="fixed top-0 w-full bg-[#848ac8] z-50">
       <div className={`${isAuthenticated ? 'w-full px-4' : 'container px-4 md:px-6'} flex h-16 items-center justify-between`}>
         <Logo isAuthenticated={isAuthenticated} handleLogoClick={handleLogoClick} />
-        <DesktopNav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
-        <MobileNav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
+        <div className="flex items-center gap-4">
+          {isAuthenticated && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-white hover:text-white/80"
+                    onClick={() => window.open('https://www.trywrite.ai/help', '_blank')}
+                  >
+                    <HelpCircle className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Help Center</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          <DesktopNav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
+          <MobileNav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
+        </div>
       </div>
     </header>
   );
