@@ -9,30 +9,26 @@ const corsHeaders = {
 serve(async (req) => {
   console.log('🚀 Create checkout session function started');
   
-  // Handle CORS
   if (req.method === 'OPTIONS') {
     console.log('Handling CORS preflight request');
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    // Verify auth header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      console.error('Missing authorization header');
+      console.error('❌ No authorization header found');
       throw new Error('Missing authorization header');
     }
 
-    // Get JWT token from Authorization header
     const token = authHeader.replace('Bearer ', '');
-    console.log('Token received, verifying with Supabase...');
+    console.log('🔑 Token received, verifying with Supabase...');
     
-    // Verify the JWT token with Supabase
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
     
     if (!supabaseUrl || !supabaseKey) {
-      console.error('Missing Supabase configuration');
+      console.error('❌ Missing Supabase configuration');
       throw new Error('Missing Supabase configuration');
     }
 
@@ -44,61 +40,57 @@ serve(async (req) => {
     });
 
     if (!verifyResponse.ok) {
-      console.error('Invalid authentication token');
+      console.error('❌ Invalid authentication token');
       throw new Error('Invalid authentication token');
     }
 
     const user = await verifyResponse.json();
-    console.log('Authenticated user:', user.email);
+    console.log('✅ Authenticated user:', user.email);
 
     const { period } = await req.json();
-    console.log('Creating checkout session for period:', period);
+    console.log('📅 Creating checkout session for period:', period);
 
     if (!period) {
-      console.error('Missing period parameter');
+      console.error('❌ Missing period parameter');
       throw new Error('Missing period parameter');
     }
 
     const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY');
     if (!stripeSecretKey) {
-      console.error('Missing Stripe secret key');
+      console.error('❌ Missing Stripe secret key');
       throw new Error('Stripe secret key not configured');
     }
 
-    // Initialize Stripe with the secret key
     const stripe = new Stripe(stripeSecretKey, {
       apiVersion: '2023-10-16',
     });
 
-    // Get price IDs from environment variables
     const monthlyPriceId = Deno.env.get('STRIPE_MONTHLY_PRICE_ID');
     const annualPriceId = Deno.env.get('STRIPE_ANNUAL_PRICE_ID');
     
     if (!monthlyPriceId || !annualPriceId) {
-      console.error('Missing Stripe price IDs');
+      console.error('❌ Missing Stripe price IDs');
       throw new Error('Stripe price IDs not configured');
     }
 
-    console.log('Available price IDs - Monthly:', monthlyPriceId, 'Annual:', annualPriceId);
+    console.log('💰 Available price IDs - Monthly:', monthlyPriceId, 'Annual:', annualPriceId);
 
     const priceId = period === 'monthly' ? monthlyPriceId : annualPriceId;
-    console.log('Selected price ID:', priceId);
+    console.log('💳 Selected price ID:', priceId);
 
-    // Create or retrieve customer
-    console.log('Looking up customer by email:', user.email);
+    console.log('🔍 Looking up customer by email:', user.email);
     const customers = await stripe.customers.list({ email: user.email });
     let customer;
 
     if (customers.data.length > 0) {
       customer = customers.data[0];
-      console.log('Found existing customer:', customer.id);
+      console.log('✅ Found existing customer:', customer.id);
     } else {
       customer = await stripe.customers.create({ email: user.email });
-      console.log('Created new customer:', customer.id);
+      console.log('✅ Created new customer:', customer.id);
     }
 
-    // Create checkout session
-    console.log('Creating Stripe checkout session...');
+    console.log('🛍️ Creating Stripe checkout session...');
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       line_items: [
@@ -118,7 +110,7 @@ serve(async (req) => {
       },
     });
 
-    console.log('Checkout session created successfully:', session.id);
+    console.log('✅ Checkout session created successfully:', session.id);
 
     return new Response(
       JSON.stringify({ url: session.url }),
@@ -128,7 +120,7 @@ serve(async (req) => {
       },
     );
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    console.error('❌ Error creating checkout session:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
