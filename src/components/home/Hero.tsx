@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ArrowRight } from "lucide-react";
 
 export function Hero() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -46,20 +47,23 @@ export function Hero() {
         <p className="text-xl text-white/80 max-w-2xl font-inter">
           Create high-quality and impactful press releases with Write AI.
         </p>
-        <Link to={isAuthenticated ? "/write" : "/signup"}>
-          <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
-            Start Writing
-          </Button>
-        </Link>
         
-        {/* Senja Widget */}
-        <div className="w-full max-w-4xl">
-          <div className="senja-embed" 
-               data-id="f10a97a0-8bad-4cf0-8ced-3790e0588932" 
-               data-mode="shadow" 
-               data-lazyload="false" 
-               style={{display: 'block'}}
-          />
+        <div className="flex flex-col md:flex-row items-center gap-8">
+          <Link to={isAuthenticated ? "/write" : "/signup"}>
+            <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
+              {isAuthenticated ? "Start Writing" : "Sign Up"} <ArrowRight className="w-5 h-5" />
+            </Button>
+          </Link>
+          
+          {/* Senja Widget */}
+          <div className="w-full md:w-[500px]">
+            <div className="senja-embed" 
+                data-id="f10a97a0-8bad-4cf0-8ced-3790e0588932" 
+                data-mode="shadow" 
+                data-lazyload="false" 
+                style={{display: 'block'}}
+            />
+          </div>
         </div>
 
         <div className="mt-8 w-full max-w-5xl">
