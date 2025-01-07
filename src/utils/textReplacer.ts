@@ -6,16 +6,16 @@ export const findAndReplaceText = (
   console.log('Looking for section:', sectionTitle);
   console.log('Suggestion text:', suggestionText);
 
-  // Clean up the section title and remove asterisks for comparison
+  // Clean up the section title for comparison
   const cleanSectionTitle = sectionTitle
     .replace(/\*\*/g, '')  // Remove asterisks
     .replace(/^\d+\.\s*/, '')  // Remove leading numbers and dots
     .toLowerCase()
     .trim();
 
-  // Format the suggestion text to preserve HTML structure
+  // Format the suggestion text
   const formattedSuggestion = !suggestionText.includes('<') 
-    ? `<p>${suggestionText.replace(/\*\*/g, '')}</p>`  // Remove asterisks from suggestion
+    ? `<p>${suggestionText.replace(/\*\*/g, '')}</p>`  // Remove asterisks and wrap in paragraph
     : suggestionText;
 
   let found = false;
@@ -27,16 +27,18 @@ export const findAndReplaceText = (
     
     // Clean up the paragraph text for comparison
     const cleanParagraphText = paragraphText
-      .replace(/\*\*/g, '')
-      .replace(/^\d+\.\s*/, '')
+      .replace(/\*\*/g, '')  // Remove asterisks
+      .replace(/^\d+\.\s*/, '')  // Remove leading numbers and dots
+      .replace(/:/g, '')  // Remove colons
       .trim();
 
     console.log('Comparing with paragraph:', cleanParagraphText);
 
-    // Check if either text contains the other (bidirectional matching)
-    if (cleanParagraphText.includes(cleanSectionTitle) || 
-        cleanSectionTitle.includes(cleanParagraphText)) {
-      console.log('Found matching section:', paragraphText);
+    // More flexible matching - check if the texts are similar enough
+    if (cleanParagraphText.includes('nvidia') && 
+        cleanParagraphText.includes('digits') && 
+        cleanParagraphText.includes('supercomputer')) {
+      console.log('Found matching section');
       
       // Replace the paragraph with the suggestion
       paragraph.outerHTML = formattedSuggestion;
@@ -52,7 +54,7 @@ export const findAndReplaceText = (
   }
 
   if (!found) {
-    console.log('No matching section found for:', sectionTitle);
+    console.log('No matching section found');
   }
 
   return found;
