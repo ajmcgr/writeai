@@ -69,9 +69,9 @@ export function Hero() {
           
           {/* New features text row */}
           <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base font-inter">
-            <span>✔ 1-month free trial</span>
-            <span>✔ No credit card required</span>
-            <span>✔ Cancel any-time</span>
+            <span>✓ 1-month free trial</span>
+            <span>✓ No credit card required</span>
+            <span>✓ Cancel any-time</span>
           </div>
         </div>
 
