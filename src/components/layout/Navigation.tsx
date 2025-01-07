@@ -37,10 +37,12 @@ export function Navigation() {
 
   const handleLogout = async () => {
     try {
+      // First check if there's an active session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
         console.error("Error checking session:", sessionError);
+        // If we can't get the session, clear local state and redirect
         setIsAuthenticated(false);
         navigate("/");
         toast({
@@ -50,6 +52,7 @@ export function Navigation() {
         return;
       }
 
+      // If no session exists, just clear local state
       if (!session) {
         console.log("No active session found, clearing local state");
         setIsAuthenticated(false);
@@ -61,10 +64,14 @@ export function Navigation() {
         return;
       }
 
-      const { error: signOutError } = await supabase.auth.signOut();
+      // If we have a session, attempt to sign out
+      const { error: signOutError } = await supabase.auth.signOut({
+        scope: 'local' // Only clear local session to prevent 403 errors
+      });
       
       if (signOutError) {
         console.error("Error during logout:", signOutError);
+        // Even if there's an error, clear local state
         setIsAuthenticated(false);
         navigate("/");
         toast({
@@ -83,6 +90,7 @@ export function Navigation() {
       navigate("/");
     } catch (error) {
       console.error("Unexpected error during logout:", error);
+      // In case of any unexpected error, clear local state
       setIsAuthenticated(false);
       toast({
         title: "Logged out",
