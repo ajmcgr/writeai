@@ -75,7 +75,7 @@ export function Hero() {
             {/* Browser Window Content */}
             <div className="bg-white">
               <img
-                src="/lovable-uploads/c5e37cd7-f33b-4c16-ac10-2a25dfa2deab.png"
+                src="/lovable-uploads/141af4e0-cd2c-470a-82fd-4ab643f33c8a.png"
                 alt="Write AI Interface Screenshot"
                 className="w-full"
               />
