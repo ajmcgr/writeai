@@ -34,11 +34,20 @@ export const findAndReplaceText = (
 
     console.log('Comparing with paragraph:', cleanParagraphText);
 
-    // More flexible matching - check if the texts are similar enough
-    if (cleanParagraphText.includes('nvidia') && 
-        cleanParagraphText.includes('digits') && 
-        cleanParagraphText.includes('supercomputer')) {
-      console.log('Found matching section');
+    // More flexible matching - check if the texts share enough common words
+    const sectionWords = new Set(cleanSectionTitle.split(/\s+/));
+    const paragraphWords = new Set(cleanParagraphText.split(/\s+/));
+    
+    // Calculate word overlap
+    const commonWords = [...sectionWords].filter(word => 
+      paragraphWords.has(word) && 
+      word.length > 3 && // Only consider words longer than 3 characters
+      !['the', 'and', 'for', 'with'].includes(word) // Exclude common words
+    );
+    
+    // If there's significant overlap (at least 3 matching words), consider it a match
+    if (commonWords.length >= 3) {
+      console.log('Found matching section with common words:', commonWords);
       
       // Replace the paragraph with the suggestion
       paragraph.outerHTML = formattedSuggestion;
