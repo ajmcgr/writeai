@@ -30,12 +30,8 @@ export const findAndReplaceText = (
     if (cleanParagraphText.includes(cleanSectionTitle)) {
       console.log('Found matching section:', paragraphText);
       
-      // Create a new paragraph element with the suggestion text
-      const newParagraph = document.createElement('p');
-      newParagraph.innerHTML = suggestionText;
-      
-      // Replace the old paragraph with the new one
-      editor.replaceChild(newParagraph, paragraph);
+      // Replace the content while preserving the paragraph element
+      paragraph.innerHTML = suggestionText;
       
       // Trigger input event to update state
       const inputEvent = new Event('input', { bubbles: true });
