@@ -6,7 +6,6 @@ export const findAndReplaceText = (
   console.log('Starting text replacement...');
   console.log('Section to replace:', sectionTitle);
   console.log('New content:', suggestionText);
-  console.log('Current editor content:', editor.innerHTML);
 
   // Clean up the section title for comparison
   const cleanSectionTitle = sectionTitle
@@ -15,6 +14,8 @@ export const findAndReplaceText = (
     .replace(/^\d+\.\s*/, '')  // Remove leading numbers and dots
     .toLowerCase()
     .trim();
+
+  console.log('Cleaned section title:', cleanSectionTitle);
 
   // Format the suggestion text
   const formattedSuggestion = !suggestionText.includes('<') 
@@ -33,7 +34,8 @@ export const findAndReplaceText = (
     
     console.log(`Checking paragraph ${i + 1}:`, paragraphText);
 
-    if (paragraphText === cleanSectionTitle) {
+    // Try exact match first
+    if (paragraphText === cleanSectionTitle || paragraphText.includes(cleanSectionTitle)) {
       console.log('Found exact match!');
       paragraph.outerHTML = formattedSuggestion;
       found = true;
@@ -56,7 +58,7 @@ export const findAndReplaceText = (
         .replace(/:/g, '')
         .trim();
 
-      // Get significant words from the title
+      // Get significant words from the title (words longer than 3 characters)
       const titleWords = cleanSectionTitle
         .split(/\s+/)
         .filter(word => word.length > 3)
@@ -67,11 +69,12 @@ export const findAndReplaceText = (
       // Count matching words
       const matchingWords = titleWords.filter(word => {
         const matches = cleanParagraphText.includes(word);
-        console.log(`Word "${word}": ${matches ? 'found' : 'not found'}`);
+        console.log(`Word "${word}": ${matches ? 'found' : 'not found'} in paragraph`);
         return matches;
       });
 
-      const matchThreshold = Math.max(2, Math.floor(titleWords.length * 0.6));
+      // Require at least 70% of significant words to match
+      const matchThreshold = Math.max(2, Math.ceil(titleWords.length * 0.7));
       console.log(`Match threshold: ${matchThreshold}, Matches found: ${matchingWords.length}`);
 
       if (matchingWords.length >= matchThreshold) {
