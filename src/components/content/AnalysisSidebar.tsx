@@ -20,7 +20,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
 
   // Parse the suggestions into structured format
   const suggestions: Suggestion[] = analysis
-    .split(/\n{2,}/)
+    .split(/\n\n/)
     .map(block => {
       const lines = block.split('\n');
       const original = lines[0]?.replace('Original: ', '').replace(/^"|"$/g, '');
