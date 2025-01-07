@@ -40,7 +40,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     console.log('Looking for section:', sectionTitle);
     console.log('Suggestion text:', suggestionText);
 
-    // Convert section title and suggestion to comparable format
+    // Convert section title to comparable format
     const cleanSectionTitle = sectionTitle
       .replace(/\*\*/g, '')
       .replace(/^\d+\.\s*/, '')
@@ -61,7 +61,12 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
 
       if (cleanParagraphText.includes(cleanSectionTitle)) {
         console.log('Found matching section:', paragraphText);
-        paragraph.innerHTML = suggestionText;
+        // Create a new paragraph element with the suggestion text
+        const newParagraph = document.createElement('p');
+        newParagraph.innerHTML = suggestionText;
+        
+        // Replace the old paragraph with the new one
+        paragraph.replaceWith(newParagraph);
         matchFound = true;
         break;
       }
