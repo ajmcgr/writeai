@@ -154,18 +154,18 @@ export function DocumentList({ documents }: DocumentListProps) {
                 <SidebarMenuItem key={doc.id}>
                   <SidebarMenuButton onClick={() => navigate(`/write/${doc.id}`)}>
                     <File className="h-4 w-4 mr-2" />
-                    <span className="truncate">{doc.title || "Untitled Document"}</span>
+                    <span className="truncate flex-1">{doc.title || "Untitled Document"}</span>
                   </SidebarMenuButton>
-                  <div className="flex items-center gap-2 mr-1">
+                  <div className="flex items-center gap-1.5 absolute right-2">
                     <SidebarMenuAction
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDuplicate(doc);
                       }}
                       showOnHover
-                      className="hover:bg-sidebar-accent rounded-md p-1 transition-colors"
+                      className="hover:bg-sidebar-accent rounded-md p-1.5 transition-colors"
                     >
-                      <Copy className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+                      <Copy className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition-colors" />
                     </SidebarMenuAction>
                     <SidebarMenuAction
                       onClick={(e) => {
@@ -174,9 +174,9 @@ export function DocumentList({ documents }: DocumentListProps) {
                         setIsDeleteDialogOpen(true);
                       }}
                       showOnHover
-                      className="hover:bg-sidebar-accent rounded-md p-1 transition-colors"
+                      className="hover:bg-sidebar-accent rounded-md p-1.5 transition-colors"
                     >
-                      <Trash2 className="h-4 w-4 text-destructive hover:text-destructive/90 transition-colors" />
+                      <Trash2 className="h-3.5 w-3.5 text-destructive hover:text-destructive/90 transition-colors" />
                     </SidebarMenuAction>
                   </div>
                 </SidebarMenuItem>
