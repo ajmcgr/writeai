@@ -139,26 +139,16 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
             suggestions.map((suggestion, index) => (
               <div key={index} className="p-4 border rounded-lg space-y-2">
                 <p className="whitespace-pre-wrap text-sm">{suggestion}</p>
-                <div className="flex gap-2 mt-2">
-                  {suggestion.includes(':') || suggestion.includes('—') ? (
-                    <Button 
-                      size="sm" 
-                      variant="default"
-                      onClick={() => handleApplySuggestion(suggestion, true)}
-                      className="flex-1"
-                    >
-                      Apply Change
-                    </Button>
-                  ) : null}
+                {(suggestion.includes(':') || suggestion.includes('—')) && (
                   <Button 
                     size="sm" 
-                    variant="outline" 
-                    onClick={() => handleApplySuggestion(suggestion)}
-                    className="flex-1"
+                    variant="default"
+                    onClick={() => handleApplySuggestion(suggestion, true)}
+                    className="w-full mt-2"
                   >
-                    Insert Suggestion
+                    Apply Change
                   </Button>
-                </div>
+                )}
               </div>
             ))
           ) : (
