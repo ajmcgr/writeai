@@ -20,13 +20,14 @@ serve(async (req) => {
 
   try {
     const { type, content } = await req.json();
+    console.log('Received request:', { type, content });
 
     const systemPrompt = type === "generate" 
       ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Format the output with proper spacing between paragraphs using double line breaks. Include a headline, dateline, introduction, body paragraphs, quotes if relevant, and a boilerplate. Each section should be properly spaced."
       : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message. Format the output with proper spacing between paragraphs using double line breaks:";
 
     const userPrompt = type === "generate"
-      ? content
+      ? "Generate a press release"
       : content;
 
     console.log('Generating content with prompt:', userPrompt);
@@ -38,7 +39,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -47,7 +48,19 @@ serve(async (req) => {
       }),
     });
 
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('OpenAI API error:', error);
+      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
+    }
+
     const data = await response.json();
+    console.log('OpenAI response:', data);
+
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error('Invalid response from OpenAI');
+    }
+
     const cleanText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
     const generatedText = formatToHtml(cleanText);
 
