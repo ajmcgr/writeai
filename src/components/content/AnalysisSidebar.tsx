@@ -39,6 +39,9 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       sectionTitle = suggestionParts[0].trim();
       suggestionText = suggestionParts.slice(1).join(':').trim();
     }
+
+    // Remove any markdown formatting from the suggestion text
+    suggestionText = suggestionText.replace(/\*\*/g, '').trim();
     
     // Try to find and replace the corresponding section if we have a section title
     if (sectionTitle) {
@@ -48,7 +51,11 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       console.log('Suggestion text:', suggestionText);
 
       for (let i = 0; i < paragraphs.length; i++) {
-        if (paragraphs[i].textContent?.includes(sectionTitle)) {
+        const paragraphText = paragraphs[i].textContent?.trim() || '';
+        // Remove any markdown formatting from the paragraph text for comparison
+        const cleanParagraphText = paragraphText.replace(/\*\*/g, '').trim();
+        
+        if (cleanParagraphText.includes(sectionTitle.replace(/\*\*/g, '').trim())) {
           // Replace the next paragraph's content
           if (i + 1 < paragraphs.length) {
             paragraphs[i + 1].innerHTML = suggestionText;
@@ -63,59 +70,14 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       }
     }
 
-    // If no section found or no section title, append as new paragraph
-    const formattedSuggestion = `<p>${suggestionText}</p>`;
+    // If no section found or no section title, replace the entire content
+    editor.innerHTML = suggestionText;
     
-    // Create a temporary container
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = formattedSuggestion;
-
-    // Get or create selection at the end of editor content
-    const selection = window.getSelection();
-    const range = document.createRange();
-    
-    // Find the last child element or create one if empty
-    let lastChild = editor.lastElementChild;
-    if (!lastChild) {
-      const p = document.createElement('p');
-      p.innerHTML = '<br>';
-      editor.appendChild(p);
-      lastChild = p;
-    }
-
-    // Set range to end of last element
-    range.setStartAfter(lastChild);
-    range.setEndAfter(lastChild);
-
-    // Clear any existing selection
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-
-    // Insert the paragraph
-    const fragment = tempDiv.firstElementChild;
-    if (fragment) {
-      // Add a line break before new content if there's existing content
-      if (editor.innerHTML.trim() !== '') {
-        const br = document.createElement('br');
-        range.insertNode(br);
-        range.setStartAfter(br);
-        range.setEndAfter(br);
-      }
-
-      range.insertNode(fragment);
-      range.setStartAfter(fragment);
-      range.setEndAfter(fragment);
-    }
-
-    // Update selection to end of inserted content
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-
     // Trigger input event to update content state
     const inputEvent = new Event('input', { bubbles: true });
     editor.dispatchEvent(inputEvent);
 
-    console.log('Content inserted successfully');
+    console.log('Content replaced successfully');
   };
 
   return (
