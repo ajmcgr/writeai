@@ -48,7 +48,6 @@ serve(async (req) => {
     });
 
     const data = await response.json();
-    // Clean up any HTML tags that might be in the response and format as HTML
     const cleanText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
     const generatedText = formatToHtml(cleanText);
 

@@ -32,7 +32,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert PR professional. Analyze the given press release and provide constructive suggestions for improvement. Focus on clarity, impact, and professional standards.'
+            content: 'You are an expert PR professional. For each section of the press release, provide only the improved version of that section. Format your response as "Section Title: Improved Text". Do not include explanations or rationale.'
           },
           {
             role: 'user',
@@ -43,7 +43,6 @@ serve(async (req) => {
     });
 
     const data = await response.json();
-    // Clean up any HTML tags and format as HTML
     const cleanText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
     const analysis = formatToHtml(cleanText);
 
