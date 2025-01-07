@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 
@@ -52,14 +52,16 @@ export const FormattingButton = ({
   };
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <ButtonWrapper>
-          {buttonContent}
-          <span className="sr-only">{label}</span>
-        </ButtonWrapper>
-      </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <ButtonWrapper>
+            {buttonContent}
+            <span className="sr-only">{label}</span>
+          </ButtonWrapper>
+        </TooltipTrigger>
+        <TooltipContent>{label}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
