@@ -6,13 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const formatToHtml = (text: string) => {
-  return text
-    .split('\n\n')
-    .map(paragraph => `<p>${paragraph.trim()}</p>`)
-    .join('');
-};
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -32,19 +25,18 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert PR professional. For each section of the press release, provide only the improved version of that section. Format your response as "Section Title: Improved Text". Do not include explanations or rationale.'
+            content: 'You are an expert PR professional. Analyze the press release and provide specific improvements for each section. Format your response as "Section Title: Improved Text". Only provide the improved version, no explanations. Each suggestion should be on a new line.'
           },
           {
             role: 'user',
-            content: content
+            content
           }
         ],
       }),
     });
 
     const data = await response.json();
-    const cleanText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
-    const analysis = formatToHtml(cleanText);
+    const analysis = data.choices[0].message.content;
 
     return new Response(
       JSON.stringify({ analysis }),

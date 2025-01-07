@@ -30,12 +30,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
 
     const suggestionParts = suggestion.split(/:|—/);
     if (suggestionParts.length < 2) {
-      console.log('No section title found, appending as new paragraph');
-      const newParagraph = document.createElement('p');
-      newParagraph.innerHTML = suggestion.trim();
-      editor.appendChild(newParagraph);
-      const inputEvent = new Event('input', { bubbles: true });
-      editor.dispatchEvent(inputEvent);
+      console.log('No section title found in suggestion:', suggestion);
       return;
     }
 
@@ -45,40 +40,39 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     console.log('Looking for section:', sectionTitle);
     console.log('Suggestion text:', suggestionText);
 
+    // Convert section title and suggestion to comparable format
+    const cleanSectionTitle = sectionTitle
+      .replace(/\*\*/g, '')
+      .replace(/^\d+\.\s*/, '')
+      .toLowerCase()
+      .trim();
+
+    // Find the matching paragraph
     const paragraphs = Array.from(editor.children) as HTMLElement[];
-    const cleanSectionTitle = sectionTitle.replace(/\*\*/g, '').replace(/^\d+\.\s*/, '').trim();
+    let matchFound = false;
 
-    // Try to find and replace the exact section
-    for (let i = 0; i < paragraphs.length; i++) {
-      const paragraphText = paragraphs[i].textContent?.trim() || '';
-      const cleanParagraphText = paragraphText.replace(/\*\*/g, '').replace(/^\d+\.\s*/, '').trim();
-      
-      if (cleanParagraphText.toLowerCase() === cleanSectionTitle.toLowerCase()) {
-        paragraphs[i].innerHTML = suggestionText;
-        console.log('Replaced content in paragraph:', i);
-        const inputEvent = new Event('input', { bubbles: true });
-        editor.dispatchEvent(inputEvent);
-        return;
+    for (const paragraph of paragraphs) {
+      const paragraphText = paragraph.textContent?.trim() || '';
+      const cleanParagraphText = paragraphText
+        .toLowerCase()
+        .replace(/\*\*/g, '')
+        .replace(/^\d+\.\s*/, '')
+        .trim();
+
+      if (cleanParagraphText.includes(cleanSectionTitle)) {
+        console.log('Found matching section:', paragraphText);
+        paragraph.innerHTML = suggestionText;
+        matchFound = true;
+        break;
       }
     }
 
-    // If no exact match, try partial match
-    for (let i = 0; i < paragraphs.length; i++) {
-      const paragraphText = paragraphs[i].textContent?.trim() || '';
-      if (paragraphText.toLowerCase().includes(cleanSectionTitle.toLowerCase())) {
-        paragraphs[i].innerHTML = suggestionText;
-        console.log('Replaced content with partial match in paragraph:', i);
-        const inputEvent = new Event('input', { bubbles: true });
-        editor.dispatchEvent(inputEvent);
-        return;
-      }
+    if (!matchFound) {
+      console.log('No matching section found for:', sectionTitle);
+      return;
     }
 
-    // If no match found, append as new paragraph
-    console.log('No matching section found, appending as new paragraph');
-    const newParagraph = document.createElement('p');
-    newParagraph.innerHTML = suggestionText;
-    editor.appendChild(newParagraph);
+    // Trigger input event to update content state
     const inputEvent = new Event('input', { bubbles: true });
     editor.dispatchEvent(inputEvent);
   };
