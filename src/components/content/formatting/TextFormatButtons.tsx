@@ -13,6 +13,22 @@ export const TextFormatButtons = ({
   clearFormatting,
   isLoading,
 }: TextFormatButtonsProps) => {
+  const handleListFormat = (type: 'insertUnorderedList' | 'insertOrderedList') => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const parentElement = range.commonAncestorContainer.parentElement;
+    
+    // If we're already in a list, move out of it
+    if (parentElement?.closest('ul, ol')) {
+      document.execCommand('outdent');
+    } else {
+      // Otherwise create a new list
+      document.execCommand(type);
+    }
+  };
+
   return (
     <TooltipProvider>
       <div className="flex items-center gap-2">
@@ -38,14 +54,14 @@ export const TextFormatButtons = ({
           U
         </FormattingButton>
         <FormattingButton
-          onClick={() => onFormat("insertUnorderedList")}
+          onClick={() => handleListFormat("insertUnorderedList")}
           disabled={isLoading}
           label="Create a bulleted list"
         >
           •
         </FormattingButton>
         <FormattingButton
-          onClick={() => onFormat("insertOrderedList")}
+          onClick={() => handleListFormat("insertOrderedList")}
           disabled={isLoading}
           label="Create a numbered list"
         >

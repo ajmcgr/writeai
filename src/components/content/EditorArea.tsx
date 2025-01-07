@@ -38,6 +38,19 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
       e.preventDefault();
       document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
     }
+
+    // Handle list indentation
+    if (e.key === 'Tab' && !e.shiftKey) {
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const listItem = range.commonAncestorContainer.parentElement?.closest('li');
+        if (listItem) {
+          e.preventDefault();
+          document.execCommand('indent');
+        }
+      }
+    }
   };
 
   return (

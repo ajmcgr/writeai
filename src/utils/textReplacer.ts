@@ -31,13 +31,8 @@ export const findAndReplaceText = (
     if (cleanParagraphText.includes(cleanSectionTitle)) {
       console.log('Found matching section:', paragraphText);
       
-      // Format the suggestion text as HTML if it's not already
-      const formattedSuggestion = !suggestionText.includes('<p>') 
-        ? `<p>${suggestionText}</p>`
-        : suggestionText;
-      
-      // Replace the content while preserving the paragraph element
-      paragraph.innerHTML = formattedSuggestion;
+      // Keep the exact suggestion text without any formatting modifications
+      paragraph.innerHTML = suggestionText;
       
       // Trigger input event to update state
       const inputEvent = new Event('input', { bubbles: true });
