@@ -5,6 +5,7 @@ export const findAndReplaceText = (
 ): boolean => {
   console.log('Looking for section:', sectionTitle);
   console.log('Suggestion text:', suggestionText);
+  console.log('Current editor content:', editor.innerHTML);
 
   // Clean up the section title for comparison
   const cleanSectionTitle = sectionTitle
@@ -21,6 +22,8 @@ export const findAndReplaceText = (
   let found = false;
   const paragraphs = Array.from(editor.children) as HTMLElement[];
   
+  console.log('Number of paragraphs to check:', paragraphs.length);
+  
   for (let i = 0; i < paragraphs.length; i++) {
     const paragraph = paragraphs[i];
     const paragraphText = paragraph.textContent?.toLowerCase() || '';
@@ -32,19 +35,32 @@ export const findAndReplaceText = (
       .replace(/:/g, '')  // Remove colons
       .trim();
 
-    console.log('Comparing with paragraph:', cleanParagraphText);
+    console.log(`Checking paragraph ${i + 1}:`, cleanParagraphText);
 
-    // Check if the paragraph contains the key phrases from the section title
+    // Get significant words from the title (excluding common words and short words)
     const titleWords = cleanSectionTitle.split(/\s+/).filter(word => 
-      word.length > 3 && !['the', 'and', 'for', 'with', 'this', 'that'].includes(word)
+      word.length > 3 && !['the', 'and', 'for', 'with', 'this', 'that', 'from', 'your'].includes(word)
     );
 
+    console.log('Significant title words:', titleWords);
+
     // Count how many significant words from the title appear in the paragraph
-    const matchingWords = titleWords.filter(word => cleanParagraphText.includes(word));
-    const matchThreshold = Math.min(2, Math.floor(titleWords.length / 2)); // At least 2 words or half of significant words
+    const matchingWords = titleWords.filter(word => {
+      const matches = cleanParagraphText.includes(word);
+      console.log(`Checking word "${word}": ${matches ? 'found' : 'not found'}`);
+      return matches;
+    });
+
+    // Calculate threshold based on title length
+    const matchThreshold = Math.max(2, Math.floor(titleWords.length * 0.4)); // At least 2 words or 40% of significant words
+    
+    console.log('Match threshold:', matchThreshold);
+    console.log('Matching words found:', matchingWords);
 
     if (matchingWords.length >= matchThreshold) {
-      console.log('Found matching section with words:', matchingWords);
+      console.log('Found matching section!');
+      console.log('Original paragraph:', paragraph.outerHTML);
+      console.log('Replacing with:', formattedSuggestion);
       
       // Replace the paragraph with the suggestion
       paragraph.outerHTML = formattedSuggestion;
