@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { EditorArea } from "./EditorArea";
-import { FormattingToolbar } from "./FormattingToolbar";
-import { AnalysisSidebar } from "./AnalysisSidebar";
-import { AIPromptDialog } from "./AIPromptDialog";
-import { SaveDraftDialog } from "./SaveDraftDialog";
+import { useState } from "react";
+import { EditorArea } from "@/components/content/EditorArea";
+import { FormattingToolbar } from "@/components/content/FormattingToolbar";
+import { AnalysisSidebar } from "@/components/content/AnalysisSidebar";
+import { AIPromptDialog } from "@/components/content/AIPromptDialog";
+import { SaveDraftDialog } from "@/components/content/SaveDraftDialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +25,7 @@ interface WritingInterfaceProps {
   currentContentId: string | null;
 }
 
-export const WritingInterface = ({
+const WritingInterface = ({
   content,
   setContent,
   title,
@@ -160,3 +160,5 @@ export const WritingInterface = ({
     </div>
   );
 };
+
+export default WritingInterface;
