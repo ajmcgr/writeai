@@ -58,7 +58,7 @@ export const WritingInterface = ({
 
   return (
     <div className="flex flex-1">
-      <div className="flex-1 flex flex-col h-[calc(100vh-114px)] relative">
+      <div className="flex-1 flex flex-col h-[calc(100vh-64px)] relative">
         <AIPromptDialog 
           onContentGenerated={setContent} 
           isOpen={showAIPrompt} 
