@@ -62,6 +62,19 @@ export function DeleteAccountSection() {
 
       console.log("Successfully deleted user profile");
 
+      // Delete the auth user
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(
+        session.user.id,
+        true // The second parameter (true) means to also delete user data
+      );
+
+      if (deleteError) {
+        console.error("Error deleting auth user:", deleteError);
+        throw new Error("Failed to delete user account");
+      }
+
+      console.log("Successfully deleted auth user");
+
       // Sign out the user last
       const { error: signOutError } = await supabase.auth.signOut();
       
