@@ -16,29 +16,55 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
   const handleApplySuggestion = (suggestion: string) => {
     if (!onApply) return;
     
-    // Format the suggestion as rich text
-    const formattedSuggestion = `<p>${suggestion.replace(/\n/g, '</p><p>')}</p>`;
-    
-    // Insert the suggestion at the cursor position or at the end
-    const textarea = document.querySelector('[contenteditable]') as HTMLElement;
-    if (textarea) {
-      const selection = window.getSelection();
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = formattedSuggestion;
-        
-        while (tempDiv.firstChild) {
-          range.insertNode(tempDiv.firstChild);
-        }
-        range.collapse(false);
-      } else {
-        textarea.innerHTML += formattedSuggestion;
-      }
-    } else {
-      // Fallback: append to the end if contenteditable not found
-      onApply(content + formattedSuggestion);
+    // Get the editor element
+    const editor = document.querySelector('[contenteditable]') as HTMLElement;
+    if (!editor) {
+      // Fallback: append to existing content if editor not found
+      onApply(content + '\n\n' + suggestion);
+      return;
     }
+
+    // Get current selection or create a new one at the end
+    const selection = window.getSelection();
+    const range = selection?.rangeCount ? selection.getRangeAt(0) : document.createRange();
+    
+    if (!selection?.rangeCount) {
+      range.selectNodeContents(editor);
+      range.collapse(false); // Move to end
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    }
+
+    // Format the suggestion with proper paragraph tags
+    const formattedSuggestion = suggestion
+      .split('\n')
+      .map(para => para.trim())
+      .filter(Boolean)
+      .map(para => `<p>${para}</p>`)
+      .join('');
+
+    // Create a temporary container
+    const container = document.createElement('div');
+    container.innerHTML = formattedSuggestion;
+
+    // Insert each paragraph
+    while (container.firstChild) {
+      range.insertNode(container.firstChild);
+      range.collapse(false);
+    }
+
+    // Ensure a line break after the insertion
+    const br = document.createElement('br');
+    range.insertNode(br);
+    range.collapse(false);
+
+    // Update selection
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+
+    // Trigger input event to ensure content state is updated
+    const event = new Event('input', { bubbles: true });
+    editor.dispatchEvent(event);
   };
 
   return (
