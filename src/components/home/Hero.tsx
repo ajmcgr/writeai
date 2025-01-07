@@ -48,21 +48,30 @@ export function Hero() {
           Create high-quality and impactful press releases with Write AI.
         </p>
         
-        <div className="flex flex-col md:flex-row items-center gap-[5px]">
-          <Link to={isAuthenticated ? "/write" : "/signup"}>
-            <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
-              {isAuthenticated ? "Start Writing" : "Sign Up"} <ArrowRight className="w-5 h-5" />
-            </Button>
-          </Link>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col md:flex-row items-center gap-[5px]">
+            <Link to={isAuthenticated ? "/write" : "/signup"}>
+              <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
+                {isAuthenticated ? "Start Writing" : "Sign Up"} <ArrowRight className="w-5 h-5" />
+              </Button>
+            </Link>
+            
+            {/* Senja Widget */}
+            <div className="w-full md:w-[500px]">
+              <div className="senja-embed" 
+                  data-id="f10a97a0-8bad-4cf0-8ced-3790e0588932" 
+                  data-mode="shadow" 
+                  data-lazyload="false" 
+                  style={{display: 'block'}}
+              />
+            </div>
+          </div>
           
-          {/* Senja Widget */}
-          <div className="w-full md:w-[500px]">
-            <div className="senja-embed" 
-                data-id="f10a97a0-8bad-4cf0-8ced-3790e0588932" 
-                data-mode="shadow" 
-                data-lazyload="false" 
-                style={{display: 'block'}}
-            />
+          {/* New features text row */}
+          <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base font-inter">
+            <span>✔ 1-month free trial</span>
+            <span>✔ No credit card required</span>
+            <span>✔ Cancel any-time</span>
           </div>
         </div>
 
