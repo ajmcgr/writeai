@@ -48,7 +48,7 @@ export function Hero() {
           Create high-quality and impactful press releases with Write AI.
         </p>
         
-        <div className="flex flex-col md:flex-row items-center gap-8">
+        <div className="flex flex-col md:flex-row items-center gap-4">
           <Link to={isAuthenticated ? "/write" : "/signup"}>
             <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
               {isAuthenticated ? "Start Writing" : "Sign Up"} <ArrowRight className="w-5 h-5" />
