@@ -103,7 +103,7 @@ export default function Help() {
                 <Textarea
                   id="message"
                   {...register("message", { required: "Message is required" })}
-                  className={`min-h-[150px] ${errors.message ? "border-destructive" : ""}`}
+                  className={`min-h-[150px] border border-input ${errors.message ? "border-destructive" : ""}`}
                 />
                 {errors.message && (
                   <p className="mt-1 text-sm text-destructive">{errors.message.message}</p>
