@@ -7,18 +7,9 @@ const corsHeaders = {
 };
 
 const formatToHtml = (text: string) => {
-  // Split by double newlines first, then single newlines
   return text
-    .split(/\n{2,}|\n/)
-    .map(paragraph => paragraph.trim())
-    .filter(Boolean)
-    .map(paragraph => {
-      // Remove any existing HTML tags for safety
-      const cleanParagraph = paragraph.replace(/<[^>]*>/g, '');
-      // Remove markdown formatting
-      const noMarkdown = cleanParagraph.replace(/\*\*/g, '');
-      return `<p>${noMarkdown}</p>`;
-    })
+    .split('\n\n')
+    .map(paragraph => `<p>${paragraph.trim()}</p>`)
     .join('');
 };
 
@@ -31,8 +22,8 @@ serve(async (req) => {
     const { type, content } = await req.json();
 
     const systemPrompt = type === "generate" 
-      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Format the output with proper spacing between paragraphs. Include a headline, dateline, introduction, body paragraphs, quotes if relevant, and a boilerplate."
-      : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message:";
+      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Format the output with proper spacing between paragraphs using double line breaks. Include a headline, dateline, introduction, body paragraphs, quotes if relevant, and a boilerplate. Each section should be properly spaced."
+      : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message. Format the output with proper spacing between paragraphs using double line breaks:";
 
     const userPrompt = type === "generate"
       ? content
@@ -57,7 +48,7 @@ serve(async (req) => {
     });
 
     const data = await response.json();
-    // Clean up any HTML tags and format as HTML
+    // Clean up any HTML tags that might be in the response and format as HTML
     const cleanText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
     const generatedText = formatToHtml(cleanText);
 

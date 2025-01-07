@@ -17,33 +17,15 @@ import CTA from "./pages/tools/CTA";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingState } from "@/components/ui/loading-state";
-import { useToast } from "@/hooks/use-toast";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("Session check error:", error);
-          if (error.message.includes("refresh_token_not_found")) {
-            console.log("Invalid refresh token, clearing session");
-            await supabase.auth.signOut({ scope: 'local' });
-            toast({
-              title: "Session expired",
-              description: "Please sign in again",
-              variant: "destructive",
-            });
-          }
-          setIsAuthenticated(false);
-          return;
-        }
-
+        const { data: { session } } = await supabase.auth.getSession();
         console.log("App auth check:", session ? "Authenticated" : "Not authenticated");
         setIsAuthenticated(!!session);
       } catch (error) {
@@ -56,18 +38,8 @@ function App() {
 
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("App auth state changed:", event, session?.user?.email);
-      
-      if (event === 'TOKEN_REFRESHED') {
-        console.log('Token refreshed successfully');
-      }
-      
-      if (event === 'SIGNED_OUT') {
-        console.log('User signed out, clearing local state');
-        setIsAuthenticated(false);
-      }
-      
       setIsAuthenticated(!!session);
     });
 
@@ -75,7 +47,7 @@ function App() {
       console.log("Cleaning up App auth subscription");
       subscription.unsubscribe();
     };
-  }, [toast]);
+  }, []);
 
   if (isLoading) {
     return <LoadingState />;
