@@ -1,221 +1,76 @@
-import { useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { EditorArea } from "./EditorArea";
+import { FormattingToolbar } from "./FormattingToolbar";
+import { AnalysisSidebar } from "./AnalysisSidebar";
+import { AIPromptDialog } from "./AIPromptDialog";
+import { SaveDraftDialog } from "./SaveDraftDialog";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { Navigation } from "@/components/layout/Navigation";
-import { VersionHistory } from "@/components/content/VersionHistory";
-import { DocumentSidebar } from "@/components/content/DocumentSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AuthCheck } from "@/components/auth/AuthCheck";
-import { useUsageCheck } from "@/utils/usageCheck";
-import { WritingInterface } from "@/components/content/WritingInterface";
-import { SaveDraftDialog } from "@/components/content/SaveDraftDialog";
-import { useWriteAuth } from "@/hooks/useWriteAuth";
-import { LoadingState } from "@/components/ui/loading-state";
-import { ErrorBoundary } from "@/components/ui/error-boundary";
 
-const Write = () => {
-  const { id } = useParams();
-  const [content, setContent] = useState("");
-  const [title, setTitle] = useState("Untitled Document");
-  const [isLoading, setIsLoading] = useState(false);
-  const [showVersionHistory, setShowVersionHistory] = useState(false);
-  const [analysis, setAnalysis] = useState<string | null>(null);
-  const { toast } = useToast();
-  const [currentContentId, setCurrentContentId] = useState<string | null>(null);
+interface WritingInterfaceProps {
+  content: string;
+  setContent: (content: string) => void;
+  title: string;
+  setTitle: (title: string) => void;
+  onSaveDraft: (title?: string) => void;
+  onExport: () => void;
+  onCopy: () => void;
+  onHistory: () => void;
+  onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onRewrite: () => void;
+  onAnalyze: () => void;
+  isLoading: boolean;
+  analysis: string | null;
+  currentContentId: string | null;
+}
+
+export const WritingInterface = ({
+  content,
+  setContent,
+  title,
+  setTitle,
+  onSaveDraft,
+  onExport,
+  onHistory,
+  onFileUpload,
+  onRewrite,
+  onAnalyze,
+  isLoading,
+  analysis,
+  currentContentId,
+}: WritingInterfaceProps) => {
+  const [showAnalysis, setShowAnalysis] = useState(true);
+  const [showAIPrompt, setShowAIPrompt] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const { isAuthenticated, isLoading: authLoading } = useWriteAuth();
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const { toast } = useToast();
 
-  useEffect(() => {
-    const loadDocument = async () => {
-      if (!id) {
-        setIsInitialLoad(false);
-        return;
-      }
-
-      try {
-        setIsLoading(true);
-        const { data, error } = await supabase
-          .from("content")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-        if (error) {
-          console.error("Error loading document:", error);
-          toast({
-            title: "Error",
-            description: "Failed to load document",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        if (data) {
-          setContent(data.content);
-          setTitle(data.title || "Untitled Document");
-          setCurrentContentId(data.id);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load document",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-        setIsInitialLoad(false);
-      }
-    };
-
-    loadDocument();
-  }, [id, toast]);
-
-  const saveDraft = useCallback(async (newTitle?: string) => {
-    try {
-      setIsLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          title: "Authentication required",
-          description: "Please sign in to save drafts",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      let contentId = currentContentId;
-
-      if (!contentId) {
-        const { data: newContent, error: contentError } = await supabase
-          .from('content')
-          .insert({
-            content,
-            title: newTitle || "Untitled Document",
-            type: 'press_release',
-            is_draft: true,
-            user_id: session.user.id
-          })
-          .select()
-          .single();
-
-        if (contentError) throw contentError;
-        contentId = newContent.id;
-        setCurrentContentId(contentId);
-      } else {
-        const { error: updateError } = await supabase
-          .from('content')
-          .update({ 
-            content, 
-            title: newTitle || title,
-            updated_at: new Date().toISOString(),
-            user_id: session.user.id
-          })
-          .eq('id', contentId);
-
-        if (updateError) throw updateError;
-      }
-
-      const { data: versions } = await supabase
-        .from('content_versions')
-        .select('version')
-        .eq('content_id', contentId)
-        .order('version', { ascending: false })
-        .limit(1);
-
-      const nextVersion = versions && versions.length > 0 ? versions[0].version + 1 : 1;
-
-      await supabase
-        .from('content_versions')
-        .insert({
-          content_id: contentId,
-          content,
-          version: nextVersion
-        });
-
-      toast({
-        title: "Success",
-        description: "Draft saved successfully",
-      });
-    } catch (error) {
-      console.error("Error saving draft:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save draft. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [content, title, currentContentId, toast]);
-
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (file.type !== "text/plain" && file.type !== "application/msword" && 
-        file.type !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload a .txt or .doc/.docx file",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const { data, error } = await supabase.functions.invoke("process-document", {
-        body: formData,
-      });
-
-      if (error) throw error;
-      setContent(data.text);
-    } catch (error) {
-      console.error("Error processing document:", error);
-      toast({
-        title: "Error",
-        description: "Failed to process document. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const formatText = (type: string) => {
+    document.execCommand(type, false);
   };
 
-  const exportToDocx = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke("export-to-docx", {
-        body: { content },
-      });
+  const handleApplySuggestion = (suggestion: string) => {
+    setContent(suggestion);
+  };
 
-      if (error) throw error;
-
-      const link = document.createElement('a');
-      link.href = `data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${data.file}`;
-      link.download = 'press_release.docx';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error exporting to DOCX:", error);
-      toast({
-        title: "Error",
-        description: "Failed to export document. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleSaveDraft = (newTitle?: string) => {
+    onSaveDraft(newTitle);
   };
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(content);
+      const selection = window.getSelection();
+      const selectedText = selection?.toString() || '';
+      
+      // If there's selected text, copy that. Otherwise, copy all content
+      const textToCopy = selectedText || content;
+      
+      await navigator.clipboard.writeText(textToCopy);
       toast({
         title: "Success",
-        description: "Content copied to clipboard",
+        description: selectedText 
+          ? "Selected text copied to clipboard" 
+          : "Content copied to clipboard",
       });
     } catch (error) {
       console.error("Error copying to clipboard:", error);
@@ -227,120 +82,81 @@ const Write = () => {
     }
   };
 
-  const rewriteContent = async () => {
-    if (!content) {
-      toast({
-        title: "No content",
-        description: "Please enter some content to rewrite.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase.functions.invoke("generate-content", {
-        body: { type: "rewrite", content }
-      });
-
-      if (error) throw error;
-      
-      setContent(data.generatedText);
-      
-    } catch (error) {
-      console.error("Error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to rewrite content. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const analyzeContent = async () => {
-    if (!content) {
-      toast({
-        title: "No content",
-        description: "Please enter some content to analyze.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase.functions.invoke("analyze-content", {
-        body: { content }
-      });
-
-      if (error) throw error;
-      setAnalysis(data.analysis);
-    } catch (error) {
-      console.error("Error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to analyze content. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (authLoading || isInitialLoad) {
-    return <LoadingState />;
-  }
-
-  if (isAuthenticated === false) {
-    return <AuthCheck isAuthenticated={false} />;
-  }
-
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-background flex flex-col">
-        <Navigation />
-        <SidebarProvider>
-          <div className="container flex-grow py-8 mt-16 flex w-full relative">
-            <DocumentSidebar />
-            <WritingInterface
-              content={content}
-              setContent={setContent}
-              title={title}
-              setTitle={setTitle}
-              onSaveDraft={(newTitle) => {
-                saveDraft(newTitle);
-                setShowSaveDialog(false);
-              }}
-              onExport={exportToDocx}
-              onCopy={copyToClipboard}
-              onHistory={() => setShowVersionHistory(true)}
-              onFileUpload={handleFileUpload}
-              onRewrite={rewriteContent}
-              onAnalyze={analyzeContent}
-              isLoading={isLoading}
-              analysis={analysis}
-              currentContentId={currentContentId}
-            />
-          </div>
-        </SidebarProvider>
-
-        <VersionHistory
-          contentId={currentContentId}
-          onVersionSelect={setContent}
-          isOpen={showVersionHistory}
-          onOpenChange={setShowVersionHistory}
+    <div className="flex flex-1">
+      <div className="flex-1 flex flex-col h-[calc(100vh-64px)] relative">
+        <AIPromptDialog 
+          onContentGenerated={setContent} 
+          isOpen={showAIPrompt} 
+          onOpenChange={setShowAIPrompt}
         />
         <SaveDraftDialog
           isOpen={showSaveDialog}
           onOpenChange={setShowSaveDialog}
           content={content}
-          onSave={saveDraft}
+          onSave={handleSaveDraft}
         />
+        <div className="flex-1 overflow-hidden">
+          <EditorArea
+            content={content}
+            setContent={setContent}
+            title={title}
+            setTitle={setTitle}
+          />
+        </div>
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border z-50">
+          <div className="container max-w-screen-xl mx-auto">
+            <FormattingToolbar
+              onFormat={formatText}
+              onExport={onExport}
+              onCopy={copyToClipboard}
+              onHistory={onHistory}
+              onFileUpload={onFileUpload}
+              onRewrite={onRewrite}
+              onAnalyze={onAnalyze}
+              onAIGenerate={() => setShowAIPrompt(true)}
+              onSaveDraft={() => setShowSaveDialog(true)}
+              isLoading={isLoading}
+              hasContent={!!content}
+              hasContentId={!!currentContentId}
+            />
+          </div>
+        </div>
       </div>
-    </ErrorBoundary>
+      {analysis && showAnalysis && (
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-2"
+            onClick={() => setShowAnalysis(false)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+          <AnalysisSidebar
+            analysis={analysis}
+            onApply={handleApplySuggestion}
+            content={content}
+          />
+        </div>
+      )}
+      {isLoading && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="bg-background/95 backdrop-blur-sm p-8 rounded-lg shadow-lg flex flex-col items-center space-y-4">
+            <div className="w-12 h-12">
+              <svg className="animate-spin" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            </div>
+            <p className="text-sm font-medium">AI is processing your request...</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
-
-export default Write;
