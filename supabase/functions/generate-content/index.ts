@@ -6,6 +6,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const formatToHtml = (text: string) => {
+  return text
+    .split('\n\n')
+    .map(paragraph => `<p>${paragraph.trim()}</p>`)
+    .join('');
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -41,8 +48,9 @@ serve(async (req) => {
     });
 
     const data = await response.json();
-    // Clean up any HTML tags that might be in the response
-    const generatedText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
+    // Clean up any HTML tags that might be in the response and format as HTML
+    const cleanText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
+    const generatedText = formatToHtml(cleanText);
 
     console.log('Generated text:', generatedText);
 
