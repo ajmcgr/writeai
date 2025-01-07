@@ -32,6 +32,7 @@ serve(async (req) => {
       throw new Error('Missing Supabase configuration');
     }
 
+    // Verify the user's token
     const verifyResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -48,8 +49,8 @@ serve(async (req) => {
     console.log('✅ Authenticated user:', user.email);
 
     // Get user's Stripe subscription ID
-    const { data: profile } = await fetch(
-      `${supabaseUrl}/rest/v1/profiles?user_id=eq.${user.id}&select=stripe_subscription_id`,
+    const { data: profile, error: profileError } = await fetch(
+      `${supabaseUrl}/rest/v1/profiles?user_id=eq.${user.id}&select=stripe_subscription_id,stripe_customer_id`,
       {
         headers: {
           Authorization: `Bearer ${supabaseKey}`,
@@ -58,11 +59,17 @@ serve(async (req) => {
       }
     ).then(res => res.json());
 
-    if (!profile || !profile[0]?.stripe_subscription_id) {
-      throw new Error('No active subscription found');
+    if (profileError || !profile || profile.length === 0) {
+      console.error('❌ Error fetching profile:', profileError);
+      throw new Error('Could not find user profile');
     }
 
     const subscriptionId = profile[0].stripe_subscription_id;
+    if (!subscriptionId) {
+      console.error('❌ No active subscription found');
+      throw new Error('No active subscription found');
+    }
+
     console.log('📝 Found subscription ID:', subscriptionId);
 
     const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY');
@@ -81,6 +88,29 @@ serve(async (req) => {
     });
 
     console.log('✅ Subscription cancelled successfully:', subscription.id);
+
+    // Update the profile status
+    const updateResponse = await fetch(
+      `${supabaseUrl}/rest/v1/profiles?user_id=eq.${user.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${supabaseKey}`,
+          apikey: supabaseKey,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal',
+        },
+        body: JSON.stringify({
+          subscription_status: 'free',
+          updated_at: new Date().toISOString(),
+        }),
+      }
+    );
+
+    if (!updateResponse.ok) {
+      console.error('❌ Failed to update profile status');
+      throw new Error('Failed to update profile status');
+    }
 
     return new Response(
       JSON.stringify({ 
