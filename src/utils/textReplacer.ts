@@ -8,12 +8,17 @@ export const findAndReplaceText = (
 
   // Clean up the section title for comparison
   const cleanSectionTitle = sectionTitle
-    .replace(/\*\*/g, '')
-    .replace(/^\d+\.\s*/, '')
+    .replace(/\*\*/g, '')  // Remove asterisks
+    .replace(/^\d+\.\s*/, '')  // Remove leading numbers and dots
     .toLowerCase()
     .trim();
 
-  // Convert NodeList to Array for easier manipulation
+  // Format the suggestion text to preserve HTML structure
+  const formattedSuggestion = !suggestionText.includes('<') 
+    ? `<p>${suggestionText}</p>`
+    : suggestionText;
+
+  let found = false;
   const paragraphs = Array.from(editor.children) as HTMLElement[];
   
   for (let i = 0; i < paragraphs.length; i++) {
@@ -28,23 +33,26 @@ export const findAndReplaceText = (
 
     console.log('Comparing with paragraph:', cleanParagraphText);
 
-    if (cleanParagraphText.includes(cleanSectionTitle)) {
+    if (cleanParagraphText.includes(cleanSectionTitle) || 
+        cleanSectionTitle.includes(cleanParagraphText)) {
       console.log('Found matching section:', paragraphText);
       
-      // Replace with the suggestion text while preserving HTML formatting
-      paragraph.outerHTML = suggestionText;
-      
-      // Create a new input event
+      // Replace the paragraph with the suggestion
+      paragraph.outerHTML = formattedSuggestion;
+      found = true;
+
+      // Create and dispatch an input event to trigger state updates
       const inputEvent = new Event('input', { bubbles: true });
-      
-      // Dispatch the event on the editor
       editor.dispatchEvent(inputEvent);
       
       console.log('Successfully replaced text');
-      return true;
+      break;
     }
   }
 
-  console.log('No matching section found for:', sectionTitle);
-  return false;
+  if (!found) {
+    console.log('No matching section found for:', sectionTitle);
+  }
+
+  return found;
 };
