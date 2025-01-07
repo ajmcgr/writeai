@@ -312,7 +312,7 @@ const Write = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
         <SidebarProvider>
-          <div className="container flex-grow py-8 mt-16 flex w-full relative">
+          <div className="container flex-grow py-8 mt-24 flex w-full relative">
             <DocumentSidebar />
             <WritingInterface
               content={content}
