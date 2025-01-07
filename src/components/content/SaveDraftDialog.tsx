@@ -39,12 +39,19 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       }
 
       // Check for existing document with same title
-      const { data: existingDocs } = await supabase
+      const { data: existingDocs, error: queryError } = await supabase
         .from('content')
         .select('id')
         .eq('user_id', session.user.id)
         .eq('title', title.trim())
         .maybeSingle();
+
+      if (queryError) {
+        console.error("Error checking for existing document:", queryError);
+        throw queryError;
+      }
+
+      let savedContent;
 
       if (existingDocs) {
         console.log("Document with same title exists, updating instead");
@@ -59,14 +66,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
           .single();
 
         if (updateError) throw updateError;
-        
-        if (updatedContent) {
-          console.log("Document updated successfully:", updatedContent);
-          onSave(title);
-          onOpenChange(false);
-          setTitle("");
-          navigate(`/write/${updatedContent.id}`);
-        }
+        savedContent = updatedContent;
       } else {
         // Save new document
         const { data: newContent, error: contentError } = await supabase
@@ -82,16 +82,17 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
           .single();
 
         if (contentError) throw contentError;
+        savedContent = newContent;
+      }
 
-        console.log("Draft saved successfully:", newContent);
-        
-        onSave(title);
-        onOpenChange(false);
-        setTitle("");
+      console.log("Draft saved successfully:", savedContent);
+      
+      onSave(title);
+      onOpenChange(false);
+      setTitle("");
 
-        if (newContent?.id) {
-          navigate(`/write/${newContent.id}`);
-        }
+      if (savedContent?.id) {
+        navigate(`/write/${savedContent.id}`);
       }
       
       toast({
