@@ -16,14 +16,16 @@ interface SaveDraftDialogProps {
 export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveDraftDialogProps) {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    if (isLoading || !title.trim()) return;
+    if (isLoading || !title.trim() || isSaving) return;
 
     try {
       setIsLoading(true);
+      setIsSaving(true);
       console.log("Starting draft save process");
       
       const { data: { session } } = await supabase.auth.getSession();
@@ -84,11 +86,17 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       });
     } finally {
       setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      if (!isSaving) {
+        onOpenChange(open);
+        if (!open) setTitle("");
+      }
+    }}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Save Draft</DialogTitle>
@@ -99,22 +107,25 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter document title"
             className="w-full"
+            disabled={isLoading || isSaving}
           />
         </div>
         <DialogFooter>
           <Button
             variant="outline"
             onClick={() => {
-              onOpenChange(false);
-              setTitle("");
+              if (!isSaving) {
+                onOpenChange(false);
+                setTitle("");
+              }
             }}
-            disabled={isLoading}
+            disabled={isLoading || isSaving}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
-            disabled={!title.trim() || isLoading}
+            disabled={!title.trim() || isLoading || isSaving}
           >
             {isLoading ? "Saving..." : "Save"}
           </Button>
