@@ -19,23 +19,23 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     // Get the editor element
     const editor = document.querySelector('[contenteditable]') as HTMLElement;
     if (!editor) {
-      // Fallback: append to existing content if editor not found
-      onApply(content + '\n\n' + suggestion);
+      console.error('Editor element not found');
       return;
     }
 
-    // Get current selection or create a new one at the end
+    // Get current selection
     const selection = window.getSelection();
     const range = selection?.rangeCount ? selection.getRangeAt(0) : document.createRange();
-    
+
+    // If no selection, move to the end of the editor
     if (!selection?.rangeCount) {
       range.selectNodeContents(editor);
-      range.collapse(false); // Move to end
+      range.collapse(false);
       selection?.removeAllRanges();
       selection?.addRange(range);
     }
 
-    // Format the suggestion with proper paragraph tags
+    // Format suggestion into paragraphs with proper HTML
     const formattedSuggestion = suggestion
       .split('\n')
       .map(para => para.trim())
@@ -43,28 +43,38 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       .map(para => `<p>${para}</p>`)
       .join('');
 
-    // Create a temporary container
-    const container = document.createElement('div');
-    container.innerHTML = formattedSuggestion;
+    // Create a temporary container and insert the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = formattedSuggestion;
 
-    // Insert each paragraph
-    while (container.firstChild) {
-      range.insertNode(container.firstChild);
-      range.collapse(false);
-    }
+    // Insert each paragraph with proper spacing
+    const fragments = Array.from(tempDiv.children);
+    fragments.forEach((fragment, index) => {
+      // Insert the paragraph
+      range.insertNode(fragment);
+      
+      // Move range to after the inserted node
+      range.setStartAfter(fragment);
+      range.setEndAfter(fragment);
 
-    // Ensure a line break after the insertion
-    const br = document.createElement('br');
-    range.insertNode(br);
-    range.collapse(false);
+      // Add a line break after each paragraph except the last one
+      if (index < fragments.length - 1) {
+        const br = document.createElement('br');
+        range.insertNode(br);
+        range.setStartAfter(br);
+        range.setEndAfter(br);
+      }
+    });
 
-    // Update selection
+    // Update selection to end of inserted content
     selection?.removeAllRanges();
     selection?.addRange(range);
 
-    // Trigger input event to ensure content state is updated
-    const event = new Event('input', { bubbles: true });
-    editor.dispatchEvent(event);
+    // Trigger input event to update content state
+    const inputEvent = new Event('input', { bubbles: true });
+    editor.dispatchEvent(inputEvent);
+
+    console.log('Content inserted successfully');
   };
 
   return (
