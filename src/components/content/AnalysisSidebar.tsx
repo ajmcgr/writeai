@@ -8,19 +8,34 @@ interface AnalysisSidebarProps {
   content: string;
 }
 
+interface Suggestion {
+  original: string;
+  improved: string;
+}
+
 export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarProps) => {
   if (!analysis) return null;
 
   console.log('Raw analysis:', analysis);
 
-  const suggestions = analysis
-    .split(/\n{2,}|\n/)
-    .map(s => s.trim())
-    .filter(Boolean);
+  // Parse the suggestions into structured format
+  const suggestions: Suggestion[] = analysis
+    .split(/\n{2,}/)
+    .map(block => {
+      const lines = block.split('\n');
+      const original = lines[0]?.replace('Original: ', '').replace(/^"|"$/g, '');
+      const improved = lines[1]?.replace('Improved: ', '').replace(/^"|"$/g, '');
+      
+      if (original && improved) {
+        return { original, improved };
+      }
+      return null;
+    })
+    .filter((s): s is Suggestion => s !== null);
 
   console.log('Parsed suggestions:', suggestions);
 
-  const handleApplySuggestion = (suggestion: string) => {
+  const handleApplySuggestion = (suggestion: Suggestion) => {
     if (!onApply) return;
     
     const editor = document.querySelector('[contenteditable="true"]') as HTMLElement;
@@ -29,28 +44,16 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       return;
     }
 
-    const suggestionParts = suggestion.split(/:|—/);
-    if (suggestionParts.length < 2) {
-      console.log('No section title found in suggestion:', suggestion);
-      return;
-    }
-
-    const sectionTitle = suggestionParts[0].trim();
-    const suggestionText = suggestionParts.slice(1).join(':').trim();
-    
-    console.log('Applying suggestion:', {
-      sectionTitle,
-      suggestionText
-    });
+    console.log('Applying suggestion:', suggestion);
 
     // Ensure the suggestion text is properly wrapped in HTML
-    const formattedSuggestion = !suggestionText.includes('<') 
-      ? `<p>${suggestionText}</p>`
-      : suggestionText;
+    const formattedSuggestion = !suggestion.improved.includes('<') 
+      ? `<p>${suggestion.improved}</p>`
+      : suggestion.improved;
     
-    const replaced = findAndReplaceText(editor, sectionTitle, formattedSuggestion);
+    const replaced = findAndReplaceText(editor, suggestion.original, formattedSuggestion);
     if (!replaced) {
-      console.error('Failed to replace text for section:', sectionTitle);
+      console.error('Failed to replace text:', suggestion.original);
     }
   };
 

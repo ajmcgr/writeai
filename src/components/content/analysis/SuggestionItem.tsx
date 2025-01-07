@@ -2,20 +2,22 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Copy } from "lucide-react";
 
-interface SuggestionItemProps {
-  suggestion: string;
-  onApply: (suggestion: string) => void;
+interface Suggestion {
+  original: string;
+  improved: string;
 }
 
-export const SuggestionItem = ({ suggestion }: SuggestionItemProps) => {
+interface SuggestionItemProps {
+  suggestion: Suggestion;
+  onApply: (suggestion: Suggestion) => void;
+}
+
+export const SuggestionItem = ({ suggestion, onApply }: SuggestionItemProps) => {
   const { toast } = useToast();
-  const parts = suggestion.split(/:|—/);
-  const title = parts[0].trim();
-  const content = parts.slice(1).join(':').trim();
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(content);
+      await navigator.clipboard.writeText(suggestion.improved);
       toast({
         title: "Success",
         description: "Suggestion copied to clipboard",
@@ -32,8 +34,14 @@ export const SuggestionItem = ({ suggestion }: SuggestionItemProps) => {
 
   return (
     <div className="p-4 border rounded-lg space-y-2">
-      <h4 className="font-medium">{title}</h4>
-      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{content}</p>
+      <div className="space-y-2">
+        <h4 className="font-medium text-sm text-muted-foreground">Original Text:</h4>
+        <p className="text-sm">{suggestion.original}</p>
+      </div>
+      <div className="space-y-2">
+        <h4 className="font-medium text-sm text-muted-foreground">Improved Version:</h4>
+        <p className="text-sm">{suggestion.improved}</p>
+      </div>
       <Button 
         size="sm" 
         variant="default"

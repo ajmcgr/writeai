@@ -27,23 +27,27 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are an expert PR professional and editor. Analyze the press release and suggest specific improvements for each section. 
-            Your suggestions should enhance clarity, impact, and professionalism while maintaining the core message.
+            content: `You are an expert PR professional and editor. Analyze the press release and provide specific, actionable improvements.
+            Focus on enhancing:
+            1. Headlines - Make them more compelling and newsworthy
+            2. Lead paragraph - Strengthen the hook and key message
+            3. Quotes - Make them more impactful and authentic
+            4. Body content - Improve clarity, conciseness, and storytelling
+            5. Call to action - Make it more compelling
+            6. Boilerplate - Enhance company description
             
-            Guidelines for improvements:
-            - Make headlines more compelling and attention-grabbing
-            - Enhance quotes to be more impactful and memorable
-            - Strengthen the opening paragraph to better hook readers
-            - Improve clarity and conciseness throughout
-            - Add more specific details and metrics where appropriate
-            - Enhance the boilerplate to be more compelling
+            For each suggestion:
+            1. First identify the exact text to be replaced by quoting it
+            2. Then provide the improved version
+            3. Each suggestion must be clearly separated
             
-            Format each suggestion as "Section: Improved Text"
-            Only provide suggestions where you can make meaningful improvements.
-            If a section is already well-written, do not include it in the suggestions.
-            Each suggestion must be on a new line.
+            Format each suggestion exactly like this:
+            Original: "exact text to replace"
+            Improved: "improved version"
             
-            IMPORTANT: When referring to sections, use exact text matches from the original content to ensure proper replacement.`
+            Do not include any other text or formatting.
+            Each suggestion must be separated by two newlines.
+            Only provide suggestions where you can make meaningful improvements.`
           },
           {
             role: 'user',

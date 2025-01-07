@@ -1,9 +1,14 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SuggestionItem } from "./SuggestionItem";
 
+interface Suggestion {
+  original: string;
+  improved: string;
+}
+
 interface SuggestionsListProps {
-  suggestions: string[];
-  onApply: (suggestion: string) => void;
+  suggestions: Suggestion[];
+  onApply: (suggestion: Suggestion) => void;
 }
 
 export const SuggestionsList = ({ suggestions, onApply }: SuggestionsListProps) => {
