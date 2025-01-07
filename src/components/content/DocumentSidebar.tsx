@@ -130,7 +130,7 @@ export function DocumentSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-4 border-b">
+      <SidebarHeader className="p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <NewDocumentButton />
       </SidebarHeader>
       <SidebarContent>

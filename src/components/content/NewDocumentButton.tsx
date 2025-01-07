@@ -12,8 +12,10 @@ export function NewDocumentButton() {
 
   const createNewDocument = async () => {
     try {
+      console.log("Creating new document...");
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) {
+        console.log("No session found, showing auth required toast");
         toast({
           title: "Authentication required",
           description: "Please sign in to create documents",
@@ -23,6 +25,7 @@ export function NewDocumentButton() {
       }
 
       setIsCreating(true);
+      console.log("Creating document for user:", session.user.id);
       const { data, error } = await supabase
         .from("content")
         .insert({
@@ -37,6 +40,7 @@ export function NewDocumentButton() {
 
       if (error) throw error;
 
+      console.log("Document created successfully:", data?.id);
       if (data) {
         navigate(`/write/${data.id}`);
       }
@@ -56,7 +60,7 @@ export function NewDocumentButton() {
     <Button
       onClick={createNewDocument}
       disabled={isCreating}
-      className="w-full bg-primary hover:bg-primary/90"
+      className="w-full bg-primary hover:bg-primary/90 shadow-sm font-semibold text-primary-foreground"
       size="default"
     >
       <Plus className="h-4 w-4 mr-2" />
