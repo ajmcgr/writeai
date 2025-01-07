@@ -57,7 +57,7 @@ export function Hero() {
             </Link>
             
             {/* Senja Widget */}
-            <div className="w-full md:w-[500px]">
+            <div className="w-full md:w-[300px]">
               <div className="senja-embed" 
                   data-id="f10a97a0-8bad-4cf0-8ced-3790e0588932" 
                   data-mode="shadow" 
