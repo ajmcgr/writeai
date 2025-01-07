@@ -1,12 +1,18 @@
+import { File, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarMenuAction,
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,8 +24,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { DocumentListItem } from "./DocumentListItem";
 
 type Content = Database["public"]["Tables"]["content"]["Row"];
 
@@ -34,19 +38,12 @@ export function DocumentList({ documents }: DocumentListProps) {
   const [documentToDelete, setDocumentToDelete] = useState<Content | null>(null);
 
   const handleDelete = async (document: Content) => {
-    setDocumentToDelete(document);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const confirmDelete = async () => {
-    if (!documentToDelete) return;
-
     try {
-      console.log("Deleting document:", documentToDelete.id);
+      console.log("Deleting document:", document.id);
       const { error } = await supabase
         .from("content")
         .delete()
-        .eq("id", documentToDelete.id);
+        .eq("id", document.id);
 
       if (error) {
         console.error("Error deleting document:", error);
@@ -62,13 +59,8 @@ export function DocumentList({ documents }: DocumentListProps) {
       setDocumentToDelete(null);
       
       // If we're currently viewing this document, navigate away
-      if (window.location.pathname === `/write/${documentToDelete.id}`) {
+      if (window.location.pathname === `/write/${document.id}`) {
         navigate("/write");
-      }
-
-      // Trigger manual refresh of documents
-      if (typeof window !== 'undefined' && (window as any).refreshDocuments) {
-        (window as any).refreshDocuments();
       }
     } catch (error) {
       console.error("Error in handleDelete:", error);
@@ -87,16 +79,29 @@ export function DocumentList({ documents }: DocumentListProps) {
         <SidebarGroupContent>
           <SidebarMenu>
             {documents.length === 0 ? (
-              <span className="text-sm text-muted-foreground px-2">
-                No documents yet
-              </span>
+              <SidebarMenuItem>
+                <span className="text-sm text-muted-foreground px-2">
+                  No documents yet
+                </span>
+              </SidebarMenuItem>
             ) : (
               documents.map((doc) => (
-                <DocumentListItem
-                  key={doc.id}
-                  document={doc}
-                  onDelete={handleDelete}
-                />
+                <SidebarMenuItem key={doc.id}>
+                  <SidebarMenuButton onClick={() => navigate(`/write/${doc.id}`)}>
+                    <File className="h-4 w-4 mr-2" />
+                    <span className="truncate">{doc.title || "Untitled Document"}</span>
+                  </SidebarMenuButton>
+                  <SidebarMenuAction
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDocumentToDelete(doc);
+                      setIsDeleteDialogOpen(true);
+                    }}
+                    showOnHover
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </SidebarMenuAction>
+                </SidebarMenuItem>
               ))
             )}
           </SidebarMenu>
@@ -117,7 +122,7 @@ export function DocumentList({ documents }: DocumentListProps) {
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={confirmDelete}
+              onClick={() => documentToDelete && handleDelete(documentToDelete)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete
