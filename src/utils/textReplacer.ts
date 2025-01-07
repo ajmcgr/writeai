@@ -6,7 +6,7 @@ export const findAndReplaceText = (
   console.log('Looking for section:', sectionTitle);
   console.log('Suggestion text:', suggestionText);
 
-  // Clean up the section title for comparison
+  // Clean up the section title and remove asterisks for comparison
   const cleanSectionTitle = sectionTitle
     .replace(/\*\*/g, '')  // Remove asterisks
     .replace(/^\d+\.\s*/, '')  // Remove leading numbers and dots
@@ -15,7 +15,7 @@ export const findAndReplaceText = (
 
   // Format the suggestion text to preserve HTML structure
   const formattedSuggestion = !suggestionText.includes('<') 
-    ? `<p>${suggestionText}</p>`
+    ? `<p>${suggestionText.replace(/\*\*/g, '')}</p>`  // Remove asterisks from suggestion
     : suggestionText;
 
   let found = false;
@@ -33,6 +33,7 @@ export const findAndReplaceText = (
 
     console.log('Comparing with paragraph:', cleanParagraphText);
 
+    // Check if either text contains the other (bidirectional matching)
     if (cleanParagraphText.includes(cleanSectionTitle) || 
         cleanSectionTitle.includes(cleanParagraphText)) {
       console.log('Found matching section:', paragraphText);
