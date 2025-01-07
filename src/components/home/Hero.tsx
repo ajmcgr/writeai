@@ -48,8 +48,8 @@ export function Hero() {
           Create high-quality and impactful press releases with Write AI.
         </p>
         
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col md:flex-row items-center gap-[1px]">
+        <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-[1px]">
             <Link to={isAuthenticated ? "/write" : "/signup"}>
               <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
                 {isAuthenticated ? "Start Writing" : "Sign Up"} <ArrowRight className="w-5 h-5" />
@@ -67,11 +67,13 @@ export function Hero() {
             </div>
           </div>
           
-          {/* New features text row */}
-          <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base font-inter">
-            <span>✓ 1-month free trial</span>
-            <span>✓ No credit card required</span>
-            <span>✓ Cancel any-time</span>
+          {/* Features text row */}
+          <div className="w-full flex justify-center">
+            <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base font-inter">
+              <span>✓ 1-month free trial.</span>
+              <span>✓ No credit card required.</span>
+              <span>✓ Cancel any-time</span>
+            </div>
           </div>
         </div>
 
