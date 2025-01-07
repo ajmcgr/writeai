@@ -1,90 +1,68 @@
-import { useState, useEffect } from "react";
-import { WritingInterface } from "@/components/content/WritingInterface";
+import { useState } from "react";
+import { EditorArea } from "@/components/content/EditorArea";
+import { FormattingToolbar } from "@/components/content/FormattingToolbar";
+import { AnalysisSidebar } from "@/components/content/AnalysisSidebar";
+import { AIPromptDialog } from "@/components/content/AIPromptDialog";
+import { SaveDraftDialog } from "@/components/content/SaveDraftDialog";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useWriteAuth } from "@/hooks/useWriteAuth";
-import { AuthCheck } from "@/components/auth/AuthCheck";
-import { supabase } from "@/integrations/supabase/client";
-import { LoadingState } from "@/components/ui/loading-state";
 
-const Write = () => {
-  const [content, setContent] = useState("<p>Start writing here...</p>");
-  const [title, setTitle] = useState("");
-  const [analysis, setAnalysis] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentContentId, setCurrentContentId] = useState<string | null>(null);
+interface WritingInterfaceProps {
+  content: string;
+  setContent: (content: string) => void;
+  title: string;
+  setTitle: (title: string) => void;
+  onSaveDraft: (title?: string) => void;
+  onExport: () => void;
+  onCopy: () => void;
+  onHistory: () => void;
+  onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onRewrite: () => void;
+  onAnalyze: () => void;
+  isLoading: boolean;
+  analysis: string | null;
+  currentContentId: string | null;
+}
+
+const WritingInterface = ({
+  content,
+  setContent,
+  title,
+  setTitle,
+  onSaveDraft,
+  onExport,
+  onHistory,
+  onFileUpload,
+  onRewrite,
+  onAnalyze,
+  isLoading,
+  analysis,
+  currentContentId,
+}: WritingInterfaceProps) => {
+  const [showAnalysis, setShowAnalysis] = useState(true);
+  const [showAIPrompt, setShowAIPrompt] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
   const { toast } = useToast();
-  const { isAuthenticated, isLoading: authLoading } = useWriteAuth();
 
-  useEffect(() => {
-    console.log("Write component mounted, auth status:", isAuthenticated);
-    console.log("Current content:", content);
-    console.log("Current title:", title);
-  }, [isAuthenticated, content, title]);
-
-  const handleSaveDraft = async (newTitle?: string) => {
-    try {
-      setIsLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          title: "Error",
-          description: "You must be logged in to save drafts",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const draftData = {
-        user_id: session.user.id,
-        title: newTitle || title,
-        content: content,
-        type: 'draft',
-        is_draft: true,
-      };
-
-      const { data, error } = await supabase
-        .from('content')
-        .insert([draftData])
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error saving draft:", error);
-        toast({
-          title: "Error",
-          description: "Failed to save draft. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setCurrentContentId(data.id);
-      toast({
-        title: "Success",
-        description: "Draft saved successfully",
-      });
-    } catch (error) {
-      console.error("Error in handleSaveDraft:", error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const formatText = (type: string) => {
+    document.execCommand(type, false);
   };
 
-  const handleExport = async () => {
-    console.log("Exporting content");
+  const handleApplySuggestion = (suggestion: string) => {
+    setContent(suggestion);
   };
 
-  const handleCopy = async () => {
+  const handleSaveDraft = (newTitle?: string) => {
+    onSaveDraft(newTitle);
+  };
+
+  const copyToClipboard = async () => {
     try {
       const selection = window.getSelection();
       const selectedText = selection?.toString() || '';
       
+      // If there's selected text, copy that. Otherwise, copy all content
       const textToCopy = selectedText || content;
       
       await navigator.clipboard.writeText(textToCopy);
@@ -104,50 +82,83 @@ const Write = () => {
     }
   };
 
-  const handleHistory = () => {
-    console.log("Opening history");
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("File uploaded:", event.target.files?.[0]);
-  };
-
-  const handleRewrite = async () => {
-    console.log("Rewriting content");
-  };
-
-  const handleAnalyze = async () => {
-    console.log("Analyzing content");
-  };
-
-  if (authLoading) {
-    return <LoadingState />;
-  }
-
-  if (!isAuthenticated) {
-    return <AuthCheck isAuthenticated={false} />;
-  }
-
-  console.log("Rendering WritingInterface with content:", content);
-
   return (
-    <WritingInterface
-      content={content}
-      setContent={setContent}
-      title={title}
-      setTitle={setTitle}
-      onSaveDraft={handleSaveDraft}
-      onExport={handleExport}
-      onCopy={handleCopy}
-      onHistory={handleHistory}
-      onFileUpload={handleFileUpload}
-      onRewrite={handleRewrite}
-      onAnalyze={handleAnalyze}
-      isLoading={isLoading}
-      analysis={analysis}
-      currentContentId={currentContentId}
-    />
+    <div className="flex flex-1">
+      <div className="flex-1 flex flex-col h-[calc(100vh-64px)] relative">
+        <AIPromptDialog 
+          onContentGenerated={setContent} 
+          isOpen={showAIPrompt} 
+          onOpenChange={setShowAIPrompt}
+        />
+        <SaveDraftDialog
+          isOpen={showSaveDialog}
+          onOpenChange={setShowSaveDialog}
+          content={content}
+          onSave={handleSaveDraft}
+        />
+        <div className="flex-1 overflow-hidden">
+          <EditorArea
+            content={content}
+            setContent={setContent}
+            title={title}
+            setTitle={setTitle}
+          />
+        </div>
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border z-50">
+          <div className="container max-w-screen-xl mx-auto">
+            <FormattingToolbar
+              onFormat={formatText}
+              onExport={onExport}
+              onCopy={copyToClipboard}
+              onHistory={onHistory}
+              onFileUpload={onFileUpload}
+              onRewrite={onRewrite}
+              onAnalyze={onAnalyze}
+              onAIGenerate={() => setShowAIPrompt(true)}
+              onSaveDraft={() => setShowSaveDialog(true)}
+              isLoading={isLoading}
+              hasContent={!!content}
+              hasContentId={!!currentContentId}
+            />
+          </div>
+        </div>
+      </div>
+      {analysis && showAnalysis && (
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-2"
+            onClick={() => setShowAnalysis(false)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+          <AnalysisSidebar
+            analysis={analysis}
+            onApply={handleApplySuggestion}
+            content={content}
+          />
+        </div>
+      )}
+      {isLoading && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="bg-background/95 backdrop-blur-sm p-8 rounded-lg shadow-lg flex flex-col items-center space-y-4">
+            <div className="w-12 h-12">
+              <svg className="animate-spin" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            </div>
+            <p className="text-sm font-medium">AI is processing your request...</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
-export default Write;
+export default WritingInterface;
