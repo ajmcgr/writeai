@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWriteAuth } from "@/hooks/useWriteAuth";
 import { AuthCheck } from "@/components/auth/AuthCheck";
 import { supabase } from "@/integrations/supabase/client";
+import { LoadingState } from "@/components/ui/loading-state";
 
 const Write = () => {
   const [content, setContent] = useState("");
@@ -16,7 +17,9 @@ const Write = () => {
 
   useEffect(() => {
     console.log("Write component mounted, auth status:", isAuthenticated);
-  }, [isAuthenticated]);
+    console.log("Current content:", content);
+    console.log("Current title:", title);
+  }, [isAuthenticated, content, title]);
 
   const handleSaveDraft = async (newTitle?: string) => {
     try {
@@ -123,12 +126,14 @@ const Write = () => {
   };
 
   if (authLoading) {
-    return null; // or a loading spinner
+    return <LoadingState />;
   }
 
   if (!isAuthenticated) {
     return <AuthCheck isAuthenticated={false} />;
   }
+
+  console.log("Rendering WritingInterface with content:", content);
 
   return (
     <WritingInterface
