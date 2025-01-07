@@ -20,7 +20,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    if (isLoading) return; // Prevent multiple simultaneous saves
+    if (isLoading) return;
 
     try {
       setIsLoading(true);

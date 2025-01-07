@@ -10,7 +10,7 @@ interface AnalysisSidebarProps {
 export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarProps) => {
   if (!analysis) return null;
 
-  console.log('Raw analysis:', analysis); // Debug log
+  console.log('Raw analysis:', analysis);
 
   // Split analysis into separate suggestions, handling both \n\n and single \n
   const suggestions = analysis
@@ -18,9 +18,9 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     .map(s => s.trim())
     .filter(Boolean);
 
-  console.log('Parsed suggestions:', suggestions); // Debug log
+  console.log('Parsed suggestions:', suggestions);
 
-  const handleApplySuggestion = (suggestion: string, replace: boolean = false) => {
+  const handleApplySuggestion = (suggestion: string) => {
     if (!onApply) return;
     
     // Get the editor element
@@ -30,12 +30,15 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       return;
     }
 
-    if (replace) {
-      // Extract the actual suggestion text after the colon or dash
-      const suggestionText = suggestion.split(/:|—/).slice(1).join(':').trim();
-      
-      // Find the corresponding section in the original text
-      const sectionTitle = suggestion.split(/:|—/)[0].trim();
+    // Extract the actual suggestion text after the colon or dash if present
+    const suggestionParts = suggestion.split(/:|—/);
+    const suggestionText = suggestionParts.length > 1 
+      ? suggestionParts.slice(1).join(':').trim()
+      : suggestion.trim();
+    
+    if (suggestionParts.length > 1) {
+      // Try to find and replace the corresponding section
+      const sectionTitle = suggestionParts[0].trim();
       const paragraphs = Array.from(editor.children) as HTMLElement[];
       
       console.log('Looking for section:', sectionTitle);
@@ -57,16 +60,9 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       }
     }
 
-    // Format suggestion into paragraphs with proper HTML
-    const formattedSuggestion = suggestion
-      .split('\n')
-      .map(para => para.trim())
-      .filter(Boolean)
-      .map(para => `<p>${para}</p>`)
-      .join('');
-
-    console.log('Formatted suggestion:', formattedSuggestion); // Debug log
-
+    // If no specific section found or no section title, append as new paragraph
+    const formattedSuggestion = `<p>${suggestionText}</p>`;
+    
     // Create a temporary container
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = formattedSuggestion;
@@ -92,32 +88,21 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     selection?.removeAllRanges();
     selection?.addRange(range);
 
-    // Insert each paragraph with proper spacing
-    const fragments = Array.from(tempDiv.children);
-    fragments.forEach((fragment, index) => {
+    // Insert the paragraph
+    const fragment = tempDiv.firstElementChild;
+    if (fragment) {
       // Add a line break before new content if there's existing content
-      if (index === 0 && editor.innerHTML.trim() !== '') {
+      if (editor.innerHTML.trim() !== '') {
         const br = document.createElement('br');
         range.insertNode(br);
         range.setStartAfter(br);
         range.setEndAfter(br);
       }
 
-      // Insert the paragraph
       range.insertNode(fragment);
-      
-      // Move range to after the inserted node
       range.setStartAfter(fragment);
       range.setEndAfter(fragment);
-
-      // Add a line break between paragraphs
-      if (index < fragments.length - 1) {
-        const br = document.createElement('br');
-        range.insertNode(br);
-        range.setStartAfter(br);
-        range.setEndAfter(br);
-      }
-    });
+    }
 
     // Update selection to end of inserted content
     selection?.removeAllRanges();
@@ -139,16 +124,14 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
             suggestions.map((suggestion, index) => (
               <div key={index} className="p-4 border rounded-lg space-y-2">
                 <p className="whitespace-pre-wrap text-sm">{suggestion}</p>
-                {(suggestion.includes(':') || suggestion.includes('—')) && (
-                  <Button 
-                    size="sm" 
-                    variant="default"
-                    onClick={() => handleApplySuggestion(suggestion, true)}
-                    className="w-full mt-2"
-                  >
-                    Apply Change
-                  </Button>
-                )}
+                <Button 
+                  size="sm" 
+                  variant="default"
+                  onClick={() => handleApplySuggestion(suggestion)}
+                  className="w-full mt-2"
+                >
+                  Apply Change
+                </Button>
               </div>
             ))
           ) : (
