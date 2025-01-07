@@ -5,7 +5,8 @@ import { AnalysisSidebar } from "./AnalysisSidebar";
 import { AIPromptDialog } from "./AIPromptDialog";
 import { SaveDraftDialog } from "./SaveDraftDialog";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, Save, FileText, Copy, History, Upload, Wand2, LineChart } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface WritingInterfaceProps {
   content: string;
@@ -43,6 +44,7 @@ export const WritingInterface = ({
   const [showAnalysis, setShowAnalysis] = useState(true);
   const [showAIPrompt, setShowAIPrompt] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const isMobile = useIsMobile();
 
   const formatText = (type: string) => {
     document.execCommand(type, false);
@@ -55,6 +57,47 @@ export const WritingInterface = ({
   const handleSaveDraft = (newTitle?: string) => {
     onSaveDraft(newTitle);
   };
+
+  const MobileBottomNav = () => (
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 flex justify-around items-center md:hidden">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="flex flex-col items-center text-xs gap-1"
+        onClick={() => setShowSaveDialog(true)}
+      >
+        <Save className="h-5 w-5" />
+        Save
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="flex flex-col items-center text-xs gap-1"
+        onClick={onExport}
+      >
+        <FileText className="h-5 w-5" />
+        Export
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="flex flex-col items-center text-xs gap-1"
+        onClick={onCopy}
+      >
+        <Copy className="h-5 w-5" />
+        Copy
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="flex flex-col items-center text-xs gap-1"
+        onClick={onHistory}
+      >
+        <History className="h-5 w-5" />
+        History
+      </Button>
+    </div>
+  );
 
   return (
     <div className="flex flex-1">
@@ -70,7 +113,7 @@ export const WritingInterface = ({
           content={content}
           onSave={handleSaveDraft}
         />
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden pb-16 md:pb-0">
           <EditorArea
             content={content}
             setContent={setContent}
@@ -78,27 +121,30 @@ export const WritingInterface = ({
             setTitle={setTitle}
           />
         </div>
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border z-50">
-          <div className="container max-w-screen-xl mx-auto">
-            <FormattingToolbar
-              onFormat={formatText}
-              onExport={onExport}
-              onCopy={onCopy}
-              onHistory={onHistory}
-              onFileUpload={onFileUpload}
-              onRewrite={onRewrite}
-              onAnalyze={onAnalyze}
-              onAIGenerate={() => setShowAIPrompt(true)}
-              onSaveDraft={() => setShowSaveDialog(true)}
-              isLoading={isLoading}
-              hasContent={!!content}
-              hasContentId={!!currentContentId}
-            />
+        {!isMobile && (
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border z-50">
+            <div className="container max-w-screen-xl mx-auto">
+              <FormattingToolbar
+                onFormat={formatText}
+                onExport={onExport}
+                onCopy={onCopy}
+                onHistory={onHistory}
+                onFileUpload={onFileUpload}
+                onRewrite={onRewrite}
+                onAnalyze={onAnalyze}
+                onAIGenerate={() => setShowAIPrompt(true)}
+                onSaveDraft={() => setShowSaveDialog(true)}
+                isLoading={isLoading}
+                hasContent={!!content}
+                hasContentId={!!currentContentId}
+              />
+            </div>
           </div>
-        </div>
+        )}
+        {isMobile && <MobileBottomNav />}
       </div>
       {analysis && showAnalysis && (
-        <div className="relative">
+        <div className={`relative ${isMobile ? 'fixed inset-0 z-50 bg-white' : ''}`}>
           <Button
             variant="ghost"
             size="icon"

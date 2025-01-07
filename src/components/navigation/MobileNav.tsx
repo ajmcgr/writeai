@@ -35,7 +35,11 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden text-white">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className={`md:hidden ${isAuthenticated ? 'text-black hover:bg-gray-100' : 'text-white hover:bg-[#9599d1]'}`}
+        >
           <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
