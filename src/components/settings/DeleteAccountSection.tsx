@@ -62,14 +62,19 @@ export function DeleteAccountSection() {
 
       console.log("Successfully deleted user profile");
 
-      // Delete the auth user
-      const { error: deleteError } = await supabase.auth.admin.deleteUser(
-        session.user.id,
-        true // The second parameter (true) means to also delete user data
-      );
+      // Call the edge function to delete the auth user
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ user_id: session.user.id }),
+      });
 
-      if (deleteError) {
-        console.error("Error deleting auth user:", deleteError);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error response from delete-user function:", errorData);
         throw new Error("Failed to delete user account");
       }
 
