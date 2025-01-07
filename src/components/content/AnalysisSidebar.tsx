@@ -32,13 +32,16 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
 
     // Extract the actual suggestion text after the colon or dash if present
     const suggestionParts = suggestion.split(/:|—/);
-    const suggestionText = suggestionParts.length > 1 
-      ? suggestionParts.slice(1).join(':').trim()
-      : suggestion.trim();
+    let suggestionText = suggestion.trim();
+    let sectionTitle = null;
     
     if (suggestionParts.length > 1) {
-      // Try to find and replace the corresponding section
-      const sectionTitle = suggestionParts[0].trim();
+      sectionTitle = suggestionParts[0].trim();
+      suggestionText = suggestionParts.slice(1).join(':').trim();
+    }
+    
+    // Try to find and replace the corresponding section if we have a section title
+    if (sectionTitle) {
       const paragraphs = Array.from(editor.children) as HTMLElement[];
       
       console.log('Looking for section:', sectionTitle);
@@ -60,7 +63,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       }
     }
 
-    // If no specific section found or no section title, append as new paragraph
+    // If no section found or no section title, append as new paragraph
     const formattedSuggestion = `<p>${suggestionText}</p>`;
     
     // Create a temporary container

@@ -20,7 +20,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    if (isLoading) return;
+    if (isLoading || !title.trim()) return;
 
     try {
       setIsLoading(true);
@@ -42,7 +42,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       const { data: newContent, error: contentError } = await supabase
         .from('content')
         .insert({
-          title,
+          title: title.trim(),
           content,
           type: 'press_release',
           is_draft: true,
@@ -61,7 +61,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       // Call onSave after successful save
       onSave(title);
       
-      // Close the dialog
+      // Close the dialog and reset title
       onOpenChange(false);
       setTitle("");
 
@@ -114,7 +114,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
           </Button>
           <Button
             onClick={handleSave}
-            disabled={!title || isLoading}
+            disabled={!title.trim() || isLoading}
           >
             {isLoading ? "Saving..." : "Save"}
           </Button>
