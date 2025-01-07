@@ -51,7 +51,8 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     const paragraphs = Array.from(editor.children) as HTMLElement[];
     let matchFound = false;
 
-    for (const paragraph of paragraphs) {
+    for (let i = 0; i < paragraphs.length; i++) {
+      const paragraph = paragraphs[i];
       const paragraphText = paragraph.textContent?.trim() || '';
       const cleanParagraphText = paragraphText
         .toLowerCase()
@@ -61,25 +62,22 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
 
       if (cleanParagraphText.includes(cleanSectionTitle)) {
         console.log('Found matching section:', paragraphText);
-        // Create a new paragraph element with the suggestion text
-        const newParagraph = document.createElement('p');
-        newParagraph.innerHTML = suggestionText;
         
-        // Replace the old paragraph with the new one
-        paragraph.replaceWith(newParagraph);
+        // Replace only the content of the existing paragraph
+        paragraph.innerHTML = suggestionText;
+        
         matchFound = true;
+        
+        // Trigger input event to update content state
+        const inputEvent = new Event('input', { bubbles: true });
+        editor.dispatchEvent(inputEvent);
         break;
       }
     }
 
     if (!matchFound) {
       console.log('No matching section found for:', sectionTitle);
-      return;
     }
-
-    // Trigger input event to update content state
-    const inputEvent = new Event('input', { bubbles: true });
-    editor.dispatchEvent(inputEvent);
   };
 
   return (
