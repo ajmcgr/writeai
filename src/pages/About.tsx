@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
+import { X, Linkedin } from "lucide-react";
 
 const About = () => {
   return (
@@ -24,6 +25,24 @@ const About = () => {
               <p className="text-lg text-gray-700">
                 Now, I help founders and startups with PR.
               </p>
+              <div className="flex space-x-4 mt-4">
+                <a 
+                  href="https://x.com/alexmacgregor__" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  <X className="h-6 w-6" />
+                </a>
+                <a 
+                  href="https://www.linkedin.com/in/alexmacgregor2/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  <Linkedin className="h-6 w-6" />
+                </a>
+              </div>
             </div>
           </div>
           
@@ -31,7 +50,7 @@ const About = () => {
             <img
               src="/lovable-uploads/11620a6c-93dd-4199-ab21-e032fcf8b2d8.png"
               alt="Alex MacGregor"
-              className="w-full rounded-lg shadow-lg"
+              className="w-3/4 rounded-lg shadow-lg mx-auto" // Changed from w-full to w-3/4
             />
           </div>
         </div>
