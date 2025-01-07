@@ -130,7 +130,7 @@ export function DocumentSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-2">
+      <SidebarHeader className="p-4 border-b">
         <NewDocumentButton />
       </SidebarHeader>
       <SidebarContent>

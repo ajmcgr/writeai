@@ -56,11 +56,11 @@ export function NewDocumentButton() {
     <Button
       onClick={createNewDocument}
       disabled={isCreating}
-      className="w-full"
-      size="sm"
+      className="w-full bg-primary hover:bg-primary/90"
+      size="default"
     >
       <Plus className="h-4 w-4 mr-2" />
-      New
+      New Document
     </Button>
   );
 }
