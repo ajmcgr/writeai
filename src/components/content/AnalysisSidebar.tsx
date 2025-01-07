@@ -10,8 +10,15 @@ interface AnalysisSidebarProps {
 export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarProps) => {
   if (!analysis) return null;
 
-  // Split analysis into separate suggestions
-  const suggestions = analysis.split('\n\n').filter(Boolean);
+  console.log('Raw analysis:', analysis); // Debug log
+
+  // Split analysis into separate suggestions, handling both \n\n and single \n
+  const suggestions = analysis
+    .split(/\n{2,}|\n/)
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  console.log('Parsed suggestions:', suggestions); // Debug log
 
   const handleApplySuggestion = (suggestion: string) => {
     if (!onApply) return;
@@ -30,6 +37,8 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       .filter(Boolean)
       .map(para => `<p>${para}</p>`)
       .join('');
+
+    console.log('Formatted suggestion:', formattedSuggestion); // Debug log
 
     // Create a temporary container
     const tempDiv = document.createElement('div');
@@ -99,21 +108,27 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       <h3 className="text-lg font-semibold mb-4">AI Analysis</h3>
       <ScrollArea className="h-[calc(100vh-200px)]">
         <div className="space-y-4 pr-4">
-          {suggestions.map((suggestion, index) => (
-            <div key={index} className="p-4 border rounded-lg space-y-2">
-              <p className="whitespace-pre-wrap text-sm">{suggestion}</p>
-              {onApply && (
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  onClick={() => handleApplySuggestion(suggestion)}
-                  className="w-full mt-2"
-                >
-                  Insert Suggestion
-                </Button>
-              )}
+          {suggestions.length > 0 ? (
+            suggestions.map((suggestion, index) => (
+              <div key={index} className="p-4 border rounded-lg space-y-2">
+                <p className="whitespace-pre-wrap text-sm">{suggestion}</p>
+                {onApply && (
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => handleApplySuggestion(suggestion)}
+                    className="w-full mt-2"
+                  >
+                    Insert Suggestion
+                  </Button>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-muted-foreground">
+              No suggestions available
             </div>
-          ))}
+          )}
         </div>
       </ScrollArea>
     </div>
