@@ -17,22 +17,10 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     if (!onApply) return;
     
     // Get the editor element
-    const editor = document.querySelector('[contenteditable]') as HTMLElement;
+    const editor = document.querySelector('[contenteditable="true"]') as HTMLElement;
     if (!editor) {
       console.error('Editor element not found');
       return;
-    }
-
-    // Get current selection
-    const selection = window.getSelection();
-    const range = selection?.rangeCount ? selection.getRangeAt(0) : document.createRange();
-
-    // If no selection, move to the end of the editor
-    if (!selection?.rangeCount) {
-      range.selectNodeContents(editor);
-      range.collapse(false);
-      selection?.removeAllRanges();
-      selection?.addRange(range);
     }
 
     // Format suggestion into paragraphs with proper HTML
@@ -43,13 +31,42 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       .map(para => `<p>${para}</p>`)
       .join('');
 
-    // Create a temporary container and insert the HTML
+    // Create a temporary container
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = formattedSuggestion;
+
+    // Get or create selection at the end of editor content
+    const selection = window.getSelection();
+    const range = document.createRange();
+    
+    // Find the last child element or create one if empty
+    let lastChild = editor.lastElementChild;
+    if (!lastChild) {
+      const p = document.createElement('p');
+      p.innerHTML = '<br>';
+      editor.appendChild(p);
+      lastChild = p;
+    }
+
+    // Set range to end of last element
+    range.setStartAfter(lastChild);
+    range.setEndAfter(lastChild);
+
+    // Clear any existing selection
+    selection?.removeAllRanges();
+    selection?.addRange(range);
 
     // Insert each paragraph with proper spacing
     const fragments = Array.from(tempDiv.children);
     fragments.forEach((fragment, index) => {
+      // Add a line break before new content if there's existing content
+      if (index === 0 && editor.innerHTML.trim() !== '') {
+        const br = document.createElement('br');
+        range.insertNode(br);
+        range.setStartAfter(br);
+        range.setEndAfter(br);
+      }
+
       // Insert the paragraph
       range.insertNode(fragment);
       
@@ -57,7 +74,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       range.setStartAfter(fragment);
       range.setEndAfter(fragment);
 
-      // Add a line break after each paragraph except the last one
+      // Add a line break between paragraphs
       if (index < fragments.length - 1) {
         const br = document.createElement('br');
         range.insertNode(br);
