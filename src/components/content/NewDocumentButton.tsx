@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { FilePlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -60,10 +60,10 @@ export function NewDocumentButton() {
     <Button
       onClick={createNewDocument}
       disabled={isCreating}
-      className="w-full bg-primary hover:bg-primary/90 shadow-sm font-semibold text-primary-foreground"
-      size="default"
+      variant="ghost"
+      className="w-full justify-start font-normal hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
     >
-      <Plus className="h-4 w-4 mr-2" />
+      <FilePlus className="h-4 w-4 mr-2" />
       New Document
     </Button>
   );
