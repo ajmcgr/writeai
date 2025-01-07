@@ -156,15 +156,16 @@ export function DocumentList({ documents }: DocumentListProps) {
                     <File className="h-4 w-4 mr-2" />
                     <span className="truncate">{doc.title || "Untitled Document"}</span>
                   </SidebarMenuButton>
-                  <div className="flex gap-1">
+                  <div className="flex items-center gap-2 mr-1">
                     <SidebarMenuAction
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDuplicate(doc);
                       }}
                       showOnHover
+                      className="hover:bg-sidebar-accent rounded-md p-1 transition-colors"
                     >
-                      <Copy className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                      <Copy className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
                     </SidebarMenuAction>
                     <SidebarMenuAction
                       onClick={(e) => {
@@ -173,8 +174,9 @@ export function DocumentList({ documents }: DocumentListProps) {
                         setIsDeleteDialogOpen(true);
                       }}
                       showOnHover
+                      className="hover:bg-sidebar-accent rounded-md p-1 transition-colors"
                     >
-                      <Trash2 className="h-4 w-4 text-destructive" />
+                      <Trash2 className="h-4 w-4 text-destructive hover:text-destructive/90 transition-colors" />
                     </SidebarMenuAction>
                   </div>
                 </SidebarMenuItem>
