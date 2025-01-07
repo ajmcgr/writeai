@@ -43,7 +43,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       suggestionText
     });
 
-    // Convert the suggestion text to HTML format if it's plain text
+    // Ensure the suggestion text is properly wrapped in HTML
     const formattedSuggestion = !suggestionText.includes('<') 
       ? `<p>${suggestionText}</p>`
       : suggestionText;

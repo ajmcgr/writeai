@@ -35,24 +35,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Tab') {
       e.preventDefault();
-      
-      const selection = window.getSelection();
-      if (!selection || selection.rangeCount === 0) return;
-      
-      const range = selection.getRangeAt(0);
-      const listItem = range.commonAncestorContainer.parentElement?.closest('li');
-      
-      if (listItem) {
-        // Handle list item indentation
-        if (!e.shiftKey) {
-          document.execCommand('indent');
-        } else {
-          document.execCommand('outdent');
-        }
-      } else {
-        // Insert regular tab
-        document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
-      }
+      document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
     }
   };
 
@@ -67,8 +50,7 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed 
           empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground 
           [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] 
-          [&>p]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ol]:list-decimal [&>ol]:ml-6
-          prose prose-sm max-w-none"
+          [&>p]:mb-4 prose prose-sm max-w-none"
       />
     </div>
   );
