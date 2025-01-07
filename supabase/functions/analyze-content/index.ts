@@ -25,13 +25,28 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert PR professional. Analyze the press release and provide specific improvements for each section. Format your response as "Section Title: Improved Text". Only provide the improved version, no explanations. Each suggestion should be on a new line.'
+            content: `You are an expert PR professional and editor. Analyze the press release and suggest specific improvements for each section. 
+            Your suggestions should enhance clarity, impact, and professionalism while maintaining the core message.
+            
+            Guidelines for improvements:
+            - Make headlines more compelling and attention-grabbing
+            - Enhance quotes to be more impactful and memorable
+            - Strengthen the opening paragraph to better hook readers
+            - Improve clarity and conciseness throughout
+            - Add more specific details and metrics where appropriate
+            - Enhance the boilerplate to be more compelling
+            
+            Format each suggestion as "Section Title: Improved Text"
+            Only provide suggestions where you can make meaningful improvements.
+            If a section is already well-written, do not include it in the suggestions.
+            Each suggestion must be on a new line.`
           },
           {
             role: 'user',
             content
           }
         ],
+        temperature: 0.7,
       }),
     });
 
