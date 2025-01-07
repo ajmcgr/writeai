@@ -91,6 +91,12 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       onOpenChange(false);
       setTitle("");
 
+      // Trigger manual refresh of documents
+      if (typeof window !== 'undefined' && (window as any).refreshDocuments) {
+        console.log("Triggering manual refresh of documents");
+        (window as any).refreshDocuments();
+      }
+
       if (savedContent?.id) {
         navigate(`/write/${savedContent.id}`);
       }
