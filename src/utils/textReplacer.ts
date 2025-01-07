@@ -12,27 +12,40 @@ export const findAndReplaceText = (
     .toLowerCase()
     .trim();
 
+  // Convert NodeList to Array for easier manipulation
   const paragraphs = Array.from(editor.children) as HTMLElement[];
   
   for (let i = 0; i < paragraphs.length; i++) {
     const paragraph = paragraphs[i];
-    const paragraphText = paragraph.textContent?.trim() || '';
+    const paragraphText = paragraph.textContent?.toLowerCase() || '';
+    
+    // Clean up the paragraph text for comparison
     const cleanParagraphText = paragraphText
-      .toLowerCase()
       .replace(/\*\*/g, '')
       .replace(/^\d+\.\s*/, '')
       .trim();
 
+    console.log('Comparing with paragraph:', cleanParagraphText);
+
     if (cleanParagraphText.includes(cleanSectionTitle)) {
       console.log('Found matching section:', paragraphText);
-      paragraph.innerHTML = suggestionText;
       
+      // Create a new paragraph element with the suggestion text
+      const newParagraph = document.createElement('p');
+      newParagraph.innerHTML = suggestionText;
+      
+      // Replace the old paragraph with the new one
+      editor.replaceChild(newParagraph, paragraph);
+      
+      // Trigger input event to update state
       const inputEvent = new Event('input', { bubbles: true });
       editor.dispatchEvent(inputEvent);
+      
+      console.log('Successfully replaced text');
       return true;
     }
   }
 
   console.log('No matching section found for:', sectionTitle);
   return false;
-}
+};
