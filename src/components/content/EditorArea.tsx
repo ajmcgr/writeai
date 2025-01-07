@@ -12,16 +12,8 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
 
   useEffect(() => {
     if (editorRef.current && content !== editorRef.current.innerHTML) {
-      // If content is plain text, convert it to rich text format
-      if (!content.includes('<p>')) {
-        const formattedContent = content
-          .split('\n\n')
-          .map(paragraph => `<p>${paragraph.trim()}</p>`)
-          .join('');
-        editorRef.current.innerHTML = formattedContent;
-      } else {
-        editorRef.current.innerHTML = content;
-      }
+      // Content is already in HTML format, so we can set it directly
+      editorRef.current.innerHTML = content;
     }
   }, [content]);
 

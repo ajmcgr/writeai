@@ -12,10 +12,10 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
 
   console.log('Raw analysis:', analysis);
 
-  // Split analysis into separate suggestions, handling both \n\n and single \n
+  // Split analysis into separate suggestions by looking for HTML paragraph tags
   const suggestions = analysis
-    .split(/\n{2,}|\n/)
-    .map(s => s.trim())
+    .split('</p>')
+    .map(s => s.replace(/<p>/g, '').trim())
     .filter(Boolean);
 
   console.log('Parsed suggestions:', suggestions);
@@ -40,8 +40,8 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       suggestionText = suggestionParts.slice(1).join(':').trim();
     }
 
-    // Remove any markdown formatting from the suggestion text
-    suggestionText = suggestionText.replace(/\*\*/g, '').trim();
+    // Format the suggestion as HTML paragraph
+    suggestionText = `<p>${suggestionText}</p>`;
     
     // Try to find and replace the corresponding section if we have a section title
     if (sectionTitle) {
@@ -61,7 +61,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
         if (cleanParagraphText.toLowerCase().includes(cleanSectionTitle.toLowerCase())) {
           // Replace only the content of the next paragraph
           if (i + 1 < paragraphs.length) {
-            paragraphs[i + 1].innerHTML = suggestionText;
+            paragraphs[i + 1].outerHTML = suggestionText;
             console.log('Replaced content in paragraph:', i + 1);
             
             // Trigger input event to update content state
@@ -81,7 +81,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
         // Check if at least half of the words match
         const matchCount = words.filter(word => paragraphWords.includes(word)).length;
         if (matchCount >= words.length / 2) {
-          paragraphs[i].innerHTML = suggestionText;
+          paragraphs[i].outerHTML = suggestionText;
           console.log('Replaced content with partial match in paragraph:', i);
           
           // Trigger input event to update content state
@@ -102,7 +102,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       // Check if the paragraph contains similar content
       if (paragraphText.length > 0 && 
           (cleanSuggestion.includes(paragraphText) || paragraphText.includes(cleanSuggestion))) {
-        paragraphs[i].innerHTML = suggestionText;
+        paragraphs[i].outerHTML = suggestionText;
         console.log('Replaced similar content in paragraph:', i);
         
         // Trigger input event to update content state
@@ -113,9 +113,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     }
 
     // If we still haven't found a match, append as a new paragraph
-    const newParagraph = document.createElement('p');
-    newParagraph.innerHTML = suggestionText;
-    editor.appendChild(newParagraph);
+    editor.insertAdjacentHTML('beforeend', suggestionText);
     
     // Trigger input event to update content state
     const inputEvent = new Event('input', { bubbles: true });

@@ -7,9 +7,18 @@ const corsHeaders = {
 };
 
 const formatToHtml = (text: string) => {
+  // Split by double newlines first, then single newlines
   return text
-    .split('\n\n')
-    .map(paragraph => `<p>${paragraph.trim()}</p>`)
+    .split(/\n{2,}|\n/)
+    .map(paragraph => paragraph.trim())
+    .filter(Boolean)
+    .map(paragraph => {
+      // Remove any existing HTML tags for safety
+      const cleanParagraph = paragraph.replace(/<[^>]*>/g, '');
+      // Remove markdown formatting
+      const noMarkdown = cleanParagraph.replace(/\*\*/g, '');
+      return `<p>${noMarkdown}</p>`;
+    })
     .join('');
 };
 
@@ -32,7 +41,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert PR professional. Analyze the given press release and provide constructive suggestions for improvement. Focus on clarity, impact, and professional standards.'
+            content: 'You are an expert PR professional. Analyze the given press release and provide constructive suggestions for improvement. Focus on clarity, impact, and professional standards. Format each suggestion as a separate paragraph.'
           },
           {
             role: 'user',
