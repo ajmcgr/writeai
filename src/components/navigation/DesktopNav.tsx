@@ -52,7 +52,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
           <Tooltip>
             <TooltipTrigger asChild>
               <Link to="/settings">
-                <Button variant="ghost" size="icon" className="text-white hover:bg-[#9599d1]">
+                <Button variant="ghost" size="icon" className="text-black hover:bg-gray-100">
                   <Settings className="h-5 w-5" />
                 </Button>
               </Link>
@@ -69,7 +69,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="text-white hover:bg-[#9599d1]"
+                className="text-black hover:bg-gray-100"
                 onClick={handleLogout}
               >
                 <LogOut className="h-5 w-5" />

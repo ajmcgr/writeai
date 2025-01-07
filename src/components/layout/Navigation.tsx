@@ -37,12 +37,10 @@ export function Navigation() {
 
   const handleLogout = async () => {
     try {
-      // First check if there's an active session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
         console.error("Error checking session:", sessionError);
-        // If we can't get the session, clear local state and redirect
         setIsAuthenticated(false);
         navigate("/");
         toast({
@@ -52,7 +50,6 @@ export function Navigation() {
         return;
       }
 
-      // If no session exists, just clear local state
       if (!session) {
         console.log("No active session found, clearing local state");
         setIsAuthenticated(false);
@@ -64,14 +61,12 @@ export function Navigation() {
         return;
       }
 
-      // If we have a session, attempt to sign out
       const { error: signOutError } = await supabase.auth.signOut({
-        scope: 'local' // Only clear local session to prevent 403 errors
+        scope: 'local'
       });
       
       if (signOutError) {
         console.error("Error during logout:", signOutError);
-        // Even if there's an error, clear local state
         setIsAuthenticated(false);
         navigate("/");
         toast({
@@ -90,7 +85,6 @@ export function Navigation() {
       navigate("/");
     } catch (error) {
       console.error("Unexpected error during logout:", error);
-      // In case of any unexpected error, clear local state
       setIsAuthenticated(false);
       toast({
         title: "Logged out",
@@ -102,7 +96,7 @@ export function Navigation() {
   };
 
   return (
-    <header className="fixed top-0 w-full bg-[#848ac8] z-50">
+    <header className={`fixed top-0 w-full z-50 ${isAuthenticated ? 'bg-white' : 'bg-[#848ac8]'}`}>
       <div className={`${isAuthenticated ? 'w-full px-4' : 'container px-4 md:px-6'} flex h-16 items-center justify-between`}>
         <Logo isAuthenticated={isAuthenticated} handleLogoClick={handleLogoClick} />
         <div className="flex items-center gap-4">
@@ -113,7 +107,7 @@ export function Navigation() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-white hover:bg-[#9599d1] transition-colors duration-200 hover:scale-105"
+                    className="text-black hover:bg-gray-100 transition-colors duration-200 hover:scale-105"
                     onClick={() => window.open('https://www.trywrite.ai/help', '_blank')}
                   >
                     <HelpCircle className="h-5 w-5" />
