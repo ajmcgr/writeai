@@ -34,8 +34,10 @@ export const findAndReplaceText = (
       // Replace with the suggestion text while preserving HTML formatting
       paragraph.outerHTML = suggestionText;
       
-      // Trigger input event to update state
+      // Create a new input event
       const inputEvent = new Event('input', { bubbles: true });
+      
+      // Dispatch the event on the editor
       editor.dispatchEvent(inputEvent);
       
       console.log('Successfully replaced text');
