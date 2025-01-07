@@ -49,7 +49,7 @@ export function Hero() {
         </p>
         
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col md:flex-row items-center gap-[5px]">
+          <div className="flex flex-col md:flex-row items-center gap-[1px]">
             <Link to={isAuthenticated ? "/write" : "/signup"}>
               <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
                 {isAuthenticated ? "Start Writing" : "Sign Up"} <ArrowRight className="w-5 h-5" />
