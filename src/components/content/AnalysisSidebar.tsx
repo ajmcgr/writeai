@@ -53,12 +53,12 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       // Clean the section title for comparison
       const cleanSectionTitle = sectionTitle.replace(/\*\*/g, '').replace(/^\d+\.\s*/, '').trim();
 
+      // First try: Look for exact section title match
       for (let i = 0; i < paragraphs.length; i++) {
         const paragraphText = paragraphs[i].textContent?.trim() || '';
-        // Remove any markdown formatting and numbering from the paragraph text for comparison
         const cleanParagraphText = paragraphText.replace(/\*\*/g, '').replace(/^\d+\.\s*/, '').trim();
         
-        if (cleanParagraphText.toLowerCase().includes(cleanSectionTitle.toLowerCase())) {
+        if (cleanParagraphText.toLowerCase() === cleanSectionTitle.toLowerCase()) {
           // Replace only the content of the next paragraph
           if (i + 1 < paragraphs.length) {
             paragraphs[i + 1].outerHTML = suggestionText;
@@ -72,17 +72,34 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
         }
       }
 
-      // If we didn't find an exact match, try to find a partial match
+      // Second try: Look for partial section title match
       for (let i = 0; i < paragraphs.length; i++) {
         const paragraphText = paragraphs[i].textContent?.trim() || '';
-        const words = cleanSectionTitle.toLowerCase().split(' ');
-        const paragraphWords = paragraphText.toLowerCase().split(' ');
+        const cleanParagraphText = paragraphText.replace(/\*\*/g, '').replace(/^\d+\.\s*/, '').trim();
         
-        // Check if at least half of the words match
-        const matchCount = words.filter(word => paragraphWords.includes(word)).length;
-        if (matchCount >= words.length / 2) {
+        if (cleanParagraphText.toLowerCase().includes(cleanSectionTitle.toLowerCase())) {
+          // Replace only the content of the next paragraph
+          if (i + 1 < paragraphs.length) {
+            paragraphs[i + 1].outerHTML = suggestionText;
+            console.log('Replaced content with partial match in paragraph:', i + 1);
+            
+            // Trigger input event to update content state
+            const inputEvent = new Event('input', { bubbles: true });
+            editor.dispatchEvent(inputEvent);
+            return;
+          }
+        }
+      }
+
+      // Third try: Look for similar content to replace
+      for (let i = 0; i < paragraphs.length; i++) {
+        const paragraphText = paragraphs[i].textContent?.toLowerCase().trim() || '';
+        const cleanSuggestion = suggestionText.toLowerCase();
+        
+        if (paragraphText.length > 0 && 
+            (cleanSuggestion.includes(paragraphText) || paragraphText.includes(cleanSuggestion))) {
           paragraphs[i].outerHTML = suggestionText;
-          console.log('Replaced content with partial match in paragraph:', i);
+          console.log('Replaced similar content in paragraph:', i);
           
           // Trigger input event to update content state
           const inputEvent = new Event('input', { bubbles: true });
@@ -92,34 +109,13 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       }
     }
 
-    // If no section title or no match found, try to find similar content to replace
-    const paragraphs = Array.from(editor.children) as HTMLElement[];
-    const cleanSuggestion = suggestionText.toLowerCase();
-    
-    for (let i = 0; i < paragraphs.length; i++) {
-      const paragraphText = paragraphs[i].textContent?.toLowerCase().trim() || '';
-      
-      // Check if the paragraph contains similar content
-      if (paragraphText.length > 0 && 
-          (cleanSuggestion.includes(paragraphText) || paragraphText.includes(cleanSuggestion))) {
-        paragraphs[i].outerHTML = suggestionText;
-        console.log('Replaced similar content in paragraph:', i);
-        
-        // Trigger input event to update content state
-        const inputEvent = new Event('input', { bubbles: true });
-        editor.dispatchEvent(inputEvent);
-        return;
-      }
-    }
-
-    // If we still haven't found a match, append as a new paragraph
+    // If no match was found, append as a new paragraph
+    console.log('No matching section found, appending as new paragraph');
     editor.insertAdjacentHTML('beforeend', suggestionText);
     
     // Trigger input event to update content state
     const inputEvent = new Event('input', { bubbles: true });
     editor.dispatchEvent(inputEvent);
-
-    console.log('Added new paragraph with suggestion');
   };
 
   return (
