@@ -12,7 +12,9 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Starting content analysis...');
     const { content } = await req.json();
+    console.log('Content received:', content.substring(0, 100) + '...');
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -36,10 +38,12 @@ serve(async (req) => {
             - Add more specific details and metrics where appropriate
             - Enhance the boilerplate to be more compelling
             
-            Format each suggestion as "Section Title: Improved Text"
+            Format each suggestion as "Section: Improved Text"
             Only provide suggestions where you can make meaningful improvements.
             If a section is already well-written, do not include it in the suggestions.
-            Each suggestion must be on a new line.`
+            Each suggestion must be on a new line.
+            
+            IMPORTANT: When referring to sections, use exact text matches from the original content to ensure proper replacement.`
           },
           {
             role: 'user',
@@ -50,11 +54,12 @@ serve(async (req) => {
       }),
     });
 
+    console.log('OpenAI API response received');
     const data = await response.json();
-    const analysis = data.choices[0].message.content;
+    console.log('Analysis generated:', data.choices[0].message.content);
 
     return new Response(
-      JSON.stringify({ analysis }),
+      JSON.stringify({ analysis: data.choices[0].message.content }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
