@@ -16,16 +16,14 @@ interface SaveDraftDialogProps {
 export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveDraftDialogProps) {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    if (isLoading || !title.trim() || isSaving) return;
+    if (isLoading || !title.trim()) return;
 
     try {
       setIsLoading(true);
-      setIsSaving(true);
       console.log("Starting draft save process");
       
       const { data: { session } } = await supabase.auth.getSession();
@@ -40,36 +38,60 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
         return;
       }
 
-      // Save the document
-      const { data: newContent, error: contentError } = await supabase
+      // Check for existing document with same title
+      const { data: existingDocs } = await supabase
         .from('content')
-        .insert({
-          title: title.trim(),
-          content,
-          type: 'press_release',
-          is_draft: true,
-          user_id: session.user.id
-        })
-        .select()
-        .single();
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('title', title.trim())
+        .maybeSingle();
 
-      if (contentError) {
-        console.error("Error saving draft:", contentError);
-        throw contentError;
-      }
+      if (existingDocs) {
+        console.log("Document with same title exists, updating instead");
+        const { data: updatedContent, error: updateError } = await supabase
+          .from('content')
+          .update({
+            content,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingDocs.id)
+          .select()
+          .single();
 
-      console.log("Draft saved successfully:", newContent);
-      
-      // Call onSave after successful save
-      onSave(title);
-      
-      // Close the dialog and reset title
-      onOpenChange(false);
-      setTitle("");
+        if (updateError) throw updateError;
+        
+        if (updatedContent) {
+          console.log("Document updated successfully:", updatedContent);
+          onSave(title);
+          onOpenChange(false);
+          setTitle("");
+          navigate(`/write/${updatedContent.id}`);
+        }
+      } else {
+        // Save new document
+        const { data: newContent, error: contentError } = await supabase
+          .from('content')
+          .insert({
+            title: title.trim(),
+            content,
+            type: 'press_release',
+            is_draft: true,
+            user_id: session.user.id
+          })
+          .select()
+          .single();
 
-      // Navigate to the new document
-      if (newContent?.id) {
-        navigate(`/write/${newContent.id}`);
+        if (contentError) throw contentError;
+
+        console.log("Draft saved successfully:", newContent);
+        
+        onSave(title);
+        onOpenChange(false);
+        setTitle("");
+
+        if (newContent?.id) {
+          navigate(`/write/${newContent.id}`);
+        }
       }
       
       toast({
@@ -86,13 +108,12 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       });
     } finally {
       setIsLoading(false);
-      setIsSaving(false);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {
-      if (!isSaving) {
+      if (!isLoading) {
         onOpenChange(open);
         if (!open) setTitle("");
       }
@@ -107,25 +128,25 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter document title"
             className="w-full"
-            disabled={isLoading || isSaving}
+            disabled={isLoading}
           />
         </div>
         <DialogFooter>
           <Button
             variant="outline"
             onClick={() => {
-              if (!isSaving) {
+              if (!isLoading) {
                 onOpenChange(false);
                 setTitle("");
               }
             }}
-            disabled={isLoading || isSaving}
+            disabled={isLoading}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
-            disabled={!title.trim() || isLoading || isSaving}
+            disabled={!title.trim() || isLoading}
           >
             {isLoading ? "Saving..." : "Save"}
           </Button>

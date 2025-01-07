@@ -23,7 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type Content = Database["public"]["Tables"]["content"]["Row"];
 
@@ -36,58 +36,6 @@ export function DocumentList({ documents }: DocumentListProps) {
   const { toast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<Content | null>(null);
-  const [localDocuments, setLocalDocuments] = useState<Content[]>(documents);
-
-  // Update local documents when prop changes
-  useEffect(() => {
-    setLocalDocuments(documents);
-  }, [documents]);
-
-  // Set up real-time subscription
-  useEffect(() => {
-    console.log("Setting up real-time subscription for documents");
-    
-    const channel = supabase
-      .channel('document_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'content'
-        },
-        async (payload) => {
-          console.log("Document change detected:", payload);
-          
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session?.user) return;
-
-          const newDoc = payload.new as Content;
-          const oldDoc = payload.old as Content;
-
-          if (payload.eventType === 'INSERT' && newDoc.user_id === session.user.id) {
-            console.log("New document inserted:", newDoc);
-            setLocalDocuments(prev => [newDoc, ...prev]);
-          } else if (payload.eventType === 'DELETE' && oldDoc.user_id === session.user.id) {
-            console.log("Document deleted:", oldDoc);
-            setLocalDocuments(prev => prev.filter(doc => doc.id !== oldDoc.id));
-          } else if (payload.eventType === 'UPDATE' && newDoc.user_id === session.user.id) {
-            console.log("Document updated:", newDoc);
-            setLocalDocuments(prev => 
-              prev.map(doc => doc.id === newDoc.id ? newDoc : doc)
-            );
-          }
-        }
-      )
-      .subscribe((status) => {
-        console.log("Subscription status:", status);
-      });
-
-    return () => {
-      console.log("Cleaning up document subscription");
-      supabase.removeChannel(channel);
-    };
-  }, []);
 
   const handleDelete = async (document: Content) => {
     try {
@@ -130,14 +78,14 @@ export function DocumentList({ documents }: DocumentListProps) {
         <SidebarGroupLabel>Documents</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
-            {localDocuments.length === 0 ? (
+            {documents.length === 0 ? (
               <SidebarMenuItem>
                 <span className="text-sm text-muted-foreground px-2">
                   No documents yet
                 </span>
               </SidebarMenuItem>
             ) : (
-              localDocuments.map((doc) => (
+              documents.map((doc) => (
                 <SidebarMenuItem key={doc.id}>
                   <SidebarMenuButton onClick={() => navigate(`/write/${doc.id}`)}>
                     <File className="h-4 w-4 mr-2" />
