@@ -152,16 +152,6 @@ const Write = () => {
     }
   }, [content, title, currentContentId, toast]);
 
-  useEffect(() => {
-    if (!content || !currentContentId) return;
-
-    const timer = setTimeout(() => {
-      saveDraft();
-    }, 10000);
-
-    return () => clearTimeout(timer);
-  }, [content, currentContentId, saveDraft]);
-
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
