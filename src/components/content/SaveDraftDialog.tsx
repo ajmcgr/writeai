@@ -20,6 +20,8 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
   const navigate = useNavigate();
 
   const handleSave = async () => {
+    if (isLoading) return; // Prevent multiple simultaneous saves
+
     try {
       setIsLoading(true);
       console.log("Starting draft save process");
@@ -55,8 +57,13 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       }
 
       console.log("Draft saved successfully:", newContent);
+      
+      // Call onSave after successful save
       onSave(title);
+      
+      // Close the dialog
       onOpenChange(false);
+      setTitle("");
 
       // Navigate to the new document
       if (newContent?.id) {
@@ -97,7 +104,10 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
         <DialogFooter>
           <Button
             variant="outline"
-            onClick={() => onOpenChange(false)}
+            onClick={() => {
+              onOpenChange(false);
+              setTitle("");
+            }}
             disabled={isLoading}
           >
             Cancel
@@ -106,7 +116,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
             onClick={handleSave}
             disabled={!title || isLoading}
           >
-            Save
+            {isLoading ? "Saving..." : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>
