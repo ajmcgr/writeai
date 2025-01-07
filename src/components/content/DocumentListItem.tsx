@@ -12,10 +12,9 @@ type Content = Database["public"]["Tables"]["content"]["Row"];
 interface DocumentListItemProps {
   document: Content;
   onDelete: (document: Content) => void;
-  onDuplicate: (document: Content) => void;
 }
 
-export function DocumentListItem({ document, onDelete, onDuplicate }: DocumentListItemProps) {
+export function DocumentListItem({ document, onDelete }: DocumentListItemProps) {
   const navigate = useNavigate();
 
   return (
@@ -32,7 +31,6 @@ export function DocumentListItem({ document, onDelete, onDuplicate }: DocumentLi
       <DocumentListActions 
         document={document}
         onDelete={onDelete}
-        onDuplicate={onDuplicate}
       />
     </SidebarMenuItem>
   );
