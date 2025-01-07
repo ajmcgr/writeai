@@ -20,6 +20,7 @@ export function DocumentListActions({ document, onDelete, onDuplicate }: Documen
         }}
         showOnHover
         className="hover:bg-sidebar-accent rounded-md p-1.5 transition-colors"
+        title="Make a copy"
       >
         <Copy className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition-colors" />
       </SidebarMenuAction>
@@ -30,6 +31,7 @@ export function DocumentListActions({ document, onDelete, onDuplicate }: Documen
         }}
         showOnHover
         className="hover:bg-sidebar-accent rounded-md p-1.5 transition-colors"
+        title="Delete"
       >
         <Trash2 className="h-3.5 w-3.5 text-destructive hover:text-destructive/90 transition-colors" />
       </SidebarMenuAction>
