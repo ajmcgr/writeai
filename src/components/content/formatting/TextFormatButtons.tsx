@@ -12,6 +12,10 @@ export const TextFormatButtons = ({
   clearFormatting,
   isLoading,
 }: TextFormatButtonsProps) => {
+  const handleHighlight = () => {
+    document.execCommand('backColor', false, 'yellow');
+  };
+
   return (
     <div className="flex items-center gap-2">
       <FormattingButton
@@ -36,9 +40,9 @@ export const TextFormatButtons = ({
         U
       </FormattingButton>
       <FormattingButton
-        onClick={() => onFormat("formatBlock")}
+        onClick={handleHighlight}
         disabled={isLoading}
-        label="Convert selected text to heading"
+        label="Highlight selected text in yellow"
       >
         H
       </FormattingButton>
