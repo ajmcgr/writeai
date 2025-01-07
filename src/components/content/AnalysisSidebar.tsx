@@ -20,7 +20,7 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
 
   console.log('Parsed suggestions:', suggestions); // Debug log
 
-  const handleApplySuggestion = (suggestion: string) => {
+  const handleApplySuggestion = (suggestion: string, replace: boolean = false) => {
     if (!onApply) return;
     
     // Get the editor element
@@ -28,6 +28,33 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     if (!editor) {
       console.error('Editor element not found');
       return;
+    }
+
+    if (replace) {
+      // Extract the actual suggestion text after the colon or dash
+      const suggestionText = suggestion.split(/:|—/).slice(1).join(':').trim();
+      
+      // Find the corresponding section in the original text
+      const sectionTitle = suggestion.split(/:|—/)[0].trim();
+      const paragraphs = Array.from(editor.children) as HTMLElement[];
+      
+      console.log('Looking for section:', sectionTitle);
+      console.log('Suggestion text:', suggestionText);
+
+      for (let i = 0; i < paragraphs.length; i++) {
+        if (paragraphs[i].textContent?.includes(sectionTitle)) {
+          // Replace the next paragraph's content
+          if (i + 1 < paragraphs.length) {
+            paragraphs[i + 1].innerHTML = suggestionText;
+            console.log('Replaced content in paragraph:', i + 1);
+            
+            // Trigger input event to update content state
+            const inputEvent = new Event('input', { bubbles: true });
+            editor.dispatchEvent(inputEvent);
+            return;
+          }
+        }
+      }
     }
 
     // Format suggestion into paragraphs with proper HTML
@@ -112,16 +139,26 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
             suggestions.map((suggestion, index) => (
               <div key={index} className="p-4 border rounded-lg space-y-2">
                 <p className="whitespace-pre-wrap text-sm">{suggestion}</p>
-                {onApply && (
+                <div className="flex gap-2 mt-2">
+                  {suggestion.includes(':') || suggestion.includes('—') ? (
+                    <Button 
+                      size="sm" 
+                      variant="default"
+                      onClick={() => handleApplySuggestion(suggestion, true)}
+                      className="flex-1"
+                    >
+                      Apply Change
+                    </Button>
+                  ) : null}
                   <Button 
                     size="sm" 
                     variant="outline" 
                     onClick={() => handleApplySuggestion(suggestion)}
-                    className="w-full mt-2"
+                    className="flex-1"
                   >
                     Insert Suggestion
                   </Button>
-                )}
+                </div>
               </div>
             ))
           ) : (
