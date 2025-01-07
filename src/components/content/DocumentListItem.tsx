@@ -21,17 +21,19 @@ export function DocumentListItem({ document, onDelete }: DocumentListItemProps) 
     <SidebarMenuItem key={document.id}>
       <SidebarMenuButton 
         onClick={() => navigate(`/write/${document.id}`)}
-        className="group relative pr-[90px]"
+        className="group relative pr-[90px] w-full"
       >
-        <File className="h-4 w-4 mr-2" />
-        <span className="truncate max-w-[calc(100%-90px)]">
-          {document.title || "Untitled Document"}
-        </span>
+        <div className="flex items-center w-full">
+          <File className="h-4 w-4 mr-2 shrink-0" />
+          <span className="truncate">
+            {document.title || "Untitled Document"}
+          </span>
+        </div>
+        <DocumentListActions 
+          document={document}
+          onDelete={onDelete}
+        />
       </SidebarMenuButton>
-      <DocumentListActions 
-        document={document}
-        onDelete={onDelete}
-      />
     </SidebarMenuItem>
   );
 }

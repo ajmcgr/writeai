@@ -11,9 +11,10 @@ interface DocumentListActionsProps {
 
 export function DocumentListActions({ document, onDelete }: DocumentListActionsProps) {
   return (
-    <div className="flex items-center gap-1.5 w-[85px] justify-end opacity-0 group-hover:opacity-100 absolute right-2 bg-sidebar/80 backdrop-blur-sm">
+    <div className="flex items-center gap-1.5 w-[85px] justify-end opacity-0 group-hover:opacity-100 absolute right-2 top-1/2 -translate-y-1/2 bg-sidebar/80 backdrop-blur-sm z-10">
       <SidebarMenuAction
         onClick={(e) => {
+          e.preventDefault();
           e.stopPropagation();
           onDelete(document);
         }}
