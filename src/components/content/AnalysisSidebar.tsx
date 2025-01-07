@@ -38,6 +38,11 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
     const sectionTitle = suggestionParts[0].trim();
     const suggestionText = suggestionParts.slice(1).join(':').trim();
     
+    console.log('Applying suggestion:', {
+      sectionTitle,
+      suggestionText
+    });
+    
     const replaced = findAndReplaceText(editor, sectionTitle, suggestionText);
     if (!replaced) {
       console.error('Failed to replace text for section:', sectionTitle);
