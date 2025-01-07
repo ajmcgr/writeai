@@ -18,13 +18,25 @@ export const TextFormatButtons = ({
     if (!selection || selection.rangeCount === 0) return;
 
     const range = selection.getRangeAt(0);
-    const parentElement = range.commonAncestorContainer.parentElement;
+    const parentList = range.commonAncestorContainer.parentElement?.closest('ul, ol');
     
-    // If we're already in a list, move out of it
-    if (parentElement?.closest('ul, ol')) {
-      document.execCommand('outdent');
+    if (parentList) {
+      // If we're in a list and it's the same type, remove the list
+      const isSameType = (type === 'insertUnorderedList' && parentList.tagName === 'UL') ||
+                        (type === 'insertOrderedList' && parentList.tagName === 'OL');
+      
+      if (isSameType) {
+        document.execCommand('outdent');
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = range.toString();
+        range.deleteContents();
+        range.insertNode(tempDiv);
+      } else {
+        // If it's a different type of list, convert it
+        document.execCommand(type);
+      }
     } else {
-      // Otherwise create a new list
+      // If we're not in a list, create one
       document.execCommand(type);
     }
   };

@@ -42,8 +42,13 @@ export const AnalysisSidebar = ({ analysis, onApply, content }: AnalysisSidebarP
       sectionTitle,
       suggestionText
     });
+
+    // Convert the suggestion text to HTML format if it's plain text
+    const formattedSuggestion = !suggestionText.includes('<') 
+      ? `<p>${suggestionText}</p>`
+      : suggestionText;
     
-    const replaced = findAndReplaceText(editor, sectionTitle, suggestionText);
+    const replaced = findAndReplaceText(editor, sectionTitle, formattedSuggestion);
     if (!replaced) {
       console.error('Failed to replace text for section:', sectionTitle);
     }
