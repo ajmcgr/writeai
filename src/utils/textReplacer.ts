@@ -34,20 +34,17 @@ export const findAndReplaceText = (
 
     console.log('Comparing with paragraph:', cleanParagraphText);
 
-    // More flexible matching - check if the texts share enough common words
-    const sectionWords = new Set(cleanSectionTitle.split(/\s+/));
-    const paragraphWords = new Set(cleanParagraphText.split(/\s+/));
-    
-    // Calculate word overlap
-    const commonWords = [...sectionWords].filter(word => 
-      paragraphWords.has(word) && 
-      word.length > 3 && // Only consider words longer than 3 characters
-      !['the', 'and', 'for', 'with'].includes(word) // Exclude common words
+    // Check if the paragraph contains the key phrases from the section title
+    const titleWords = cleanSectionTitle.split(/\s+/).filter(word => 
+      word.length > 3 && !['the', 'and', 'for', 'with', 'this', 'that'].includes(word)
     );
-    
-    // If there's significant overlap (at least 3 matching words), consider it a match
-    if (commonWords.length >= 3) {
-      console.log('Found matching section with common words:', commonWords);
+
+    // Count how many significant words from the title appear in the paragraph
+    const matchingWords = titleWords.filter(word => cleanParagraphText.includes(word));
+    const matchThreshold = Math.min(2, Math.floor(titleWords.length / 2)); // At least 2 words or half of significant words
+
+    if (matchingWords.length >= matchThreshold) {
+      console.log('Found matching section with words:', matchingWords);
       
       // Replace the paragraph with the suggestion
       paragraph.outerHTML = formattedSuggestion;
