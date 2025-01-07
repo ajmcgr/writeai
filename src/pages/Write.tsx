@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { LoadingState } from "@/components/ui/loading-state";
 
 const Write = () => {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState("<p>Start writing here...</p>");
   const [title, setTitle] = useState("");
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -78,7 +78,6 @@ const Write = () => {
 
   const handleExport = async () => {
     console.log("Exporting content");
-    // Export functionality to be implemented
   };
 
   const handleCopy = async () => {
@@ -107,22 +106,18 @@ const Write = () => {
 
   const handleHistory = () => {
     console.log("Opening history");
-    // History functionality to be implemented
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("File uploaded:", event.target.files?.[0]);
-    // File upload functionality to be implemented
   };
 
   const handleRewrite = async () => {
     console.log("Rewriting content");
-    // Rewrite functionality to be implemented
   };
 
   const handleAnalyze = async () => {
     console.log("Analyzing content");
-    // Analysis functionality to be implemented
   };
 
   if (authLoading) {

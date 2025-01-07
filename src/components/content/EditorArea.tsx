@@ -11,20 +11,20 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (editorRef.current && content !== editorRef.current.innerHTML) {
-      // Content is already in HTML format, so we can set it directly
+    if (editorRef.current && content && content !== editorRef.current.innerHTML) {
+      console.log("Setting editor content:", content);
       editorRef.current.innerHTML = content;
     }
   }, [content]);
 
   const handleInput = () => {
     if (editorRef.current) {
-      // Preserve rich text formatting when saving content
-      setContent(editorRef.current.innerHTML);
+      const newContent = editorRef.current.innerHTML;
+      console.log("Editor content changed:", newContent);
+      setContent(newContent);
     }
   };
 
-  // Enable rich text formatting commands
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Tab') {
       e.preventDefault();
