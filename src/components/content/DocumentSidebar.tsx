@@ -96,19 +96,27 @@ export function DocumentSidebar() {
 
             console.log(`Processing ${eventType} event for document`);
             
+            // Update the documents state based on the event type
             setDocuments(currentDocs => {
               switch (eventType) {
                 case "INSERT":
                   console.log("Adding new document to list");
                   return [newRecord, ...currentDocs];
+                
                 case "UPDATE":
                   console.log("Updating existing document in list");
-                  return currentDocs.map(doc => 
+                  const updatedDocs = currentDocs.map(doc => 
                     doc.id === newRecord.id ? newRecord : doc
                   );
+                  // Sort by updated_at to maintain order
+                  return updatedDocs.sort((a, b) => 
+                    new Date(b.updated_at || '').getTime() - new Date(a.updated_at || '').getTime()
+                  );
+                
                 case "DELETE":
                   console.log("Removing document from list");
                   return currentDocs.filter(doc => doc.id !== oldRecord.id);
+                
                 default:
                   return currentDocs;
               }
