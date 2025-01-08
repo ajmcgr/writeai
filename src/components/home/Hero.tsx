@@ -31,7 +31,9 @@ export function Hero() {
     // Add custom styles for Senja widget text
     const style = document.createElement('style');
     style.textContent = `
-      .senja-embed .senja-text {
+      .senja-embed .senja-text,
+      .senja-embed .senja-title,
+      .senja-embed .senja-description {
         color: white !important;
       }
     `;
