@@ -104,21 +104,29 @@ serve(async (req) => {
         const session = event.data.object;
         console.log('💳 Processing completed checkout session:', session.id);
         
-        const customer = await stripe.customers.retrieve(session.customer as string);
-        if (!customer || customer.deleted) {
-          throw new Error('Customer not found or deleted');
-        }
-
-        const customerEmail = typeof customer === 'object' ? customer.email : null;
-        if (!customerEmail) {
-          throw new Error('Customer email not found');
+        // Get customer email either from the customer object or the session
+        let customerEmail;
+        let customerId = session.customer as string;
+        
+        try {
+          const customer = await stripe.customers.retrieve(customerId);
+          if (customer.deleted) {
+            throw new Error('Customer was deleted');
+          }
+          customerEmail = typeof customer === 'object' ? customer.email : null;
+        } catch (error) {
+          console.log('⚠️ Could not retrieve customer from ID, falling back to session email');
+          customerEmail = session.customer_email;
+          if (!customerEmail) {
+            throw new Error('No customer email found in session or customer object');
+          }
         }
 
         await handleSubscriptionChange(
           supabaseAdmin,
           customerEmail,
           'pro',
-          session.customer as string,
+          customerId,
           session.subscription as string
         );
         break;
@@ -129,23 +137,27 @@ serve(async (req) => {
         const subscription = event.data.object;
         console.log(`📝 Processing subscription ${event.type}:`, subscription.id);
         
-        const customer = await stripe.customers.retrieve(subscription.customer as string);
-        if (!customer || customer.deleted) {
-          throw new Error('Customer not found or deleted');
-        }
+        try {
+          const customer = await stripe.customers.retrieve(subscription.customer as string);
+          if (customer.deleted) {
+            throw new Error('Customer was deleted');
+          }
+          const customerEmail = typeof customer === 'object' ? customer.email : null;
+          if (!customerEmail) {
+            throw new Error('No customer email found');
+          }
 
-        const customerEmail = typeof customer === 'object' ? customer.email : null;
-        if (!customerEmail) {
-          throw new Error('Customer email not found');
+          await handleSubscriptionChange(
+            supabaseAdmin,
+            customerEmail,
+            'pro',
+            subscription.customer as string,
+            subscription.id
+          );
+        } catch (error) {
+          console.error('❌ Error processing subscription event:', error);
+          throw error;
         }
-
-        await handleSubscriptionChange(
-          supabaseAdmin,
-          customerEmail,
-          'pro',
-          subscription.customer as string,
-          subscription.id
-        );
         break;
       }
 
@@ -153,23 +165,27 @@ serve(async (req) => {
         const subscription = event.data.object;
         console.log('🗑️ Processing subscription deletion:', subscription.id);
         
-        const customer = await stripe.customers.retrieve(subscription.customer as string);
-        if (!customer || customer.deleted) {
-          throw new Error('Customer not found or deleted');
-        }
+        try {
+          const customer = await stripe.customers.retrieve(subscription.customer as string);
+          if (customer.deleted) {
+            throw new Error('Customer was deleted');
+          }
+          const customerEmail = typeof customer === 'object' ? customer.email : null;
+          if (!customerEmail) {
+            throw new Error('No customer email found');
+          }
 
-        const customerEmail = typeof customer === 'object' ? customer.email : null;
-        if (!customerEmail) {
-          throw new Error('Customer email not found');
+          await handleSubscriptionChange(
+            supabaseAdmin,
+            customerEmail,
+            'free',
+            subscription.customer as string,
+            null
+          );
+        } catch (error) {
+          console.error('❌ Error processing subscription deletion:', error);
+          throw error;
         }
-
-        await handleSubscriptionChange(
-          supabaseAdmin,
-          customerEmail,
-          'free',
-          subscription.customer as string,
-          null
-        );
         break;
       }
     }
