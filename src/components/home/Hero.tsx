@@ -28,12 +28,24 @@ export function Hero() {
     script.type = "text/javascript";
     document.body.appendChild(script);
 
+    // Add custom styles for Senja widget text
+    const style = document.createElement('style');
+    style.textContent = `
+      .senja-embed .senja-text {
+        color: white !important;
+      }
+    `;
+    document.head.appendChild(style);
+
     return () => {
       console.log("Cleaning up Hero auth subscription");
       subscription.unsubscribe();
-      // Clean up script if component unmounts
+      // Clean up script and styles if component unmounts
       if (document.body.contains(script)) {
         document.body.removeChild(script);
+      }
+      if (document.head.contains(style)) {
+        document.head.removeChild(style);
       }
     };
   }, []);
