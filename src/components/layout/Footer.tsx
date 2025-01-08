@@ -40,7 +40,7 @@ export const Footer = () => {
         </div>
         <div className="mt-8 pt-8 border-t border-gray-200">
           <p className="text-center text-gray-600 text-sm">
-            Copyright © 2025 Works App, Inc. A <a href="https://www.works.xyz/" className="hover:text-gray-900">Works</a> product
+            Copyright © 2025 Works App, Inc. Built with ❤️ by <a href="https://www.works.xyz/" className="hover:text-gray-900">Works</a>
           </p>
         </div>
       </div>
