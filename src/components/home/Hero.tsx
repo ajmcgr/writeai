@@ -61,15 +61,15 @@ export function Hero() {
         </p>
         
         <div className="flex flex-col gap-4 w-full">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-[1px]">
-            <Link to={isAuthenticated ? "/write" : "/signup"}>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-0">
+            <Link to={isAuthenticated ? "/write" : "/signup"} className="mb-0">
               <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
                 {isAuthenticated ? "Start Writing" : "Sign Up"} <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
             
             {/* Senja Widget */}
-            <div className="w-full md:w-[300px]">
+            <div className="w-full md:w-[300px] mt-0">
               <div className="senja-embed" 
                   data-id="f10a97a0-8bad-4cf0-8ced-3790e0588932" 
                   data-mode="shadow" 
