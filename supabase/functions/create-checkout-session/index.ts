@@ -103,6 +103,7 @@ serve(async (req) => {
       success_url: `${req.headers.get('origin')}/write?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get('origin')}/pricing`,
       client_reference_id: user.id,
+      allow_promotion_codes: true, // Enable promotion codes in checkout
       subscription_data: {
         metadata: {
           userId: user.id,
