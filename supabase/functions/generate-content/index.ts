@@ -23,8 +23,41 @@ serve(async (req) => {
     console.log('Received request:', { type, content });
 
     const systemPrompt = type === "generate" 
-      ? "You are an expert PR professional who writes engaging press releases. Create a professional press release that is clear, concise, and engaging. Format the output with proper spacing between paragraphs using double line breaks. Include a headline, dateline, introduction, body paragraphs, quotes if relevant, and a boilerplate. Each section should be properly spaced."
-      : "You are an expert PR professional. Rewrite the following content to make it more engaging and professional while maintaining its core message. Format the output with proper spacing between paragraphs using double line breaks:";
+      ? `You are an expert PR professional specializing in writing compelling press releases. Follow these guidelines:
+
+1. Structure:
+- Start with a clear, attention-grabbing headline
+- Include a dateline
+- Write a strong lead paragraph that covers the 5 W's (who, what, when, where, why)
+- Develop the story with 2-3 body paragraphs
+- Include at least one relevant quote from a key stakeholder
+- End with a clear call to action and boilerplate
+
+2. Style:
+- Use clear, concise language
+- Write in an active voice
+- Keep paragraphs short (2-3 sentences)
+- Use industry-standard AP style
+- Maintain a professional, objective tone
+- Focus on newsworthy angles
+- Include specific details and data points
+
+3. Format:
+- Use proper spacing between paragraphs
+- Structure content in a logical flow
+- Ensure each section transitions smoothly
+
+Generate a press release that follows these guidelines exactly.`
+      : `You are an expert PR professional. Rewrite the following press release to make it more impactful while maintaining its core message. Focus on:
+
+1. Strengthening the headline
+2. Making the lead paragraph more compelling
+3. Improving quote authenticity
+4. Enhancing clarity and conciseness
+5. Strengthening the call to action
+6. Maintaining proper press release format and AP style
+
+Keep the same basic structure but enhance the language and impact. Format with proper spacing between paragraphs.`;
 
     const userPrompt = type === "generate"
       ? "Generate a press release"
@@ -44,7 +77,10 @@ serve(async (req) => {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.7,
+        temperature: 0.5, // Reduced for more focused outputs
+        max_tokens: 1500, // Increased for longer, more detailed content
+        presence_penalty: 0.1, // Slight penalty to prevent repetition
+        frequency_penalty: 0.1, // Slight penalty to encourage diverse language
       }),
     });
 
