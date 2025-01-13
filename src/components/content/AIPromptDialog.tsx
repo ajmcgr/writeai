@@ -43,7 +43,6 @@ export const AIPromptDialog = ({ onContentGenerated, isOpen, onOpenChange }: AIP
 
       if (error) throw error;
       
-      // The content is already formatted as HTML from the edge function
       onContentGenerated(data.generatedText);
       setPrompt("");
       onOpenChange(false);

@@ -6,13 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const formatToHtml = (text: string) => {
-  return text
-    .split('\n\n')
-    .map(paragraph => `<p>${paragraph.trim()}</p>`)
-    .join('');
-};
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -46,9 +39,8 @@ serve(async (req) => {
 - Reference industry trends or market context
 
 3. Format and Flow:
-- Maintain proper paragraph spacing
+- Use proper paragraph spacing (separate paragraphs with blank lines)
 - Ensure smooth transitions between sections
-- Use bullet points for features/specs if appropriate
 - Structure content in a logical, news-style format
 
 Generate a detailed, accurate press release that expands on the provided keywords while maintaining journalistic standards and PR best practices.`
@@ -59,9 +51,8 @@ Generate a detailed, accurate press release that expands on the provided keyword
 3. Improving quote authenticity
 4. Enhancing clarity and conciseness
 5. Strengthening the call to action
-6. Maintaining proper press release format and AP style
 
-Keep the same basic structure but enhance the language and impact. Format with proper spacing between paragraphs.`;
+Keep the same basic structure but enhance the language and impact. Use proper paragraph spacing (separate paragraphs with blank lines).`;
 
     const userPrompt = type === "generate"
       ? `Generate a comprehensive press release based on these keywords: ${content}`
@@ -81,10 +72,10 @@ Keep the same basic structure but enhance the language and impact. Format with p
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.4, // Reduced further for more focused outputs
-        max_tokens: 2000, // Increased for more detailed content
+        temperature: 0.4,
+        max_tokens: 2000,
         presence_penalty: 0.1,
-        frequency_penalty: 0.2, // Increased slightly to encourage more diverse language
+        frequency_penalty: 0.2,
       }),
     });
 
@@ -101,9 +92,7 @@ Keep the same basic structure but enhance the language and impact. Format with p
       throw new Error('Invalid response from OpenAI');
     }
 
-    const cleanText = data.choices[0].message.content.replace(/<[^>]*>/g, '');
-    const generatedText = formatToHtml(cleanText);
-
+    const generatedText = data.choices[0].message.content;
     console.log('Generated text:', generatedText);
 
     return new Response(JSON.stringify({ generatedText }), {

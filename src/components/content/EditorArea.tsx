@@ -11,31 +11,26 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (editorRef.current && content !== editorRef.current.innerHTML) {
-      // If content is plain text, convert it to rich text format
-      if (!content.includes('<p>')) {
-        const formattedContent = content
-          .split('\n\n')
-          .map(paragraph => `<p>${paragraph.trim()}</p>`)
-          .join('');
-        editorRef.current.innerHTML = formattedContent;
-      } else {
-        editorRef.current.innerHTML = content;
-      }
+    if (editorRef.current && content !== editorRef.current.innerText) {
+      editorRef.current.innerText = content;
     }
   }, [content]);
 
   const handleInput = () => {
     if (editorRef.current) {
-      // Preserve rich text formatting when saving content
-      setContent(editorRef.current.innerHTML);
+      setContent(editorRef.current.innerText);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Tab') {
       e.preventDefault();
-      document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+      const selection = window.getSelection();
+      const range = selection?.getRangeAt(0);
+      if (range) {
+        range.insertNode(document.createTextNode('    '));
+        range.collapse(false);
+      }
     }
   };
 
@@ -47,10 +42,9 @@ export const EditorArea = ({ content, setContent, title, setTitle }: EditorAreaP
         onInput={handleInput}
         onKeyDown={handleKeyDown}
         data-placeholder="Start writing, generate content with AI or upload a document..."
-        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed 
+        className="w-full h-full p-4 overflow-y-auto focus:outline-none text-base leading-relaxed whitespace-pre-wrap
           empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground 
-          [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] 
-          [&>p]:mb-4 prose prose-sm max-w-none"
+          [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       />
     </div>
   );
