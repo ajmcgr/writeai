@@ -87,18 +87,17 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
 
       console.log("Draft saved successfully:", savedContent);
       
+      // Call onSave callback with the title
       onSave(title);
+      
+      // Close the dialog
       onOpenChange(false);
       setTitle("");
 
-      // Trigger manual refresh of documents
-      if (typeof window !== 'undefined' && (window as any).refreshDocuments) {
-        console.log("Triggering manual refresh of documents");
-        (window as any).refreshDocuments();
-      }
-
+      // Navigate to the new document URL without triggering a save
       if (savedContent?.id) {
-        navigate(`/write/${savedContent.id}`);
+        console.log("Navigating to saved document:", savedContent.id);
+        navigate(`/write/${savedContent.id}`, { replace: true });
       }
       
       toast({
