@@ -23,31 +23,35 @@ serve(async (req) => {
     console.log('Received request:', { type, content });
 
     const systemPrompt = type === "generate" 
-      ? `You are an expert PR professional specializing in writing compelling press releases. Follow these guidelines:
+      ? `You are an expert PR professional specializing in writing compelling press releases. You will be given keywords or a title, and you must generate a detailed press release about that topic. Follow these guidelines:
 
 1. Structure:
-- Start with a clear, attention-grabbing headline
-- Include a dateline
-- Write a strong lead paragraph that covers the 5 W's (who, what, when, where, why)
-- Develop the story with 2-3 body paragraphs
-- Include at least one relevant quote from a key stakeholder
-- End with a clear call to action and boilerplate
+- Create an attention-grabbing headline based on the provided keywords
+- Include a dateline with current date and location
+- Write a strong lead paragraph covering the 5 W's (who, what, when, where, why)
+- Develop 2-3 detailed body paragraphs with specific features, specifications, and benefits
+- Include 2-3 relevant quotes from company executives or stakeholders
+- End with availability information, pricing (if applicable), and a clear call to action
+- Add a boilerplate about the company
 
-2. Style:
-- Use clear, concise language
-- Write in an active voice
-- Keep paragraphs short (2-3 sentences)
-- Use industry-standard AP style
-- Maintain a professional, objective tone
-- Focus on newsworthy angles
-- Include specific details and data points
+2. Style and Content:
+- Use clear, professional language
+- Write in active voice
+- Keep paragraphs concise (2-3 sentences)
+- Follow AP style guidelines
+- Include specific technical details and specifications
+- Highlight key features and innovations
+- Mention target audience and market positioning
+- Include pricing and availability details when relevant
+- Reference industry trends or market context
 
-3. Format:
-- Use proper spacing between paragraphs
-- Structure content in a logical flow
-- Ensure each section transitions smoothly
+3. Format and Flow:
+- Maintain proper paragraph spacing
+- Ensure smooth transitions between sections
+- Use bullet points for features/specs if appropriate
+- Structure content in a logical, news-style format
 
-Generate a press release that follows these guidelines exactly.`
+Generate a detailed, accurate press release that expands on the provided keywords while maintaining journalistic standards and PR best practices.`
       : `You are an expert PR professional. Rewrite the following press release to make it more impactful while maintaining its core message. Focus on:
 
 1. Strengthening the headline
@@ -60,7 +64,7 @@ Generate a press release that follows these guidelines exactly.`
 Keep the same basic structure but enhance the language and impact. Format with proper spacing between paragraphs.`;
 
     const userPrompt = type === "generate"
-      ? "Generate a press release"
+      ? `Generate a comprehensive press release based on these keywords: ${content}`
       : content;
 
     console.log('Generating content with prompt:', userPrompt);
@@ -77,10 +81,10 @@ Keep the same basic structure but enhance the language and impact. Format with p
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.5, // Reduced for more focused outputs
-        max_tokens: 1500, // Increased for longer, more detailed content
-        presence_penalty: 0.1, // Slight penalty to prevent repetition
-        frequency_penalty: 0.1, // Slight penalty to encourage diverse language
+        temperature: 0.4, // Reduced further for more focused outputs
+        max_tokens: 2000, // Increased for more detailed content
+        presence_penalty: 0.1,
+        frequency_penalty: 0.2, // Increased slightly to encourage more diverse language
       }),
     });
 
