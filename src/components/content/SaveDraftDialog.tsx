@@ -16,16 +16,16 @@ interface SaveDraftDialogProps {
 export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveDraftDialogProps) {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    if (isSaving || !title.trim()) return;
+    if (isLoading || !title.trim()) return;
 
+    let savedContentId: string | null = null;
+    setIsLoading(true);
+    
     try {
-      setIsSaving(true);
-      setIsLoading(true);
       console.log("Starting draft save process");
       
       const { data: { session } } = await supabase.auth.getSession();
@@ -88,19 +88,14 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       }
 
       console.log("Draft saved successfully:", savedContent);
+      savedContentId = savedContent.id;
 
-      // Call onSave callback with the title before navigation
-      onSave(title);
-      
-      // Close dialog and reset state
+      // Close dialog and reset state before navigation
       onOpenChange(false);
       setTitle("");
-
-      // Navigate to the new document URL
-      if (savedContent?.id) {
-        console.log("Navigating to saved document:", savedContent.id);
-        navigate(`/write/${savedContent.id}`, { replace: true });
-      }
+      
+      // Call onSave callback
+      onSave(title);
       
       toast({
         title: "Success",
@@ -116,7 +111,12 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       });
     } finally {
       setIsLoading(false);
-      setIsSaving(false);
+      
+      // Navigate only after everything else is complete
+      if (savedContentId) {
+        console.log("Navigating to saved document:", savedContentId);
+        navigate(`/write/${savedContentId}`, { replace: true });
+      }
     }
   };
 
@@ -126,10 +126,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       onOpenChange={(open) => {
         if (!isLoading) {
           onOpenChange(open);
-          if (!open) {
-            setTitle("");
-            setIsSaving(false);
-          }
+          if (!open) setTitle("");
         }
       }}
     >
@@ -161,7 +158,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
           </Button>
           <Button
             onClick={handleSave}
-            disabled={!title.trim() || isLoading || isSaving}
+            disabled={!title.trim() || isLoading}
           >
             {isLoading ? "Saving..." : "Save"}
           </Button>
