@@ -16,11 +16,12 @@ interface SaveDraftDialogProps {
 export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveDraftDialogProps) {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    if (isLoading || !title.trim()) return;
+    if (isLoading || !title.trim() || isSaved) return;
 
     try {
       setIsLoading(true);
@@ -87,6 +88,9 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
 
       console.log("Draft saved successfully:", savedContent);
       
+      // Set the saved flag to prevent duplicate saves
+      setIsSaved(true);
+      
       // Call onSave callback with the title
       onSave(title);
       
@@ -117,13 +121,19 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
     }
   };
 
-  return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      if (!isLoading) {
-        onOpenChange(open);
-        if (!open) setTitle("");
+  // Reset the saved flag when the dialog opens/closes
+  const handleOpenChange = (open: boolean) => {
+    if (!isLoading) {
+      onOpenChange(open);
+      if (!open) {
+        setTitle("");
+        setIsSaved(false);
       }
-    }}>
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Save Draft</DialogTitle>
@@ -140,19 +150,14 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
         <DialogFooter>
           <Button
             variant="outline"
-            onClick={() => {
-              if (!isLoading) {
-                onOpenChange(false);
-                setTitle("");
-              }
-            }}
+            onClick={() => handleOpenChange(false)}
             disabled={isLoading}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
-            disabled={!title.trim() || isLoading}
+            disabled={!title.trim() || isLoading || isSaved}
           >
             {isLoading ? "Saving..." : "Save"}
           </Button>
