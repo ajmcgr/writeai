@@ -22,8 +22,8 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
   const handleSave = async () => {
     if (isLoading || !title.trim()) return;
 
-    let savedContentId: string | null = null;
     setIsLoading(true);
+    let savedContentId: string | null = null;
     
     try {
       console.log("Starting draft save process");
@@ -89,13 +89,10 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
 
       console.log("Draft saved successfully:", savedContent);
       savedContentId = savedContent.id;
-
-      // Close dialog and reset state before navigation
+      
+      // Close dialog and reset state
       onOpenChange(false);
       setTitle("");
-      
-      // Call onSave callback
-      onSave(title);
       
       toast({
         title: "Success",
@@ -112,7 +109,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
     } finally {
       setIsLoading(false);
       
-      // Navigate only after everything else is complete
+      // Only navigate if we have a saved content ID
       if (savedContentId) {
         console.log("Navigating to saved document:", savedContentId);
         navigate(`/write/${savedContentId}`, { replace: true });
