@@ -16,13 +16,15 @@ interface SaveDraftDialogProps {
 export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveDraftDialogProps) {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    if (isLoading || !title.trim()) return;
+    if (isSaving || !title.trim()) return;
 
     try {
+      setIsSaving(true);
       setIsLoading(true);
       console.log("Starting draft save process");
       
@@ -87,20 +89,17 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
 
       console.log("Draft saved successfully:", savedContent);
 
-      // Close the dialog first to prevent any state updates during navigation
+      // Call onSave callback with the title before navigation
+      onSave(title);
+      
+      // Close dialog and reset state
       onOpenChange(false);
       setTitle("");
-      
-      // Call onSave callback with the title
-      onSave(title);
 
-      // Navigate to the new document URL without triggering a save
+      // Navigate to the new document URL
       if (savedContent?.id) {
         console.log("Navigating to saved document:", savedContent.id);
-        // Use setTimeout to ensure state updates are complete before navigation
-        setTimeout(() => {
-          navigate(`/write/${savedContent.id}`, { replace: true });
-        }, 0);
+        navigate(`/write/${savedContent.id}`, { replace: true });
       }
       
       toast({
@@ -117,6 +116,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       });
     } finally {
       setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
@@ -126,7 +126,10 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
       onOpenChange={(open) => {
         if (!isLoading) {
           onOpenChange(open);
-          if (!open) setTitle("");
+          if (!open) {
+            setTitle("");
+            setIsSaving(false);
+          }
         }
       }}
     >
@@ -158,7 +161,7 @@ export function SaveDraftDialog({ isOpen, onOpenChange, content, onSave }: SaveD
           </Button>
           <Button
             onClick={handleSave}
-            disabled={!title.trim() || isLoading}
+            disabled={!title.trim() || isLoading || isSaving}
           >
             {isLoading ? "Saving..." : "Save"}
           </Button>
