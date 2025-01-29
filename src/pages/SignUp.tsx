@@ -16,7 +16,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const redirectTo = location.state?.redirectTo || "/write";
+  const redirectTo = "/write"; // Changed to always redirect to editor
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -111,7 +111,8 @@ const SignUp = () => {
             description: "Your account was created successfully.",
           });
 
-          navigate(redirectTo);
+          // Always redirect to /write after successful sign up
+          navigate('/write');
         } catch (error) {
           console.error('Error in signup process:', error);
           toast({
@@ -124,11 +125,11 @@ const SignUp = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, toast, redirectTo, location.state]);
+  }, [navigate, toast, location.state]);
 
   const handleViewChange = (view: AuthViewType) => {
     if (view === 'sign_in') {
-      navigate('/signin', { state: { redirectTo } });
+      navigate('/signin');
     }
   };
 
