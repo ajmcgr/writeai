@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,9 +7,10 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 import { ContentDisplay } from "@/components/content/ContentDisplay";
 import { useNavigate } from "react-router-dom";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface ContentGeneratorToolProps {
-  session: Session;
+  session: Session | null;
   title: string;
   description: string;
   type: "boilerplate" | "headline" | "quote" | "cta";
@@ -35,16 +37,30 @@ export const ContentGeneratorTool = ({
         description: "Please sign in to use this feature",
         variant: "destructive",
       });
+      navigate("/signin");
       return false;
     }
 
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from("profiles")
       .select()
       .eq("user_id", session.user.id)
       .maybeSingle();
 
-    if (!profile) return false;
+    if (error) {
+      console.error("Error fetching profile:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred while checking your subscription status",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!profile) {
+      console.warn("No profile found for user");
+      return false;
+    }
 
     // Pro users bypass the usage check
     if (profile.subscription_status === "pro") {
@@ -104,6 +120,10 @@ export const ContentGeneratorTool = ({
       if (!canProceed) return;
 
       setIsLoading(true);
+      setGeneratedContent("");
+      
+      console.log(`Generating ${type} with context:`, context.substring(0, 50) + '...');
+      
       const { data, error } = await supabase.functions.invoke("generate-specialized-content", {
         body: {
           type,
@@ -111,12 +131,22 @@ export const ContentGeneratorTool = ({
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw new Error(error.message || "Failed to generate content");
+      }
 
+      if (!data || !data.generatedText) {
+        console.error("Invalid response from function:", data);
+        throw new Error("No content returned from the generator");
+      }
+
+      console.log(`Successfully generated ${type}`);
       setGeneratedContent(data.generatedText);
       await updateUsageCount();
 
-      await supabase
+      // Save the generated content to the database
+      const { error: saveError } = await supabase
         .from("content")
         .insert({
           content: data.generatedText,
@@ -126,11 +156,18 @@ export const ContentGeneratorTool = ({
           user_id: session.user.id,
         });
 
+      if (saveError) {
+        console.error("Error saving content:", saveError);
+        // Continue execution even if saving fails
+      }
+
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error generating content:", error);
       toast({
         title: "Error",
-        description: "Failed to generate content. Please try again.",
+        description: error instanceof Error 
+          ? error.message 
+          : "Failed to generate content. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -154,10 +191,17 @@ export const ContentGeneratorTool = ({
         />
         <Button
           onClick={generateContent}
-          disabled={isLoading || !context}
+          disabled={isLoading || !context.trim()}
           className="w-full"
         >
-          {isLoading ? "Generating..." : "Generate Content"}
+          {isLoading ? (
+            <span className="flex items-center">
+              <LoadingSpinner className="mr-2 h-4 w-4 animate-spin" />
+              Generating...
+            </span>
+          ) : (
+            "Generate Content"
+          )}
         </Button>
       </div>
 

@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -16,13 +17,18 @@ const PROMPTS = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { type, context } = await req.json();
+    console.log('Received request for type:', type);
+    console.log('Context:', context);
+    
     const systemPrompt = PROMPTS[type] || PROMPTS.boilerplate;
+    console.log('Using system prompt:', systemPrompt);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -31,7 +37,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: context }
@@ -40,7 +46,15 @@ serve(async (req) => {
     });
 
     const data = await response.json();
+    console.log('OpenAI response received');
+    
+    if (data.error) {
+      console.error('OpenAI API error:', data.error);
+      throw new Error(data.error.message || 'Error from OpenAI API');
+    }
+    
     const generatedText = data.choices[0].message.content;
+    console.log('Generated text:', generatedText.substring(0, 100) + '...');
 
     return new Response(JSON.stringify({ generatedText }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
