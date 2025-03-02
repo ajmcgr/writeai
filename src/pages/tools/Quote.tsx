@@ -1,3 +1,4 @@
+
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { ContentGeneratorTool } from "@/components/tools/ContentGeneratorTool";
