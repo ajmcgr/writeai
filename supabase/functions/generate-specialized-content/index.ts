@@ -25,10 +25,18 @@ serve(async (req) => {
   try {
     const { type, context } = await req.json();
     console.log('Received request for type:', type);
-    console.log('Context:', context);
+    console.log('Context:', context.substring(0, 100) + '...');
+    
+    if (!type || !context) {
+      throw new Error('Missing required parameters: type and context are required');
+    }
     
     const systemPrompt = PROMPTS[type] || PROMPTS.boilerplate;
     console.log('Using system prompt:', systemPrompt);
+
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key is not configured');
+    }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -44,6 +52,12 @@ serve(async (req) => {
         ],
       }),
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('OpenAI API error:', errorData);
+      throw new Error(errorData.error?.message || `Error from OpenAI API: ${response.status}`);
+    }
 
     const data = await response.json();
     console.log('OpenAI response received');

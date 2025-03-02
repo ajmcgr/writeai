@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -62,12 +61,10 @@ export const ContentGeneratorTool = ({
       return false;
     }
 
-    // Pro users bypass the usage check
     if (profile.subscription_status === "pro") {
       return true;
     }
 
-    // Only check daily limit for free users
     const today = new Date().toISOString().split("T")[0];
     if (
       profile.last_use_date === today &&
@@ -116,6 +113,16 @@ export const ContentGeneratorTool = ({
 
   const generateContent = async () => {
     try {
+      if (!session?.user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to use this feature",
+          variant: "destructive",
+        });
+        navigate("/signin");
+        return;
+      }
+
       const canProceed = await checkUsageAndSubscription();
       if (!canProceed) return;
 
@@ -145,7 +152,6 @@ export const ContentGeneratorTool = ({
       setGeneratedContent(data.generatedText);
       await updateUsageCount();
 
-      // Save the generated content to the database
       const { error: saveError } = await supabase
         .from("content")
         .insert({
@@ -158,7 +164,6 @@ export const ContentGeneratorTool = ({
 
       if (saveError) {
         console.error("Error saving content:", saveError);
-        // Continue execution even if saving fails
       }
 
     } catch (error) {
