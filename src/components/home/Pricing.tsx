@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PricingPlansGrid } from "../pricing/PricingPlansGrid";
 
@@ -17,7 +18,7 @@ export function Pricing() {
         <Tabs defaultValue="monthly" className="w-full">
           <TabsList className="grid w-full max-w-[300px] md:max-w-[400px] grid-cols-2 mx-auto mb-8">
             <TabsTrigger value="monthly">Monthly</TabsTrigger>
-            <TabsTrigger value="annual">Annual (Save 17%)</TabsTrigger>
+            <TabsTrigger value="annual">Annual (Save 50%)</TabsTrigger>
           </TabsList>
 
           <TabsContent value="monthly">

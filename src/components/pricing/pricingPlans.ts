@@ -1,3 +1,4 @@
+
 export const plans = {
   monthly: [
     {
@@ -45,7 +46,7 @@ export const plans = {
     {
       name: "Pro",
       description: "For professionals who need more power",
-      price: "24",
+      price: "180",
       features: [
         "Unlimited AI press releases",
         "All templates",
