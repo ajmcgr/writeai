@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -82,8 +83,8 @@ export function Hero() {
           {/* Features text row */}
           <div className="w-full flex justify-center">
             <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base font-inter">
-              <span>✓ 7 days free trial.</span>
-              <span>✓ No credit card required.</span>
+              <span>✓ 7 days free trial</span>
+              <span>✓ Secure payment</span>
               <span>✓ Cancel any-time</span>
             </div>
           </div>
