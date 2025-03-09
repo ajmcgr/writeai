@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Settings, LogOut } from "lucide-react";
+import { Settings, LogOut, ArrowRight } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -90,7 +90,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
         <Button variant="ghost" className="text-white hover:bg-[#9599d1]">Login</Button>
       </Link>
       <Link to="/signup">
-        <Button className="bg-white text-[#848ac8] hover:bg-gray-100">Sign Up</Button>
+        <Button className="bg-white text-[#848ac8] hover:bg-gray-100">Sign Up <ArrowRight className="w-4 h-4" /></Button>
       </Link>
     </div>
   );

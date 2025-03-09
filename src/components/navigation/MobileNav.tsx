@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -69,8 +69,8 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
               <Link to="/signin" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
                 Login
               </Link>
-              <Link to="/signup" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
-                Sign Up
+              <Link to="/signup" className="px-4 py-2 hover:bg-[#9599d1] rounded-md flex items-center gap-1">
+                Sign Up <ArrowRight className="w-4 h-4" />
               </Link>
             </>
           )}
