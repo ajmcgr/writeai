@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -45,20 +46,6 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px] bg-[#848ac8] text-white">
         <div className="flex flex-col space-y-4 mt-8">
-          <Link to="/about" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
-            About
-          </Link>
-          <Link to="/pricing" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
-            Pricing
-          </Link>
-          <a 
-            href="https://blog.works.xyz/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="px-4 py-2 hover:bg-[#9599d1] rounded-md"
-          >
-            Blog
-          </a>
           {isAuthenticated ? (
             <>
               {subscriptionStatus === 'free' && (
