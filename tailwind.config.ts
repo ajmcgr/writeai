@@ -21,6 +21,7 @@ export default {
 			fontFamily: {
 				merriweather: ['Merriweather', 'serif'],
 				inter: ['Inter', 'sans-serif'],
+				mabry: ['MabryPro-Regular', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
