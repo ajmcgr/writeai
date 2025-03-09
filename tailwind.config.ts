@@ -21,7 +21,7 @@ export default {
 		extend: {
 			fontFamily: {
 				merriweather: ['Merriweather', 'serif'],
-				maybro: ['MaybroPro-Regular', 'sans-serif'],
+				maybro: ['MabryPro-Regular', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
