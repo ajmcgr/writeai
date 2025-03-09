@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -57,7 +56,7 @@ export function Hero() {
         <h1 className="text-5xl font-bold tracking-tight sm:text-7xl text-white font-merriweather">
           Meet your AI press release<br />writing assistant
         </h1>
-        <p className="text-xl text-white/80 max-w-2xl font-inter">
+        <p className="text-xl text-white/80 max-w-2xl">
           Create high-quality and impactful press releases with Write AI.
         </p>
         
@@ -82,7 +81,7 @@ export function Hero() {
           
           {/* Features text row */}
           <div className="w-full flex justify-center">
-            <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base font-inter">
+            <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base">
               <span>✓ 7 days free trial</span>
               <span>✓ Secure payment</span>
               <span>✓ Cancel any-time</span>
