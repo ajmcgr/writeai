@@ -65,7 +65,7 @@ export function Hero() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-0">
             <Link to={isAuthenticated ? "/write" : "/signup"} className="mb-4 md:mb-0">
               <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
-                {isAuthenticated ? "Start Writing" : "Sign Up"} <ArrowRight className="w-5 h-5" />
+                {isAuthenticated ? "Start Writing" : "Start Free Trial"} <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
             

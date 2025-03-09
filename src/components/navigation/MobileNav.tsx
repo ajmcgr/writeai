@@ -67,7 +67,7 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
           ) : (
             <>
               <Link to="/signin" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
-                Sign In
+                Login
               </Link>
               <Link to="/signup" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
                 Sign Up
