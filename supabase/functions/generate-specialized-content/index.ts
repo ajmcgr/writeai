@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -22,7 +23,17 @@ serve(async (req) => {
 
   try {
     const { type, context } = await req.json();
-    const systemPrompt = PROMPTS[type] || PROMPTS.boilerplate;
+    console.log(`Generating ${type} content with context: ${context.substring(0, 100)}...`);
+
+    if (!type || !context) {
+      throw new Error('Missing required parameters: type and context');
+    }
+
+    if (!PROMPTS[type]) {
+      throw new Error(`Invalid content type: ${type}`);
+    }
+
+    const systemPrompt = PROMPTS[type];
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -36,11 +47,19 @@ serve(async (req) => {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: context }
         ],
+        temperature: 0.7,
       }),
     });
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('OpenAI API Error:', errorData);
+      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+    }
+
     const data = await response.json();
     const generatedText = data.choices[0].message.content;
+    console.log(`Successfully generated ${type} content`);
 
     return new Response(JSON.stringify({ generatedText }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
