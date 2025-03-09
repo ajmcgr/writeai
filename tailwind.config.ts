@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -21,7 +20,7 @@ export default {
 		extend: {
 			fontFamily: {
 				merriweather: ['Merriweather', 'serif'],
-				maybro: ['MaybroPro-Regular', 'sans-serif'],
+				inter: ['Inter', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
