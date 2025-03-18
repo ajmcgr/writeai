@@ -39,12 +39,12 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
         <Button 
           variant="ghost" 
           size="icon" 
-          className="md:hidden text-black hover:bg-gray-100"
+          className={`md:hidden ${isAuthenticated ? 'text-black hover:bg-gray-100' : 'text-white hover:bg-[#9599d1]'}`}
         >
           <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[300px] bg-[#848ac8] text-black">
+      <SheetContent side="right" className="w-[300px] bg-[#848ac8] text-white">
         <div className="flex flex-col space-y-4 mt-8">
           {isAuthenticated ? (
             <>
@@ -58,7 +58,7 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
               </Link>
               <Button 
                 variant="ghost" 
-                className="justify-start px-4 text-black hover:bg-[#9599d1]"
+                className="justify-start px-4 text-white hover:bg-[#9599d1]"
                 onClick={handleLogout}
               >
                 Logout

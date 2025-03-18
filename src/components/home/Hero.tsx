@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -32,7 +33,7 @@ export function Hero() {
     const style = document.createElement('style');
     style.textContent = `
       .senja-embed .senja-text {
-        color: black !important;
+        color: white !important;
       }
     `;
     document.head.appendChild(style);
@@ -53,10 +54,10 @@ export function Hero() {
   return (
     <div className="relative pt-40 pb-32 md:pt-64 md:pb-48 bg-[#848ac8]">
       <div className="container flex flex-col items-center text-center gap-8">
-        <h1 className="text-5xl font-bold tracking-tight sm:text-7xl text-black font-merriweather">
+        <h1 className="text-5xl font-bold tracking-tight sm:text-7xl text-white font-merriweather">
           Meet your AI press release<br />writing assistant
         </h1>
-        <p className="text-xl text-black max-w-2xl">
+        <p className="text-xl text-white/80 max-w-2xl">
           Create high-quality and impactful press releases with Write AI.
         </p>
         
@@ -81,7 +82,7 @@ export function Hero() {
           
           {/* Features text row */}
           <div className="w-full flex justify-center">
-            <div className="flex flex-wrap justify-center gap-4 text-black text-sm md:text-base">
+            <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base">
               <span>✓ 7 days free trial</span>
               <span>✓ Secure payment</span>
               <span>✓ Cancel any-time</span>
