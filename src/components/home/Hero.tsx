@@ -32,7 +32,7 @@ export function Hero() {
     const style = document.createElement('style');
     style.textContent = `
       .senja-embed .senja-text {
-        color: white !important;
+        color: black !important;
       }
     `;
     document.head.appendChild(style);
@@ -53,17 +53,17 @@ export function Hero() {
   return (
     <div className="relative pt-40 pb-32 md:pt-64 md:pb-48 bg-[#848ac8]">
       <div className="container flex flex-col items-center text-center gap-8">
-        <h1 className="text-5xl font-bold tracking-tight sm:text-7xl text-white font-merriweather">
+        <h1 className="text-5xl font-bold tracking-tight sm:text-7xl text-black font-merriweather">
           Meet your AI press release<br />writing assistant
         </h1>
-        <p className="text-xl text-white/80 max-w-2xl">
+        <p className="text-xl text-black max-w-2xl">
           Create high-quality and impactful press releases with Write AI.
         </p>
         
         <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-0">
             <Link to={isAuthenticated ? "/write" : "/signup"} className="mb-4 md:mb-0">
-              <Button size="lg" className="text-lg bg-white text-[#848ac8] hover:bg-gray-100 font-inter">
+              <Button size="lg" className="text-lg bg-white text-black hover:bg-gray-100 font-inter">
                 {isAuthenticated ? "Start Writing" : "Start Free Trial"} <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
@@ -81,7 +81,7 @@ export function Hero() {
           
           {/* Features text row */}
           <div className="w-full flex justify-center">
-            <div className="flex flex-wrap justify-center gap-4 text-white/90 text-sm md:text-base">
+            <div className="flex flex-wrap justify-center gap-4 text-black text-sm md:text-base">
               <span>✓ 7 days free trial</span>
               <span>✓ Secure payment</span>
               <span>✓ Cancel any-time</span>
