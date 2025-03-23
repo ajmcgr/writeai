@@ -97,7 +97,7 @@ export function Navigation() {
   };
 
   return (
-    <header className={`fixed top-0 w-full z-50 ${isAuthenticated ? 'bg-white' : 'bg-[#848ac8]'}`}>
+    <header className={`w-full z-50 ${isAuthenticated ? 'bg-white' : 'bg-[#848ac8]'}`}>
       <div className={`${isAuthenticated ? 'w-[95%] max-w-6xl mx-auto px-4' : 'container max-w-5xl px-4 md:px-6'} flex h-16 items-center justify-between`}>
         <Logo isAuthenticated={isAuthenticated} handleLogoClick={handleLogoClick} />
         <div className="flex items-center gap-4">
