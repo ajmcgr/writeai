@@ -57,6 +57,9 @@ export function Hero() {
         <h1 className="text-5xl font-bold tracking-tight sm:text-7xl text-white font-merriweather">
           Meet your AI press release<br />writing assistant
         </h1>
+        <p className="text-white text-sm md:text-base mb-[-20px]">
+          Made for PR & Social Media pro's, Agencies and Freelancers
+        </p>
         <p className="text-xl text-white/80 max-w-2xl">
           Create high-quality and impactful press releases with Write AI.
         </p>
