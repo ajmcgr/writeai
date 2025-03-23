@@ -52,7 +52,7 @@ export function Hero() {
   }, []);
 
   return (
-    <div className="relative pt-40 pb-32 md:pt-64 md:pb-48 bg-[#848ac8]">
+    <div className="relative pt-28 pb-32 md:pt-48 md:pb-48 bg-[#848ac8]">
       <div className="container flex flex-col items-center text-center gap-8">
         <p className="text-white text-xs md:text-sm">
           Made for PR & Social Media pro's, Agencies and Freelancers
