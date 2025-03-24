@@ -108,7 +108,7 @@ export function Navigation() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-black hover:bg-gray-100 transition-colors duration-200 hover:scale-105"
+                    className="text-black hover:bg-gray-100 transition-colors duration-200 hover:scale-105 p-2"
                     onClick={() => window.open('https://www.trywrite.ai/help', '_blank')}
                   >
                     <HelpCircle className="h-5 w-5" />

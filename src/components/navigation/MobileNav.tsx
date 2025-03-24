@@ -39,7 +39,7 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
         <Button 
           variant="ghost" 
           size="icon" 
-          className={`md:hidden ${isAuthenticated ? 'text-black hover:bg-gray-100' : 'text-white hover:bg-[#9599d1]'}`}
+          className={`md:hidden ${isAuthenticated ? 'text-black hover:bg-gray-100 p-2' : 'text-white hover:bg-[#9599d1] p-2'}`}
         >
           <Menu className="h-6 w-6" />
         </Button>
@@ -49,16 +49,16 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
           {isAuthenticated ? (
             <>
               {subscriptionStatus === 'free' && (
-                <Link to="/pricing" className="px-4 py-2 bg-white text-black hover:bg-gray-100 rounded-md text-center">
+                <Link to="/pricing" className="px-6 py-3 bg-white text-black hover:bg-gray-100 rounded-md text-center font-semibold">
                   Upgrade to Pro
                 </Link>
               )}
-              <Link to="/settings" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
+              <Link to="/settings" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-semibold">
                 Account Settings
               </Link>
               <Button 
                 variant="ghost" 
-                className="justify-start px-4 text-white hover:bg-[#9599d1]"
+                className="justify-start px-6 py-3 text-white hover:bg-[#9599d1] font-semibold"
                 onClick={handleLogout}
               >
                 Logout
@@ -66,13 +66,13 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
             </>
           ) : (
             <>
-              <Link to="/pricing" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
+              <Link to="/pricing" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-semibold">
                 Pricing
               </Link>
-              <Link to="/signin" className="px-4 py-2 hover:bg-[#9599d1] rounded-md">
+              <Link to="/signin" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-semibold">
                 Login
               </Link>
-              <Link to="/signup" className="px-4 py-2 hover:bg-[#9599d1] rounded-md flex items-center gap-1">
+              <Link to="/signup" className="px-6 py-3 hover:bg-[#9599d1] rounded-md flex items-center gap-1 font-semibold">
                 Sign Up <ArrowRight className="w-4 h-4" />
               </Link>
             </>

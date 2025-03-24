@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -40,7 +41,7 @@ export const FormattingButton = ({
         size="icon"
         onClick={onClick}
         className={cn(
-          "h-8 w-8",
+          "h-8 w-8 p-1.5",
           isActive && "bg-accent text-accent-foreground",
           className
         )}
