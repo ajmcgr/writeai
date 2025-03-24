@@ -49,16 +49,16 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
           {isAuthenticated ? (
             <>
               {subscriptionStatus === 'free' && (
-                <Link to="/pricing" className="px-6 py-3 bg-white text-black hover:bg-gray-100 rounded-md text-center font-semibold">
+                <Link to="/pricing" className="px-6 py-3 bg-white text-black hover:bg-gray-100 rounded-md text-center font-medium">
                   Upgrade to Pro
                 </Link>
               )}
-              <Link to="/settings" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-semibold">
+              <Link to="/settings" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-medium">
                 Account Settings
               </Link>
               <Button 
                 variant="ghost" 
-                className="justify-start px-6 py-3 text-white hover:bg-[#9599d1] font-semibold"
+                className="justify-start px-6 py-3 text-white hover:bg-[#9599d1] font-medium"
                 onClick={handleLogout}
               >
                 Logout
@@ -66,13 +66,13 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
             </>
           ) : (
             <>
-              <Link to="/pricing" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-semibold">
+              <Link to="/pricing" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-medium">
                 Pricing
               </Link>
-              <Link to="/signin" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-semibold">
+              <Link to="/signin" className="px-6 py-3 hover:bg-[#9599d1] rounded-md font-medium">
                 Login
               </Link>
-              <Link to="/signup" className="px-6 py-3 hover:bg-[#9599d1] rounded-md flex items-center gap-1 font-semibold">
+              <Link to="/signup" className="px-6 py-3 hover:bg-[#9599d1] rounded-md flex items-center gap-1 font-medium">
                 Sign Up <ArrowRight className="w-4 h-4" />
               </Link>
             </>
