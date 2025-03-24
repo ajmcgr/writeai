@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Settings, LogOut, ArrowRight } from "lucide-react";
@@ -85,7 +85,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
   }
 
   return (
-    <div className="hidden md:flex items-center gap-4">
+    <div className="hidden md:flex items-center gap-2">
       <Link to="/pricing">
         <Button variant="ghost" className="text-white hover:bg-[#9599d1] font-medium px-5">Pricing</Button>
       </Link>

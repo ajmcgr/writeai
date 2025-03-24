@@ -45,7 +45,7 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px] bg-[#848ac8] text-white">
-        <div className="flex flex-col space-y-4 mt-8">
+        <div className="flex flex-col space-y-2 mt-8">
           {isAuthenticated ? (
             <>
               {subscriptionStatus === 'free' && (
