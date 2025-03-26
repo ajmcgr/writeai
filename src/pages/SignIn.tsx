@@ -1,3 +1,4 @@
+
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,6 +6,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/layout/Navigation";
+
+type AuthViewType = 'sign_in' | 'sign_up';
+
+type ExtendedAuth = typeof Auth & {
+  onViewChange?: (view: AuthViewType) => void;
+};
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -46,6 +53,12 @@ const SignIn = () => {
     };
   }, [navigate, toast, redirectTo]);
 
+  const handleViewChange = (view: AuthViewType) => {
+    if (view === 'sign_up') {
+      navigate('/signup', { state: { redirectTo } });
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navigation />
@@ -58,20 +71,26 @@ const SignIn = () => {
             </p>
           </div>
           <Auth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#848ac8',
-                    brandAccent: '#9599d1',
+            {...({
+              supabaseClient: supabase,
+              appearance: {
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: '#848ac8',
+                      brandAccent: '#9599d1',
+                    },
                   },
                 },
               },
-            }}
-            providers={["google"]}
-            theme="light"
+              providers: ["google"],
+              view: "sign_in",
+              theme: "light",
+              onViewChange: handleViewChange,
+              redirectTo: `${window.location.origin}/auth/callback`,
+              onlyThirdPartyProviders: false,
+            } as React.ComponentProps<ExtendedAuth>)}
           />
         </div>
       </div>

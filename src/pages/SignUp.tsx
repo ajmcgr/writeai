@@ -1,3 +1,4 @@
+
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,45 +29,6 @@ const SignUp = () => {
           description: "Your email has been confirmed. You can now sign in.",
         });
         navigate('/signin');
-        return;
-      }
-
-      // Instead of SIGNED_UP, we'll check for SIGNED_IN without a verified email
-      if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at === null) {
-        console.log('New signup detected, sending confirmation email');
-        
-        try {
-          // Get the confirmation URL
-          const confirmationUrl = `${window.location.origin}/auth/callback?type=signup`;
-          console.log('Generated confirmation URL:', confirmationUrl);
-
-          // Send confirmation email using our Edge Function
-          const { data, error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
-            body: {
-              email: session.user.email,
-              confirmationUrl: confirmationUrl,
-            },
-          });
-
-          console.log('Edge function response:', data);
-
-          if (emailError) {
-            console.error('Edge function error:', emailError);
-            throw emailError;
-          }
-
-          toast({
-            title: "Check your email",
-            description: "Please check your email to confirm your account.",
-          });
-        } catch (error) {
-          console.error('Error sending confirmation email:', error);
-          toast({
-            title: "Error",
-            description: "There was an error sending the confirmation email. Please try again.",
-            variant: "destructive",
-          });
-        }
         return;
       }
 
@@ -161,6 +123,8 @@ const SignUp = () => {
               view: "sign_up",
               theme: "light",
               onViewChange: handleViewChange,
+              redirectTo: `${window.location.origin}/auth/callback?type=signup`,
+              onlyThirdPartyProviders: false,
             } as React.ComponentProps<ExtendedAuth>)}
           />
         </div>
