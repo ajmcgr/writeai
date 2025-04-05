@@ -39,7 +39,7 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
         <Button 
           variant="ghost" 
           size="icon" 
-          className={`md:hidden ${isAuthenticated ? 'text-black p-2' : 'text-white p-2'}`}
+          className={`md:hidden ${isAuthenticated ? 'text-black p-2 hover:bg-transparent' : 'text-white p-2 hover:bg-transparent'}`}
         >
           <Menu className="h-6 w-6" />
         </Button>
@@ -58,7 +58,7 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
               </Link>
               <Button 
                 variant="ghost" 
-                className="justify-start px-6 py-3 text-white font-medium"
+                className="justify-start px-6 py-3 text-white font-medium hover:bg-transparent"
                 onClick={handleLogout}
               >
                 Logout
