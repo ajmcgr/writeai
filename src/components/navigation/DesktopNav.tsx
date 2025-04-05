@@ -41,10 +41,10 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
 
   if (isAuthenticated) {
     return (
-      <div className="hidden md:flex items-center gap-1">
+      <div className="hidden md:flex items-center gap-0">
         {subscriptionStatus === 'free' && (
           <Link to="/pricing">
-            <Button variant="secondary" size="sm" className="mr-2 px-5">
+            <Button variant="secondary" size="sm" className="mr-1 px-5">
               Upgrade
             </Button>
           </Link>
@@ -86,7 +86,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
   }
 
   return (
-    <div className="hidden md:flex items-center gap-1">
+    <div className="hidden md:flex items-center gap-0">
       <Link to="/pricing">
         <Button variant="ghost" className="text-white hover:bg-[#9599d1] font-medium px-5">Pricing</Button>
       </Link>
