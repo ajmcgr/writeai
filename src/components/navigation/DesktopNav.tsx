@@ -53,7 +53,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
           <Tooltip>
             <TooltipTrigger asChild>
               <Link to="/settings">
-                <Button variant="ghost" size="icon" className="text-black hover:bg-gray-100 p-2">
+                <Button variant="ghost" size="icon" className="text-black p-2">
                   <Settings className="h-5 w-5" />
                 </Button>
               </Link>
@@ -70,7 +70,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="text-black hover:bg-gray-100 p-2"
+                className="text-black p-2"
                 onClick={handleLogout}
               >
                 <LogOut className="h-5 w-5" />
@@ -88,10 +88,10 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
   return (
     <div className="hidden md:flex items-center gap-0">
       <Link to="/pricing">
-        <Button variant="ghost" className="text-white hover:bg-[#9599d1] font-medium px-3">Pricing</Button>
+        <Button variant="ghost" className="text-white font-medium px-3">Pricing</Button>
       </Link>
       <Link to="/signin">
-        <Button variant="ghost" className="text-white hover:bg-[#9599d1] font-medium px-3">Login</Button>
+        <Button variant="ghost" className="text-white font-medium px-3">Login</Button>
       </Link>
       <Link to="/signup">
         <Button className="bg-white text-black hover:bg-gray-100 font-medium px-6">Sign Up <ArrowRight className="w-4 h-4" /></Button>
