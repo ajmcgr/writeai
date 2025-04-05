@@ -53,7 +53,7 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
                   Upgrade to Pro
                 </Link>
               )}
-              <Link to="/settings" className="px-6 py-3 rounded-md font-medium">
+              <Link to="/settings" className="px-6 py-3 rounded-md font-medium hover:bg-transparent">
                 Account Settings
               </Link>
               <Button 
@@ -66,13 +66,13 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
             </>
           ) : (
             <>
-              <Link to="/pricing" className="px-6 py-3 rounded-md font-medium">
+              <Link to="/pricing" className="px-6 py-3 rounded-md font-medium hover:bg-transparent">
                 Pricing
               </Link>
-              <Link to="/signin" className="px-6 py-3 rounded-md font-medium">
+              <Link to="/signin" className="px-6 py-3 rounded-md font-medium hover:bg-transparent">
                 Login
               </Link>
-              <Link to="/signup" className="px-6 py-3 rounded-md flex items-center gap-1 font-medium">
+              <Link to="/signup" className="px-6 py-3 rounded-md flex items-center gap-1 font-medium hover:bg-transparent">
                 Sign Up <ArrowRight className="w-4 h-4" />
               </Link>
             </>
