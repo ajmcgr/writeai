@@ -100,7 +100,7 @@ export function Navigation() {
     <header className={`w-full z-50 ${isAuthenticated ? 'bg-white border-b border-[#e5e7eb]' : 'bg-[#848ac8]'}`}>
       <div className={`${isAuthenticated ? 'w-[95%] max-w-6xl mx-auto px-4' : 'container max-w-5xl px-4 md:px-6'} flex h-16 items-center justify-between`}>
         <Logo isAuthenticated={isAuthenticated} handleLogoClick={handleLogoClick} />
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {isAuthenticated && (
             <TooltipProvider>
               <Tooltip>

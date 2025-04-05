@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
 
   if (isAuthenticated) {
     return (
-      <div className="hidden md:flex items-center gap-2">
+      <div className="hidden md:flex items-center gap-1">
         {subscriptionStatus === 'free' && (
           <Link to="/pricing">
             <Button variant="secondary" size="sm" className="mr-2 px-5">
@@ -85,7 +86,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
   }
 
   return (
-    <div className="hidden md:flex items-center gap-2">
+    <div className="hidden md:flex items-center gap-1">
       <Link to="/pricing">
         <Button variant="ghost" className="text-white hover:bg-[#9599d1] font-medium px-5">Pricing</Button>
       </Link>
