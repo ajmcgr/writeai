@@ -61,7 +61,7 @@ export function Hero() {
           Meet your AI press release<br />writing assistant
         </h1>
         <p className="text-xl text-white/80 max-w-2xl">
-          Create high-quality and impactful press releases with Write AI.
+          Everything you need to create high-quality and impactful press releases with Write AI — powered by AI.
         </p>
         
         <div className="flex flex-col gap-4 w-full">
