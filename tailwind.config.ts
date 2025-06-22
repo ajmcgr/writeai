@@ -20,6 +20,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
+				reckless: ['Reckless', 'serif'],
 				merriweather: ['Merriweather', 'serif'],
 				maybro: ['Helvetica', 'Arial', 'sans-serif'],
 			},
