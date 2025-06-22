@@ -57,7 +57,7 @@ export function Hero() {
         <p className="text-white text-xs md:text-sm">
           Made for PR & Social Media pro's, Agencies and Freelancers
         </p>
-        <h1 className="text-5xl font-bold tracking-tight sm:text-7xl text-white font-reckless">
+        <h1 className="text-5xl font-medium tracking-tight sm:text-7xl text-white font-reckless">
           Meet your AI press release<br />writing assistant
         </h1>
         <p className="text-xl text-white/80 max-w-2xl">
