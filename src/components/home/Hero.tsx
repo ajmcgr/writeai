@@ -54,9 +54,6 @@ export function Hero() {
   return (
     <div className="relative pt-20 pb-32 md:pt-36 md:pb-48 bg-[#848ac8]">
       <div className="container flex flex-col items-center text-center gap-8">
-        <p className="text-white text-xs md:text-sm">
-          Made for PR & Social Media pro's, Agencies and Freelancers
-        </p>
         <h1 className="text-5xl tracking-tight sm:text-7xl text-white font-reckless">
           Meet your AI press release<br />writing assistant
         </h1>
