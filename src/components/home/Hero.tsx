@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -54,7 +53,7 @@ export function Hero() {
   return (
     <div className="relative pt-20 pb-32 md:pt-36 md:pb-48 bg-[#848ac8]">
       <div className="container flex flex-col items-center text-center gap-8">
-        <h1 className="text-5xl tracking-tight sm:text-7xl text-white font-reckless">
+        <h1 className="text-4xl tracking-tight sm:text-6xl text-white font-reckless">
           Meet your AI press release<br />writing assistant
         </h1>
         <p className="text-xl text-white/80 max-w-2xl">
