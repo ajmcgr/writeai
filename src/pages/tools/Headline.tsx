@@ -2,11 +2,11 @@
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { ContentGeneratorTool } from "@/components/tools/ContentGeneratorTool";
-import { useSession } from "@supabase/auth-helpers-react";
+
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 const Headline = () => {
-  const session = useSession();
+  
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -14,7 +14,7 @@ const Headline = () => {
       <main className="flex-grow container py-20">
         <ErrorBoundary>
           <ContentGeneratorTool
-            session={session}
+            
             title="Headline Generator"
             description="Create attention-grabbing headlines for your press releases."
             type="headline"

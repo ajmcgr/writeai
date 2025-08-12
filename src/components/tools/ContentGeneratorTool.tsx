@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -12,7 +12,7 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ContentGeneratorToolProps {
-  session: Session;
+  session?: Session | null;
   title: string;
   description: string;
   type: "boilerplate" | "headline" | "quote" | "cta";
@@ -30,11 +30,37 @@ export const ContentGeneratorTool = ({
   const [context, setContext] = useState("");
   const [generatedContent, setGeneratedContent] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [currentSession, setCurrentSession] = useState<Session | null>(session ?? null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Ensure we have a valid session even if not provided via props
+  useEffect(() => {
+    let unsub: { unsubscribe: () => void } | null = null;
+
+    const init = async () => {
+      if (!session) {
+        const { data: { session: fetchedSession } } = await supabase.auth.getSession();
+        setCurrentSession(fetchedSession ?? null);
+      } else {
+        setCurrentSession(session);
+      }
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+        setCurrentSession(s ?? null);
+      });
+      unsub = subscription;
+    };
+
+    init();
+
+    return () => {
+      unsub?.unsubscribe();
+    };
+  }, [session]);
+
   const checkUsageAndSubscription = async () => {
-    if (!session?.user) {
+    if (!currentSession?.user) {
       toast({
         title: "Authentication required",
         description: "Please sign in to use this feature",
@@ -46,7 +72,7 @@ export const ContentGeneratorTool = ({
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select()
-      .eq("user_id", session.user.id)
+      .eq("user_id", currentSession.user.id)
       .maybeSingle();
 
     if (profileError) {
@@ -59,7 +85,8 @@ export const ContentGeneratorTool = ({
       return false;
     }
 
-    if (!profile) return false;
+    // If no profile exists, allow usage (treat as free user with 0 uses)
+    if (!profile) return true;
 
     // Pro users bypass the usage check
     if (profile.subscription_status === "pro") {
@@ -84,13 +111,13 @@ export const ContentGeneratorTool = ({
   };
 
   const updateUsageCount = async () => {
-    if (!session?.user) return;
+    if (!currentSession?.user) return;
 
     const today = new Date().toISOString().split("T")[0];
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select()
-      .eq("user_id", session.user.id)
+      .eq("user_id", currentSession.user.id)
       .maybeSingle();
 
     if (profileError || !profile) {
@@ -105,26 +132,26 @@ export const ContentGeneratorTool = ({
           daily_uses: 1,
           last_use_date: today,
         })
-        .eq("user_id", session.user.id);
+        .eq("user_id", currentSession.user.id);
     } else {
       await supabase
         .from("profiles")
         .update({
           daily_uses: (profile.daily_uses ?? 0) + 1,
         })
-        .eq("user_id", session.user.id);
+        .eq("user_id", currentSession.user.id);
     }
   };
 
   const generateContent = async () => {
     try {
       setError(null);
-      
+
       if (!context.trim()) {
         setError("Please enter some context for content generation");
         return;
       }
-      
+
       const canProceed = await checkUsageAndSubscription();
       if (!canProceed) return;
 
@@ -148,15 +175,17 @@ export const ContentGeneratorTool = ({
       setGeneratedContent(data.generatedText);
       await updateUsageCount();
 
-      await supabase
-        .from("content")
-        .insert({
-          content: data.generatedText,
-          type,
-          is_generated: true,
-          title: `Generated ${type}`,
-          user_id: session.user.id,
-        });
+      if (currentSession?.user?.id) {
+        await supabase
+          .from("content")
+          .insert({
+            content: data.generatedText,
+            type,
+            is_generated: true,
+            title: `Generated ${type}`,
+            user_id: currentSession.user.id,
+          });
+      }
 
       toast({
         title: "Success",
