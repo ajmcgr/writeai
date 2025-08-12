@@ -60,13 +60,9 @@ export const ContentGeneratorTool = ({
   }, [session]);
 
   const checkUsageAndSubscription = async () => {
+    // Allow anonymous users to generate content (no usage tracking)
     if (!currentSession?.user) {
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to use this feature",
-        variant: "destructive",
-      });
-      return false;
+      return true;
     }
 
     const { data: profile, error: profileError } = await supabase
