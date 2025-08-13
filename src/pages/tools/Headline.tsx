@@ -11,7 +11,7 @@ const Headline = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-grow container py-20">
+      <main className="flex-grow container max-w-4xl py-20">
         <ErrorBoundary>
           <ContentGeneratorTool
             
