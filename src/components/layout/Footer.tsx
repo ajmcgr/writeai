@@ -23,7 +23,6 @@ export const Footer = () => {
             <h3 className="font-inter font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
               <li><Link to="/about" className="text-gray-600 hover:text-gray-900">About</Link></li>
-              <li><Link to="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link></li>
               <li><a href="https://blog.works.xyz/" className="text-gray-600 hover:text-gray-900">Blog</a></li>
             </ul>
           </div>
