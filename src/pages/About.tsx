@@ -8,16 +8,16 @@ const About = () => {
       <Navigation />
       <main className="flex-grow pt-24 pb-16 px-4 md:px-8 max-w-2xl mx-auto">
         <div className="space-y-12">
-          {/* Our Story Header */}
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl font-reckless text-gray-900">Our story</h1>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              We started this to empower storytellers around the world with the most advanced AI-powered press release technology that just works.
-            </p>
-          </div>
+          {/* Letter Content with Border - includes headline and all content */}
+          <div className="border border-gray-200 rounded-lg p-12 bg-white">
+            {/* Our Story Header inside letter */}
+            <div className="text-center space-y-6 mb-12">
+              <h1 className="text-4xl md:text-5xl font-reckless text-gray-900">Our story</h1>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                We started this to empower storytellers around the world with the most advanced AI-powered press release technology that just works.
+              </p>
+            </div>
 
-          {/* Letter Content with Border */}
-          <div className="border border-gray-200 rounded-lg p-8 bg-white">
             <div className="space-y-6 text-gray-700 leading-relaxed">
               <p className="text-xl font-semibold text-gray-900">Hello there!</p>
               
