@@ -6,20 +6,6 @@ export const Footer = () => {
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           <div>
-            <h3 className="font-inter font-medium mb-4 text-base">Free Tools</h3>
-            <ul className="space-y-2">
-              <li><Link to="/tools/press-release-builder" className="text-gray-500 hover:text-gray-700 text-sm">Press Release Builder</Link></li>
-              <li><Link to="/tools/pitch-personalizer" className="text-gray-500 hover:text-gray-700 text-sm">Pitch Personalizer</Link></li>
-              <li><Link to="/tools/crisis-response" className="text-gray-500 hover:text-gray-700 text-sm">Crisis Response Generator</Link></li>
-              <li><Link to="/tools/headline-analyzer" className="text-gray-500 hover:text-gray-700 text-sm">Headline Analyzer</Link></li>
-              <li><Link to="/tools/launch-timeline" className="text-gray-500 hover:text-gray-700 text-sm">Launch Timeline Planner</Link></li>
-              <li><Link to="/tools/boilerplate" className="text-gray-500 hover:text-gray-700 text-sm">Boilerplate Generator</Link></li>
-              <li><Link to="/tools/headline" className="text-gray-500 hover:text-gray-700 text-sm">Headline Generator</Link></li>
-              <li><Link to="/tools/quote" className="text-gray-500 hover:text-gray-700 text-sm">Quote Generator</Link></li>
-              <li><Link to="/tools/cta" className="text-gray-500 hover:text-gray-700 text-sm">CTA Generator</Link></li>
-            </ul>
-          </div>
-          <div>
             <h3 className="font-inter font-medium mb-4 text-base">Company</h3>
             <ul className="space-y-2">
               <li><Link to="/about" className="text-gray-500 hover:text-gray-700 text-sm">About</Link></li>
@@ -36,10 +22,38 @@ export const Footer = () => {
             </ul>
           </div>
           <div>
+            <h3 className="font-inter font-medium mb-4 text-base">Free Tools</h3>
+            <ul className="space-y-2">
+              <li><Link to="/tools/press-release-builder" className="text-gray-500 hover:text-gray-700 text-sm">Press Release Builder</Link></li>
+              <li><Link to="/tools/pitch-personalizer" className="text-gray-500 hover:text-gray-700 text-sm">Pitch Personalizer</Link></li>
+              <li><Link to="/tools/crisis-response" className="text-gray-500 hover:text-gray-700 text-sm">Crisis Response Generator</Link></li>
+              <li><Link to="/tools/headline-analyzer" className="text-gray-500 hover:text-gray-700 text-sm">Headline Analyzer</Link></li>
+              <li><Link to="/tools/launch-timeline" className="text-gray-500 hover:text-gray-700 text-sm">Launch Timeline Planner</Link></li>
+              <li><Link to="/tools/boilerplate" className="text-gray-500 hover:text-gray-700 text-sm">Boilerplate Generator</Link></li>
+              <li><Link to="/tools/headline" className="text-gray-500 hover:text-gray-700 text-sm">Headline Generator</Link></li>
+              <li><Link to="/tools/quote" className="text-gray-500 hover:text-gray-700 text-sm">Quote Generator</Link></li>
+              <li><Link to="/tools/cta" className="text-gray-500 hover:text-gray-700 text-sm">CTA Generator</Link></li>
+            </ul>
+          </div>
+          <div>
             <h3 className="font-inter font-medium mb-4 text-base">Connect</h3>
             <ul className="space-y-2">
-              <li><a href="https://x.com/trywriteai" className="text-gray-500 hover:text-gray-700 text-sm">X</a></li>
-              <li><a href="https://www.linkedin.com/company/102985648/a" className="text-gray-500 hover:text-gray-700 text-sm">LinkedIn</a></li>
+              <li>
+                <a href="https://x.com/trywriteai" className="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 256 256" className="text-current">
+                    <path fill="currentColor" d="M208.49 191.51a12 12 0 0 1-17 17L128 145l-63.51 63.49a12 12 0 0 1-17-17L111 128L47.51 64.49a12 12 0 0 1 17-17L128 111l63.51-63.52a12 12 0 0 1 17 17L145 128Z"/>
+                  </svg>
+                  X
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/company/102985648/a" className="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 256 256" className="text-current">
+                    <path fill="currentColor" d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16ZM96 176a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm-8-80a12 12 0 1 1 12-12a12 12 0 0 1-12 12Zm96 80a8 8 0 0 1-16 0v-36c0-4.41-3.59-8-8-8s-8 3.59-8 8v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A24 24 0 0 1 184 140Zm0 0"/>
+                  </svg>
+                  LinkedIn
+                </a>
+              </li>
             </ul>
           </div>
         </div>
