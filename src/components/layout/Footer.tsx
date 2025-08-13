@@ -40,12 +40,12 @@ export const Footer = () => {
             <div className="flex space-x-4">
               <a href="https://x.com/trywriteai" className="text-gray-900 hover:text-gray-700">
                 <svg width="20" height="20" viewBox="0 0 256 256" className="text-current">
-                  <path fill="currentColor" d="M216 20H40A20 20 0 0 0 20 40v176a20 20 0 0 0 20 20h176a20 20 0 0 0 20-20V40a20 20 0 0 0-20-20Zm-24 76 64 44v72l-64-44Zm-64 44 32 22.09L192 140l32 22.09V140l-32-22.09ZM44 44h168l-84 58Z"/>
+                  <path fill="currentColor" d="M216 24H40A16 16 0 0 0 24 40v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16Zm-24 72L128 140 64 96v104h128Zm0-56v40L128 124 64 80V40Z"/>
                 </svg>
               </a>
               <a href="https://www.linkedin.com/company/102985648/a" className="text-gray-900 hover:text-gray-700">
                 <svg width="20" height="20" viewBox="0 0 256 256" className="text-current">
-                  <path fill="currentColor" d="M216 20H40A20 20 0 0 0 20 40v176a20 20 0 0 0 20 20h176a20 20 0 0 0 20-20V40a20 20 0 0 0-20-20ZM92 180a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm-8-80a12 12 0 1 1 12-12a12 12 0 0 1-12 12Zm96 80a8 8 0 0 1-16 0v-36c0-4.41-3.59-8-8-8s-8 3.59-8 8v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A24 24 0 0 1 180 140Z"/>
+                  <path fill="currentColor" d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16ZM96 176a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm-8-80a12 12 0 1 1 12-12a12 12 0 0 1-12 12Zm96 80a8 8 0 0 1-16 0v-36c0-4.41-3.59-8-8-8s-8 3.59-8 8v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A24 24 0 0 1 184 140v36Z"/>
                 </svg>
               </a>
             </div>
