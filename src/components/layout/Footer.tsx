@@ -4,32 +4,27 @@ export const Footer = () => {
   return (
     <footer className="bg-gray-100">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           <div>
-            <h3 className="font-inter font-semibold mb-4">Company</h3>
-            <ul className="space-y-2">
-              <li><Link to="/about" className="text-gray-600 hover:text-gray-900">About</Link></li>
-              <li><Link to="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link></li>
-              <li><a href="https://blog.works.xyz/" className="text-gray-600 hover:text-gray-900">Blog</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-inter font-semibold mb-4">Free PR Tools</h3>
+            <h3 className="font-inter font-semibold mb-4">Free Tools</h3>
             <ul className="space-y-2">
               <li><Link to="/tools/press-release-builder" className="text-gray-600 hover:text-gray-900">Press Release Builder</Link></li>
               <li><Link to="/tools/pitch-personalizer" className="text-gray-600 hover:text-gray-900">Pitch Personalizer</Link></li>
               <li><Link to="/tools/crisis-response" className="text-gray-600 hover:text-gray-900">Crisis Response Generator</Link></li>
               <li><Link to="/tools/headline-analyzer" className="text-gray-600 hover:text-gray-900">Headline Analyzer</Link></li>
               <li><Link to="/tools/launch-timeline" className="text-gray-600 hover:text-gray-900">Launch Timeline Planner</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-inter font-semibold mb-4">AI Tools</h3>
-            <ul className="space-y-2">
               <li><Link to="/tools/boilerplate" className="text-gray-600 hover:text-gray-900">Boilerplate Generator</Link></li>
               <li><Link to="/tools/headline" className="text-gray-600 hover:text-gray-900">Headline Generator</Link></li>
               <li><Link to="/tools/quote" className="text-gray-600 hover:text-gray-900">Quote Generator</Link></li>
               <li><Link to="/tools/cta" className="text-gray-600 hover:text-gray-900">CTA Generator</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-inter font-semibold mb-4">Company</h3>
+            <ul className="space-y-2">
+              <li><Link to="/about" className="text-gray-600 hover:text-gray-900">About</Link></li>
+              <li><Link to="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link></li>
+              <li><a href="https://blog.works.xyz/" className="text-gray-600 hover:text-gray-900">Blog</a></li>
             </ul>
           </div>
           <div>
