@@ -38,17 +38,15 @@ export const Footer = () => {
           <div>
             <h3 className="font-inter font-medium mb-4 text-base">Connect</h3>
             <div className="flex space-x-4">
-              <a href="https://x.com/trywriteai" className="text-gray-900 hover:text-gray-700 text-sm flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 256 256" className="text-current">
-                  <path fill="currentColor" d="M214.75 211.71 141.15 146 202 87.66a8 8 0 0 0-11.88-10.73L128 141.33 65.9 76.93a8 8 0 0 0-11.88 10.73L115 146 41.25 211.71a8 8 0 1 0 12.5 10.58L128 163.67l74.25 58.62a8 8 0 1 0 12.5-10.58Z"/>
+              <a href="https://x.com/trywriteai" className="text-gray-900 hover:text-gray-700">
+                <svg width="20" height="20" viewBox="0 0 256 256" className="text-current">
+                  <path fill="currentColor" d="M216 20H40A20 20 0 0 0 20 40v176a20 20 0 0 0 20 20h176a20 20 0 0 0 20-20V40a20 20 0 0 0-20-20Zm-24 76 64 44v72l-64-44Zm-64 44 32 22.09L192 140l32 22.09V140l-32-22.09ZM44 44h168l-84 58Z"/>
                 </svg>
-                X
               </a>
-              <a href="https://www.linkedin.com/company/102985648/a" className="text-gray-900 hover:text-gray-700 text-sm flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 256 256" className="text-current">
-                  <path fill="currentColor" d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16ZM96 176a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm-8-80a12 12 0 1 1 12-12a12 12 0 0 1-12 12Zm96 80a8 8 0 0 1-16 0v-36c0-4.41-3.59-8-8-8s-8 3.59-8 8v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A24 24 0 0 1 184 140Z"/>
+              <a href="https://www.linkedin.com/company/102985648/a" className="text-gray-900 hover:text-gray-700">
+                <svg width="20" height="20" viewBox="0 0 256 256" className="text-current">
+                  <path fill="currentColor" d="M216 20H40A20 20 0 0 0 20 40v176a20 20 0 0 0 20 20h176a20 20 0 0 0 20-20V40a20 20 0 0 0-20-20ZM92 180a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm-8-80a12 12 0 1 1 12-12a12 12 0 0 1-12 12Zm96 80a8 8 0 0 1-16 0v-36c0-4.41-3.59-8-8-8s-8 3.59-8 8v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A24 24 0 0 1 180 140Z"/>
                 </svg>
-                LinkedIn
               </a>
             </div>
           </div>
