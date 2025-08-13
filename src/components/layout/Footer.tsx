@@ -41,7 +41,7 @@ export const Footer = () => {
               <li>
                 <a href="https://x.com/trywriteai" className="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-2">
                   <svg width="16" height="16" viewBox="0 0 256 256" className="text-current">
-                    <path fill="currentColor" d="M208.49 191.51a12 12 0 0 1-17 17L128 145l-63.51 63.49a12 12 0 0 1-17-17L111 128L47.51 64.49a12 12 0 0 1 17-17L128 111l63.51-63.52a12 12 0 0 1 17 17L145 128Z"/>
+                    <path fill="currentColor" d="m218.83 103.77l-80-75.48a1.14 1.14 0 0 0-.11-.11a16 16 0 0 0-21.53 0l-.11.11L37.17 103.77A8 8 0 0 0 32 110.62V208a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V110.62a8 8 0 0 0-5.17-6.85Z"/>
                   </svg>
                   X
                 </a>
@@ -49,7 +49,7 @@ export const Footer = () => {
               <li>
                 <a href="https://www.linkedin.com/company/102985648/a" className="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-2">
                   <svg width="16" height="16" viewBox="0 0 256 256" className="text-current">
-                    <path fill="currentColor" d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16ZM96 176a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm-8-80a12 12 0 1 1 12-12a12 12 0 0 1-12 12Zm96 80a8 8 0 0 1-16 0v-36c0-4.41-3.59-8-8-8s-8 3.59-8 8v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A24 24 0 0 1 184 140Zm0 0"/>
+                    <path fill="currentColor" d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16ZM96 176a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm-8-80a12 12 0 1 1 12-12a12 12 0 0 1-12 12Zm96 80a8 8 0 0 1-16 0v-36c0-4.41-3.59-8-8-8s-8 3.59-8 8v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A24 24 0 0 1 184 140Z"/>
                   </svg>
                   LinkedIn
                 </a>
