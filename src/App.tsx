@@ -14,6 +14,11 @@ import Boilerplate from "./pages/tools/Boilerplate";
 import Headline from "./pages/tools/Headline";
 import Quote from "./pages/tools/Quote";
 import CTA from "./pages/tools/CTA";
+import PressReleaseBuilder from "./pages/tools/PressReleaseBuilder";
+import PitchPersonalizer from "./pages/tools/PitchPersonalizer";
+import CrisisResponse from "./pages/tools/CrisisResponse";
+import HeadlineAnalyzer from "./pages/tools/HeadlineAnalyzer";
+import LaunchTimeline from "./pages/tools/LaunchTimeline";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingState } from "@/components/ui/loading-state";
@@ -82,6 +87,11 @@ function App() {
         <Route path="/tools/headline" element={<Headline />} />
         <Route path="/tools/quote" element={<Quote />} />
         <Route path="/tools/cta" element={<CTA />} />
+        <Route path="/tools/press-release-builder" element={<PressReleaseBuilder />} />
+        <Route path="/tools/pitch-personalizer" element={<PitchPersonalizer />} />
+        <Route path="/tools/crisis-response" element={<CrisisResponse />} />
+        <Route path="/tools/headline-analyzer" element={<HeadlineAnalyzer />} />
+        <Route path="/tools/launch-timeline" element={<LaunchTimeline />} />
       </Routes>
       <Toaster position="top-right" />
     </Router>
