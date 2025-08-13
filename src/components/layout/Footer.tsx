@@ -35,6 +35,21 @@ export const Footer = () => {
               <li><Link to="/tools/cta" className="text-gray-900 hover:text-gray-700 text-sm">CTA Generator</Link></li>
             </ul>
           </div>
+          <div>
+            <h3 className="font-inter font-medium mb-4 text-base">Connect</h3>
+            <div className="flex space-x-4">
+              <a href="https://x.com/trywriteai" className="text-gray-900 hover:text-gray-700">
+                <svg width="20" height="20" viewBox="0 0 256 256" className="text-current">
+                  <path fill="currentColor" d="M216 24H40A16 16 0 0 0 24 40v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16Zm-24 72L128 140 64 96v104h128Zm0-56v40L128 124 64 80V40Z"/>
+                </svg>
+              </a>
+              <a href="https://www.linkedin.com/company/102985648/a" className="text-gray-900 hover:text-gray-700">
+                <svg width="20" height="20" viewBox="0 0 256 256" className="text-current">
+                  <path fill="currentColor" d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16ZM96 176a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm-8-80a12 12 0 1 1 12-12a12 12 0 0 1-12 12Zm96 80a8 8 0 0 1-16 0v-36c0-4.41-3.59-8-8-8s-8 3.59-8 8v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A24 24 0 0 1 184 140v36Z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
         <div className="mt-8 pt-8">
           <p className="text-center text-gray-600 text-sm">
