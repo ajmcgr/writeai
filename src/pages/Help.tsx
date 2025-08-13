@@ -50,7 +50,7 @@ export default function Help() {
       <Navigation />
       <main className="flex-grow pt-24 pb-16">
         <div className="container max-w-2xl mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-8">Help Center</h1>
+          <h1 className="text-4xl font-bold mb-8">Support</h1>
           
           <div className="space-y-8">
             <div>
