@@ -6,10 +6,10 @@ const About = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-grow pt-24 pb-16 px-4 md:px-8 max-w-4xl mx-auto">
+      <main className="flex-grow pt-24 pb-16 px-6 md:px-12 max-w-3xl mx-auto">
         <div className="space-y-12">
           {/* Letter Content with Border - includes headline and all content */}
-          <div className="border border-gray-200 rounded-lg p-12 bg-white">
+          <div className="border border-gray-200 rounded-lg p-16 bg-white">
             {/* Our Story Header inside letter */}
             <div className="text-center space-y-6 mb-12">
               <h1 className="text-4xl md:text-5xl font-reckless text-gray-900">Our story</h1>
