@@ -53,7 +53,7 @@ const About = () => {
                 Thanks for reading, and for giving Write AI a try. You can always contact me directly if you have any questions at alex@trywrite.ai. I look forward to hearing from you.
               </p>
               
-              <div className="pt-8 border-t border-gray-100 mt-8">
+              <div className="pt-8 mt-8">
                 <img
                   src="/alex-signature.png"
                   alt="Alex MacGregor signature"

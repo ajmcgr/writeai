@@ -41,7 +41,7 @@ export const Footer = () => {
               <li>
                 <a href="https://x.com/trywriteai" className="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-2">
                   <svg width="16" height="16" viewBox="0 0 256 256" className="text-current">
-                    <path fill="currentColor" d="m218.83 103.77l-80-75.48a1.14 1.14 0 0 0-.11-.11a16 16 0 0 0-21.53 0l-.11.11L37.17 103.77A8 8 0 0 0 32 110.62V208a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V110.62a8 8 0 0 0-5.17-6.85Z"/>
+                    <path fill="currentColor" d="M169.57 151.84L191.84 120H169.57L155.67 139.11L140.65 120H120L140.65 149.16L120 180H142.26L155.67 161.89L170.69 180H191.34L169.57 151.84ZM80 120L60 180H80.5L100.5 120H80Z"/>
                   </svg>
                   X
                 </a>
