@@ -20,6 +20,17 @@ const SignUp = () => {
   const redirectTo = location.state?.redirectTo || "/write";
 
   useEffect(() => {
+    // Check if user is already authenticated on page load
+    const checkExistingSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate(redirectTo);
+        return;
+      }
+    };
+    
+    checkExistingSession();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session);
       
