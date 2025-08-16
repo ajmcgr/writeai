@@ -62,6 +62,16 @@ const About = () => {
                 
                 <p className="font-semibold text-gray-900">— Alex MacGregor</p>
                 <p className="font-semibold text-gray-900">Founder, Write AI</p>
+                
+                <a 
+                  href="https://www.linkedin.com/in/alexmacgregor2/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 mt-4 text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Linkedin className="w-4 h-4" />
+                  Connect with me on LinkedIn
+                </a>
               </div>
             </div>
           </div>
