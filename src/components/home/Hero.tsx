@@ -55,7 +55,7 @@ export function Hero() {
     <div className="relative pt-20 pb-32 md:pt-36 md:pb-48 bg-[#848ac8]">
       <div className="container flex flex-col items-center text-center gap-8">
         <h1 className="text-4xl tracking-normal sm:text-6xl text-white font-reckless">
-          Meet your AI press release<br />writing assistant
+          Meet Your AI Press Release<br />Writing Assistant
         </h1>
         <p className="text-xl text-white/80 max-w-2xl">
           Everything you need to create high-quality and impactful press releases in minutes — powered by AI.
