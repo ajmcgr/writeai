@@ -72,9 +72,9 @@ export function PricingPlanCard({
       ) : (
         <Button
           onClick={onSelect}
-          className="w-full"
+          className={`w-full ${cta === "Upgrade Now" ? "bg-[#848ac8] text-white hover:bg-[#6c73a5]" : ""}`}
           disabled={disabled}
-          variant={highlighted ? "default" : "outline"}
+          variant={cta === "Upgrade Now" ? undefined : (highlighted ? "default" : "outline")}
         >
           {currentPlan ? "Current Plan" : cta}
         </Button>
