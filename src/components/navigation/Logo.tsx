@@ -24,9 +24,9 @@ export const Logo = ({ isAuthenticated, handleLogoClick }: LogoProps) => {
             onClick={handleLogoClick}
           >
             <img 
-              src={isAuthenticated ? "/lovable-uploads/c1f1be1b-7a26-4bf4-873f-e655267c4055.png" : "/lovable-uploads/8ba93214-4227-4884-ace9-0bc42115fdfe.png"}
+              src="/lovable-uploads/556ab6a0-9ab6-4dcb-9a12-21cf986490dc.png"
               alt="Write AI Logo" 
-              className={`w-auto transition-all duration-200 ${isAuthenticated ? 'h-6' : 'h-6'}`}
+              className="w-auto h-6 transition-all duration-200"
             />
             {isAuthenticated && (
               <span className="ml-2 text-black text-xs opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex items-center">
