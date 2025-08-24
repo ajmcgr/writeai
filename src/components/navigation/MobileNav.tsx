@@ -39,7 +39,7 @@ export const MobileNav = ({ isAuthenticated, handleLogout }: MobileNavProps) => 
         <Button 
           variant="ghost" 
           size="icon" 
-          className={`md:hidden ${isAuthenticated ? 'text-black p-2 hover:bg-transparent' : 'text-white p-2 hover:bg-transparent'}`}
+          className="md:hidden text-black p-2 hover:bg-transparent"
         >
           <Menu className="h-6 w-6" />
         </Button>

@@ -88,13 +88,13 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
   return (
     <div className="hidden md:flex items-center gap-0">
       <Link to="/pricing">
-        <Button variant="ghost" className="text-white font-medium px-3 hover:bg-transparent hover:text-white">Pricing</Button>
+        <Button variant="ghost" className="text-black font-medium px-3 hover:bg-transparent hover:text-black">Pricing</Button>
       </Link>
       <Link to="/signin">
-        <Button variant="ghost" className="text-white font-medium px-3 hover:bg-transparent hover:text-white">Login</Button>
+        <Button variant="ghost" className="text-black font-medium px-3 hover:bg-transparent hover:text-black">Login</Button>
       </Link>
       <Link to="/signup">
-        <Button className="bg-white text-black hover:bg-white font-medium px-6">Sign Up <ArrowRight className="w-4 h-4" /></Button>
+        <Button className="bg-[#848ac8] text-white hover:bg-[#6c73a5] font-medium px-6">Sign Up <ArrowRight className="w-4 h-4" /></Button>
       </Link>
     </div>
   );
