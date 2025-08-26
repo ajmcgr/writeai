@@ -90,7 +90,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mt-8 w-full max-w-5xl">
+        <div className="mt-6 w-full max-w-5xl">
           <div className="rounded-lg overflow-hidden shadow-2xl">
             {/* Browser Window Header */}
             <div className="bg-gray-100 px-4 py-3 flex items-center border-b">
