@@ -6,7 +6,7 @@ export const Footer = () => {
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           <div>
-            <h3 className="font-inter font-medium mt-2 mb-4 text-base">Company</h3>
+            <h3 className="font-inter font-medium mt-2 mb-4 text-base tracking-normal">Company</h3>
             <ul className="space-y-2">
               <li><Link to="/about" className="text-gray-900 hover:text-gray-700 text-sm">About</Link></li>
               <li><a href="https://blog.works.xyz/" className="text-gray-900 hover:text-gray-700 text-sm">Blog</a></li>
@@ -14,7 +14,7 @@ export const Footer = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-inter font-medium mt-2 mb-4 text-base">Support</h3>
+            <h3 className="font-inter font-medium mt-2 mb-4 text-base tracking-normal">Support</h3>
             <ul className="space-y-2">
               <li><Link to="/help" className="text-gray-900 hover:text-gray-700 text-sm">Support</Link></li>
               <li><Link to="/terms" className="text-gray-900 hover:text-gray-700 text-sm">Terms</Link></li>
@@ -22,7 +22,7 @@ export const Footer = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-inter font-medium mt-2 mb-4 text-base">Free Tools</h3>
+            <h3 className="font-inter font-medium mt-2 mb-4 text-base tracking-normal">Free Tools</h3>
             <ul className="space-y-2">
               <li><Link to="/tools/press-release-builder" className="text-gray-900 hover:text-gray-700 text-sm">Press Release Builder</Link></li>
               <li><Link to="/tools/pitch-personalizer" className="text-gray-900 hover:text-gray-700 text-sm">Pitch Personalizer</Link></li>
@@ -36,7 +36,7 @@ export const Footer = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-inter font-medium mt-2 mb-4 text-base">Connect</h3>
+            <h3 className="font-inter font-medium mt-2 mb-4 text-base tracking-normal">Connect</h3>
             <ul className="space-y-2">
               <li><a href="https://x.com/trywriteai" className="text-gray-900 hover:text-gray-700 text-sm">X</a></li>
               <li><a href="https://www.linkedin.com/company/102985648/a" className="text-gray-900 hover:text-gray-700 text-sm">LinkedIn</a></li>
