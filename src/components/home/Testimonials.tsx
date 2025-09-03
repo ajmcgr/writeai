@@ -63,7 +63,7 @@ export function Testimonials() {
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="container">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+          <h2 className="text-3xl font-bold sm:text-4xl mb-4">
             Loved by PR professionals
           </h2>
           <p className="text-xl text-muted-foreground">
