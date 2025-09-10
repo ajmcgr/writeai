@@ -4,7 +4,7 @@ import { PricingPlansGrid } from "../pricing/PricingPlansGrid";
 
 export function Pricing() {
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-16 md:py-24 bg-white">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold sm:text-4xl mb-4">
