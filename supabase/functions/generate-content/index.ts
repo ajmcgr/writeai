@@ -60,39 +60,37 @@ Keep the same basic structure but enhance the language and impact. Use proper pa
 
     console.log('Generating content with prompt:', userPrompt);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-        'Content-Type': 'application/json',
+        'x-api-key': Deno.env.get('ANTHROPIC_API_KEY')!,
+        'content-type': 'application/json',
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'claude-sonnet-4-20250514',
+        system: systemPrompt,
         messages: [
-          { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.4,
         max_tokens: 2000,
-        presence_penalty: 0.1,
-        frequency_penalty: 0.2,
       }),
     });
 
     if (!response.ok) {
       const error = await response.json();
-      console.error('OpenAI API error:', error);
-      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
+      console.error('Claude API error:', error);
+      throw new Error(`Claude API error: ${error.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI response:', data);
+    console.log('Claude response:', data);
 
-    if (!data.choices?.[0]?.message?.content) {
-      throw new Error('Invalid response from OpenAI');
+    if (!data.content?.[0]?.text) {
+      throw new Error('Invalid response from Claude');
     }
 
-    const generatedText = data.choices[0].message.content;
+    const generatedText = data.content[0].text;
     console.log('Generated text:', generatedText);
 
     return new Response(JSON.stringify({ generatedText }), {

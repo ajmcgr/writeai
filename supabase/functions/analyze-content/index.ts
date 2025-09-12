@@ -16,18 +16,16 @@ serve(async (req) => {
     const { content } = await req.json();
     console.log('Content received:', content.substring(0, 100) + '...');
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-        'Content-Type': 'application/json',
+        'x-api-key': Deno.env.get('ANTHROPIC_API_KEY')!,
+        'content-type': 'application/json',
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
-        messages: [
-          {
-            role: 'system',
-            content: `You are an expert PR professional and editor. Analyze the press release and provide specific, actionable improvements.
+        model: 'claude-sonnet-4-20250514',
+        system: `You are an expert PR professional and editor. Analyze the press release and provide specific, actionable improvements.
             Focus on enhancing:
             1. Headlines - Make them more compelling and newsworthy
             2. Lead paragraph - Strengthen the hook and key message
@@ -47,23 +45,20 @@ serve(async (req) => {
             
             Do not include any other text or formatting.
             Each suggestion must be separated by two newlines.
-            Only provide suggestions where you can make meaningful improvements.`
-          },
-          {
-            role: 'user',
-            content
-          }
+            Only provide suggestions where you can make meaningful improvements.`,
+        messages: [
+          { role: 'user', content: content }
         ],
-        temperature: 0.7,
+        max_tokens: 2000,
       }),
     });
 
-    console.log('OpenAI API response received');
+    console.log('Claude API response received');
     const data = await response.json();
-    console.log('Analysis generated:', data.choices[0].message.content);
+    console.log('Analysis generated:', data.content[0].text);
 
     return new Response(
-      JSON.stringify({ analysis: data.choices[0].message.content }),
+      JSON.stringify({ analysis: data.content[0].text }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
