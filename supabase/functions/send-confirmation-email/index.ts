@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: "Press Genie <notifications@pressgenie.com>",
         to: [emailRequest.email],
-        subject: "Confirm your Press Genie account",
+        subject: "Welcome to Write AI.",
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
             <h1>Welcome to Press Genie!</h1>
