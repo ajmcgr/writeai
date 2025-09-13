@@ -34,6 +34,34 @@ const SignUp = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session);
       
+      if (event === 'SIGNED_IN' && session && !session.user.email_confirmed_at) {
+        // User signed up but hasn't confirmed email yet
+        try {
+          await supabase.functions.invoke('send-confirmation-email', {
+            body: {
+              email: session.user.email,
+              confirmationUrl: `${window.location.origin}/auth/callback?type=signup`,
+            },
+          });
+          
+          toast({
+            title: "Check your email!",
+            description: "We've sent you a confirmation link to complete your signup.",
+          });
+          
+          // Sign out so they need to confirm first
+          await supabase.auth.signOut();
+        } catch (error) {
+          console.error('Error sending confirmation email:', error);
+          toast({
+            title: "Check your email!",
+            description: "Please check your email for a confirmation link.",
+          });
+          await supabase.auth.signOut();
+        }
+        return;
+      }
+      
       if (event === 'USER_UPDATED') {
         toast({
           title: "Email confirmed!",
@@ -43,7 +71,7 @@ const SignUp = () => {
         return;
       }
 
-      if (event === 'SIGNED_IN' && session) {
+      if (event === 'SIGNED_IN' && session && session.user.email_confirmed_at) {
         console.log('User signed in, creating HubSpot contact');
         
         try {
