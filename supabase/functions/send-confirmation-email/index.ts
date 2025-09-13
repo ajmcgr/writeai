@@ -38,20 +38,20 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Press Genie <notifications@pressgenie.com>",
+        from: "Write AI <notifications@pressgenie.com>",
         to: [emailRequest.email],
-        subject: "Welcome to Write AI.",
+        subject: "Welcome to Write AI",
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1>Welcome to Press Genie!</h1>
+            <h1>Welcome to Write AI!</h1>
             <p>Please confirm your email address by clicking the link below:</p>
             <p>
               <a href="${emailRequest.confirmationUrl}" style="display: inline-block; padding: 12px 24px; background-color: #848ac8; color: white; text-decoration: none; border-radius: 4px;">
                 Confirm Email
               </a>
             </p>
-            <p>If you didn't create an account with Press Genie, you can safely ignore this email.</p>
-            <p>Best regards,<br>The Press Genie Team</p>
+            <p>If you didn't create an account with Write AI, you can safely ignore this email.</p>
+            <p>Best regards,<br>The Write AI Team</p>
           </div>
         `,
       }),
