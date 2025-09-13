@@ -46,36 +46,6 @@ const SignUp = () => {
       if (event === 'SIGNED_IN' && session) {
         console.log('User signed in, creating HubSpot contact');
         
-        // Check if this is a new user (created within the last minute)
-        const userCreated = new Date(session.user.created_at);
-        const now = new Date();
-        const isNewUser = (now.getTime() - userCreated.getTime()) < 60000; // 1 minute
-        
-        if (isNewUser && !session.user.email_confirmed_at) {
-          // Send confirmation email for new users via Resend
-          try {
-            const confirmationUrl = `${window.location.origin}/auth/callback?type=signup`;
-            
-            await supabase.functions.invoke('send-confirmation-email', {
-              body: {
-                email: session.user.email,
-                confirmationUrl: confirmationUrl,
-              },
-            });
-
-            toast({
-              title: "Check your email!",
-              description: "We've sent you a confirmation link to complete your signup.",
-            });
-            
-            // Sign out the user so they need to confirm email first
-            await supabase.auth.signOut();
-            return;
-          } catch (error) {
-            console.error('Error sending confirmation email:', error);
-          }
-        }
-        
         try {
           // Create HubSpot contact
           const { error: hubspotError } = await supabase.functions.invoke('hubspot-contact', {
