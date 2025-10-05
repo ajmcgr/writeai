@@ -55,7 +55,7 @@ export function Hero() {
     <div className="relative pt-20 pb-32 md:pt-36 md:pb-48 bg-white">
       <div className="container flex flex-col items-center text-center gap-8">
         <h1 className="text-4xl tracking-[1.1px] sm:text-6xl text-black font-reckless">
-          Generate High-Quality Press Releases<br />in Minutes, Not Hours
+          Create High-Quality Press Releases<br />in Minutes, Not Hours
         </h1>
         <p className="text-xl text-black/70 max-w-2xl">
           Everything you need to create high-quality and impactful press releases in minutes — powered by AI.
