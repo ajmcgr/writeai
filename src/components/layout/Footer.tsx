@@ -24,6 +24,7 @@ export const Footer = () => {
           <div>
             <h3 className="font-inter font-medium mt-2 mb-4 text-base tracking-normal">Free Tools</h3>
             <ul className="space-y-2">
+              <li><a href="https://trybio.ai" className="text-gray-900 hover:text-gray-700 text-sm">Link-in-bio Creator ↗</a></li>
               <li><Link to="/tools/press-release-builder" className="text-gray-900 hover:text-gray-700 text-sm">Press Release Builder</Link></li>
               <li><Link to="/tools/pitch-personalizer" className="text-gray-900 hover:text-gray-700 text-sm">Pitch Personalizer</Link></li>
               <li><Link to="/tools/crisis-response" className="text-gray-900 hover:text-gray-700 text-sm">Crisis Response Generator</Link></li>
