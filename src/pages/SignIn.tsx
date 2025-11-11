@@ -78,8 +78,8 @@ const SignIn = () => {
                 variables: {
                   default: {
                     colors: {
-                      brand: '#848ac8',
-                      brandAccent: '#9599d1',
+                      brand: '#136ed5',
+                      brandAccent: '#0f5bb1',
                     },
                   },
                 },

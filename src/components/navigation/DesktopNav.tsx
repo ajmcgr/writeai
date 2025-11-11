@@ -94,7 +94,7 @@ export const DesktopNav = ({ isAuthenticated, handleLogout }: DesktopNavProps) =
         <Button variant="ghost" className="text-black font-medium px-3 hover:bg-transparent hover:text-black">Login</Button>
       </Link>
       <Link to="/signup">
-        <Button className="bg-[#848ac8] text-white hover:bg-[#6c73a5] font-medium px-6">Sign Up <ArrowRight className="w-4 h-4" /></Button>
+        <Button className="font-medium px-6">Sign Up <ArrowRight className="w-4 h-4" /></Button>
       </Link>
     </div>
   );

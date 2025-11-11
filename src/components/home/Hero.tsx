@@ -64,7 +64,7 @@ export function Hero() {
         <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-0">
             <Link to={isAuthenticated ? "/write" : "/signup"} className="mb-4 md:mb-0 w-full md:w-auto">
-              <Button size="lg" className="w-full md:w-auto text-base bg-[#848ac8] text-white hover:bg-[#6c73a5] font-inter px-6">
+              <Button size="lg" className="w-full md:w-auto text-base font-inter px-6">
                 {isAuthenticated ? "Start Writing" : "Start Free Trial"} <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
