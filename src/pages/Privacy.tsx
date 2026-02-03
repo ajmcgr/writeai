@@ -46,11 +46,10 @@ const Privacy = () => {
         <h2>Our contact address</h2>
         <p>
           Works App, Inc.<br />
-          651 N Broad St,<br />
-          Suite 201,<br />
-          Middletown,<br />
-          DE 19709<br />
-          US
+          447 Sutter St,<br />
+          Ste 405 #3,<br />
+          San Francisco,<br />
+          CA 94108
         </p>
         </div>
       </div>

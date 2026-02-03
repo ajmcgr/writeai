@@ -19,7 +19,7 @@ const Terms = () => {
         <ul>
           <li>Account means a unique account created for You to access our Service or parts of our Service.</li>
           <li>Country refers to: The United States of America</li>
-          <li>Company (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Works App, Inc. 651 N Broad St, Suite 201, Middletown, DE 19709 US.</li>
+          <li>Company (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Works App, Inc. 447 Sutter St, Ste 405 #3, San Francisco, CA 94108.</li>
           <li>Content refers to content such as text, images, or other information that can be posted, uploaded, linked to or otherwise made available by You, regardless of the form of that content.</li>
           <li>Device means any device that can access the Service such as a computer, a cellphone or a digital tablet.</li>
           <li>Free Trial refers to a limited period of time that may be free when purchasing a Subscription.</li>
